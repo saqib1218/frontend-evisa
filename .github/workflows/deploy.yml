@@ -7,10 +7,14 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to VPS
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check VPS connectivity
+        run: |
+          echo "Testing VPS port 22..."
+          nc -vz -w 10 191.215.37.128 22
+
       - name: Test VPS SSH
         uses: appleboy/ssh-action@v1
         with:
@@ -22,4 +26,3 @@ jobs:
             echo "SSH connection successful"
             hostname
             whoami
-            echo "VPS connection test completed"
