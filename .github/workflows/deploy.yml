@@ -11,18 +11,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy via SSH
+      - name: Test VPS SSH
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
           script: |
-            set -e
-            cd /var/www/evisa-frontend
-            git fetch origin
-            git reset --hard origin/main
-            npm ci
-            npm run build
-            pm2 restart evisa-frontend
-            pm2 save
+            echo "SSH connection successful"
+            hostname
+            whoami
+            echo "VPS connection test completed"
