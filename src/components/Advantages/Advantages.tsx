@@ -24,7 +24,7 @@ export default function Advantages() {
               fontWeight: 500,
               lineHeight: "120%",
               letterSpacing: "-0.03em",
-              color: "#0F0F0F",
+              color: "var(--text-heading)",
             }}
           >
             Advantages of Applying Through Our Service
@@ -68,7 +68,7 @@ export default function Advantages() {
             fontWeight: 500,
             lineHeight: "135%",
             letterSpacing: "-0.02em",
-            color: "#0F0F0F",
+            color: "var(--text-heading)",
           }}
         >
           Advantages of Applying Through Our Service
@@ -108,7 +108,7 @@ export default function Advantages() {
           width: "100%",
           maxWidth: "1360px",
           borderRadius: "12px",
-          border: "1px solid #D9D9D9",
+          border: "1px solid var(--form-border)",
         }}
       >
         {/* Header */}
@@ -149,7 +149,7 @@ export default function Advantages() {
               paddingRight: "24px",
               paddingBottom: "16px",
               paddingLeft: "24px",
-              borderBottom: index < tableData.length - 1 ? "1px solid #D9D9D9" : "none",
+              borderBottom: index < tableData.length - 1 ? "1px solid var(--form-border)" : "none",
               alignItems: "center",
             }}
           >
@@ -160,7 +160,7 @@ export default function Advantages() {
                   fontWeight: 400,
                   lineHeight: "150%",
                   letterSpacing: "-0.01em",
-                  color: "#353535",
+                  color: "var(--general)",
                 }}
               >
                 {row.feature}
@@ -187,7 +187,7 @@ export default function Advantages() {
         className="mt-6 md:hidden overflow-hidden"
         style={{
           borderRadius: "12px",
-          border: "1px solid #D9D9D9",
+          border: "1px solid var(--form-border)",
         }}
       >
         {/* Header: only Evisaeta and Government Portals */}
@@ -220,7 +220,7 @@ export default function Advantages() {
               paddingRight: "16px",
               paddingBottom: "16px",
               paddingLeft: "16px",
-              borderBottom: index < tableData.length - 1 ? "1px solid #D9D9D9" : "none",
+              borderBottom: index < tableData.length - 1 ? "1px solid var(--form-border)" : "none",
             }}
           >
             <div className="flex">
@@ -237,7 +237,7 @@ export default function Advantages() {
                 />
               </div>
             </div>
-            <span style={{ fontSize: "14px", fontWeight: 400, color: "#353535", marginTop: "8px", textAlign: "center" }}>
+            <span style={{ fontSize: "14px", fontWeight: 400, color: "var(--general)", marginTop: "8px", textAlign: "center" }}>
               {row.feature}
             </span>
           </div>

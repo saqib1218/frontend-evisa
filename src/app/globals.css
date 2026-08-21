@@ -14,6 +14,22 @@
   --card: #ffffff;
   --card-foreground: #171717;
   --general: #353535;
+  --text-heading: #0F0F0F;
+  --text-body: #575757;
+  --form-bg: #FAFAF9;
+  --input-bg: #FFFFFF;
+  --form-border: #D9D9D9;
+  --form-header-bg: #EFF6FF;
+  --icon-muted: #A9A9A9;
+  --placeholder-text: #B7B7B7;
+  --accent-bg: #EFF4F9;
+  --error-bg: #FEEFF2;
+  --error-text: #DF1C41;
+  --success-text: #28806F;
+  --success-bg: #EFFEFA;
+  --info-text: #2D76B5;
+  --divider: #D9D9D9;
+  --hero-text: #FAFAF9;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,13 +40,29 @@
     --primary-hover: #60a5fa;
     --secondary: #94a3b8;
     --secondary-hover: #cbd5e1;
-    --accent: #0F0F0F;
-    --muted: #575757;
-    --muted-foreground: #525252;
+    --accent: #ededed;
+    --muted: #a0a0a0;
+    --muted-foreground: #a0a0a0;
     --border: #27272a;
     --card: #18181b;
     --card-foreground: #ededed;
-    --general: #353535;
+    --general: #a0a0a0;
+    --text-heading: #ededed;
+    --text-body: #a0a0a0;
+    --form-bg: #161616;
+    --input-bg: #1e1e1e;
+    --form-border: #3a3a3a;
+    --form-header-bg: #1a2332;
+    --icon-muted: #777777;
+    --placeholder-text: #666666;
+    --accent-bg: #1a2332;
+    --error-bg: #2a1518;
+    --error-text: #ff6b6b;
+    --success-text: #4ecca3;
+    --success-bg: #1a2a26;
+    --info-text: #5a9fd8;
+    --divider: #3a3a3a;
+    --hero-text: #FAFAF9;
   }
 }
 
@@ -58,6 +90,36 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
+.hero-image-container {
+  background: var(--form-bg);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-image-container::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  animation: shimmer 1.5s infinite;
+  pointer-events: none;
+}
+
+.hero-image-container > img {
+  z-index: 1;
+}
+
+.hero-image-container > div {
+  z-index: 2;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
 img.guide-img {
   max-width: 100%;
   height: auto;
@@ -70,6 +132,14 @@ img.guide-img {
   }
   .apply-form label {
     font-size: 16px !important;
+  }
+  .apply-form .dropdown-btn {
+    font-size: 14px !important;
+    height: 48px !important;
+    padding: 12px !important;
+  }
+  .apply-form .dropdown-option {
+    font-size: 14px !important;
   }
   .upload-area-desktop {
     display: none !important;

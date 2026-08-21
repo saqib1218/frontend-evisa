@@ -30,10 +30,10 @@ function Dropdown({ placeholder, icon, value, onChange }: DropdownProps) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center gap-2 rounded-full bg-white px-4 py-3 text-left"
-        style={{ height: "48px" }}
+        className="flex w-full items-center gap-2 rounded-full px-4 py-3 text-left"
+        style={{ height: "48px", background: "var(--input-bg)" }}
       >
-        <span style={{ color: "#A9A9A9", display: "flex", alignItems: "center" }}>
+        <span style={{ color: "var(--icon-muted)", display: "flex", alignItems: "center" }}>
           <span style={{ width: "16.67px", height: "16.67px", display: "flex", alignItems: "center", justifyContent: "center" }}>
             {icon}
           </span>
@@ -41,7 +41,7 @@ function Dropdown({ placeholder, icon, value, onChange }: DropdownProps) {
         <span
           className="flex-1"
           style={{
-            color: value ? "#171717" : "#A9A9A9",
+            color: value ? "var(--foreground)" : "var(--icon-muted)",
             fontSize: "14px",
             fontWeight: 400,
           }}
@@ -50,12 +50,12 @@ function Dropdown({ placeholder, icon, value, onChange }: DropdownProps) {
         </span>
         <ChevronDown
           className="flex-shrink-0"
-          style={{ color: "#A9A9A9", width: "16.67px", height: "16.67px" }}
+          style={{ color: "var(--icon-muted)", width: "16.67px", height: "16.67px" }}
         />
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-2 max-h-60 w-full overflow-y-auto rounded-2xl bg-white shadow-lg [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+        <div className="absolute z-50 mt-2 max-h-60 w-full overflow-y-auto rounded-2xl shadow-lg [&::-webkit-scrollbar]:hidden [scrollbar-width:none]" style={{ background: "var(--input-bg)" }}>
           {countries.map((country) => (
             <button
               key={country.code}
@@ -64,8 +64,8 @@ function Dropdown({ placeholder, icon, value, onChange }: DropdownProps) {
                 onChange(country);
                 setOpen(false);
               }}
-              className="flex w-full items-center gap-3 px-4 py-3 text-left text-base hover:bg-gray-100"
-              style={{ color: "#171717" }}
+              className="flex w-full items-center gap-3 px-4 py-3 text-left text-base hover:opacity-80"
+              style={{ color: "var(--foreground)" }}
             >
               <span className="text-xl">{country.flag}</span>
               <span className="flex-1">{country.name}</span>
@@ -88,12 +88,12 @@ export default function Applycard() {
 
   return (
     <div
-      className="flex flex-col gap-6 rounded-2xl border border-white p-6"
+      className="flex flex-col gap-6 rounded-2xl p-6"
       style={{
         maxWidth: "435px",
         width: "100%",
         backdropFilter: "blur(12px)",
-        background: "rgba(255, 255, 255, 0.1)",
+        background: "rgba(255, 255, 255, 0.1)", border: "1px solid var(--hero-text)",
       }}
     >
       <div className="text-center">
@@ -168,8 +168,8 @@ export default function Applycard() {
         disabled={!isReady}
         className="flex items-center justify-center gap-2 rounded-full px-5 py-3 text-base font-medium transition-colors"
         style={{
-          backgroundColor: isReady ? "var(--primary)" : "#D9D9D9",
-          color: isReady ? "#FFFFFF" : "#A9A9A9",
+          backgroundColor: isReady ? "var(--primary)" : "var(--form-border)",
+          color: isReady ? "var(--hero-text)" : "var(--icon-muted)",
           cursor: isReady ? "pointer" : "not-allowed",
         }}
       >

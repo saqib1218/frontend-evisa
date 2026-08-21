@@ -6,7 +6,7 @@ const headingStyle = {
   fontWeight: 500,
   lineHeight: "140%",
   letterSpacing: "-0.02em",
-  color: "#0F0F0F",
+  color: "var(--text-heading)",
 };
 
 const bodyStyle = {
@@ -14,7 +14,7 @@ const bodyStyle = {
   fontWeight: 400,
   lineHeight: "150%",
   letterSpacing: "-0.01em",
-  color: "#575757",
+  color: "var(--text-body)",
 };
 
 export default function RefundPolicyPage() {
@@ -22,7 +22,7 @@ export default function RefundPolicyPage() {
     <main>
       {/* Hero image section */}
       <div className="mx-auto px-4" style={{ maxWidth: "1408px" }}>
-        <div className="relative w-full md:!h-[400px]" style={{ height: "228px" }}>
+        <div className="relative w-full md:!h-[400px] hero-image-container" style={{ height: "228px" }}>
           <Image
             src={privacy}
             alt="Refund Policy"
@@ -30,6 +30,8 @@ export default function RefundPolicyPage() {
             className="object-cover"
             style={{ borderRadius: "16px" }}
             priority
+            sizes="(max-width: 768px) 100vw, 1408px"
+            loading="eager"
           />
           <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
             <h1
@@ -71,7 +73,7 @@ export default function RefundPolicyPage() {
               "You cancel your request before your application has been reviewed and submitted to the relevant government authority",
             ].map((item, i) => (
               <div key={i} className="flex items-start" style={{ gap: "8px" }}>
-                <span style={{ width: "4px", height: "4px", borderRadius: "50%", background: "#575757", flexShrink: 0, marginTop: "8px", marginLeft: "12px" }} />
+                <span style={{ width: "4px", height: "4px", borderRadius: "50%", background: "var(--text-body)", flexShrink: 0, marginTop: "8px", marginLeft: "12px" }} />
                 <span style={{ ...bodyStyle }}>{item}</span>
               </div>
             ))}
@@ -90,7 +92,7 @@ export default function RefundPolicyPage() {
               "Delays caused by the government authority\u2019s own processing times",
             ].map((item, i) => (
               <div key={i} className="flex items-start" style={{ gap: "8px" }}>
-                <span style={{ width: "4px", height: "4px", borderRadius: "50%", background: "#575757", flexShrink: 0, marginTop: "8px", marginLeft: "12px" }} />
+                <span style={{ width: "4px", height: "4px", borderRadius: "50%", background: "var(--text-body)", flexShrink: 0, marginTop: "8px", marginLeft: "12px" }} />
                 <span style={{ ...bodyStyle }}>{item}</span>
               </div>
             ))}
@@ -110,7 +112,7 @@ export default function RefundPolicyPage() {
               "Any supporting information relevant to your request",
             ].map((item, i) => (
               <div key={i} className="flex items-start" style={{ gap: "8px" }}>
-                <span style={{ width: "4px", height: "4px", borderRadius: "50%", background: "#575757", flexShrink: 0, marginTop: "8px", marginLeft: "12px" }} />
+                <span style={{ width: "4px", height: "4px", borderRadius: "50%", background: "var(--text-body)", flexShrink: 0, marginTop: "8px", marginLeft: "12px" }} />
                 <span style={{ ...bodyStyle }}>{item}</span>
               </div>
             ))}

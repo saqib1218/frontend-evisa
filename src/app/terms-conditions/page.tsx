@@ -25,7 +25,7 @@ const headingStyle = {
   fontWeight: 500,
   lineHeight: "140%",
   letterSpacing: "-0.02em",
-  color: "#0F0F0F",
+  color: "var(--text-heading)",
 };
 
 const bodyStyle = {
@@ -33,7 +33,7 @@ const bodyStyle = {
   fontWeight: 400,
   lineHeight: "150%",
   letterSpacing: "-0.01em",
-  color: "#575757",
+  color: "var(--text-body)",
 };
 
 const tocItemStyle = {
@@ -41,11 +41,11 @@ const tocItemStyle = {
   fontWeight: 400,
   lineHeight: "150%",
   letterSpacing: "-0.01em",
-  color: "#575757",
+  color: "var(--text-body)",
 };
 
 const Dot = () => (
-  <span style={{ width: "4px", height: "4px", borderRadius: "50%", background: "#575757", flexShrink: 0, marginTop: "8px", marginLeft: "12px" }} />
+  <span style={{ width: "4px", height: "4px", borderRadius: "50%", background: "var(--text-body)", flexShrink: 0, marginTop: "8px", marginLeft: "12px" }} />
 );
 
 const BulletList = ({ items }: { items: string[] }) => (
@@ -93,7 +93,7 @@ export default function TermsConditionsPage() {
     <main>
       {/* Hero image section */}
       <div className="mx-auto px-4" style={{ maxWidth: "1408px" }}>
-        <div className="relative w-full md:!h-[400px]" style={{ height: "228px" }}>
+        <div className="relative w-full md:!h-[400px] hero-image-container" style={{ height: "228px" }}>
           <Image
             src={privacy}
             alt="Terms & Conditions"
@@ -101,6 +101,8 @@ export default function TermsConditionsPage() {
             className="object-cover"
             style={{ borderRadius: "16px" }}
             priority
+            sizes="(max-width: 768px) 100vw, 1408px"
+            loading="eager"
           />
           <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
             <h1
@@ -126,13 +128,13 @@ export default function TermsConditionsPage() {
           <button
             onClick={() => setTocOpen(!tocOpen)}
             className="flex w-full items-center justify-between rounded-lg border border-gray-200 px-4 py-3"
-            style={{ background: "#FAFAF9" }}
+            style={{ background: "var(--form-bg)" }}
           >
             <span style={{ ...headingStyle, fontSize: "16px" }}>Table of Contents</span>
             <ChevronDown className={`h-5 w-5 transition-transform ${tocOpen ? "rotate-180" : ""}`} style={{ color: "var(--primary)" }} />
           </button>
           {tocOpen && (
-            <div className="mt-2 flex flex-col rounded-lg border border-gray-200 px-4 py-2" style={{ background: "#FAFAF9" }}>
+            <div className="mt-2 flex flex-col rounded-lg border border-gray-200 px-4 py-2" style={{ background: "var(--form-bg)" }}>
               {sections.map((section, index) => (
                 <div
                   key={section.id}
@@ -141,7 +143,7 @@ export default function TermsConditionsPage() {
                     ...tocItemStyle,
                     padding: "8px 0",
                     cursor: "pointer",
-                    color: activeSection === index ? "var(--primary)" : "#575757",
+                    color: activeSection === index ? "var(--primary)" : "var(--text-body)",
                     fontWeight: activeSection === index ? 500 : 400,
                   }}
                 >
@@ -157,7 +159,7 @@ export default function TermsConditionsPage() {
           <div className="hidden md:flex md:flex-col" style={{ flexShrink: 0, width: "300px", position: "sticky", top: "40px", height: "fit-content", alignSelf: "flex-start" }}>
             <h2 style={{ ...headingStyle, marginBottom: "16px" }}>Table of Contents</h2>
             <div className="relative" style={{ paddingLeft: "16px" }}>
-              <div style={{ position: "absolute", left: "0", top: "0", bottom: "0", width: "2px", background: "#D9D9D9" }} />
+              <div style={{ position: "absolute", left: "0", top: "0", bottom: "0", width: "2px", background: "var(--form-border)" }} />
               <div
                 style={{
                   position: "absolute",
@@ -177,7 +179,7 @@ export default function TermsConditionsPage() {
                     ...tocItemStyle,
                     marginBottom: "16px",
                     cursor: "pointer",
-                    color: activeSection === index ? "var(--primary)" : "#575757",
+                    color: activeSection === index ? "var(--primary)" : "var(--text-body)",
                     fontWeight: activeSection === index ? 500 : 400,
                     transition: "color 0.3s ease, font-weight 0.3s ease",
                     position: "relative",

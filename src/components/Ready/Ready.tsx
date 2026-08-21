@@ -44,7 +44,7 @@ export default function Ready() {
           </p>
           <Link
             href="/apply"
-            className="flex items-center justify-center gap-2 rounded-full bg-white text-primary transition-colors hover:bg-gray-100 w-full md:w-auto md:!max-w-[194px]"
+            className="flex items-center justify-center gap-2 rounded-full text-primary transition-colors w-full md:w-auto md:!max-w-[194px]"
             style={{
               height: "48px",
               gap: "8px",
@@ -58,6 +58,7 @@ export default function Ready() {
               fontWeight: 500,
               lineHeight: "150%",
               letterSpacing: "-0.01em",
+              background: "var(--hero-text)",
             }}
           >
             Get Started Now

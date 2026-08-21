@@ -6,7 +6,7 @@ const headingStyle = {
   fontWeight: 500,
   lineHeight: "140%",
   letterSpacing: "-0.02em",
-  color: "#0F0F0F",
+  color: "var(--text-heading)",
 };
 
 const bodyStyle = {
@@ -14,7 +14,7 @@ const bodyStyle = {
   fontWeight: 400,
   lineHeight: "150%",
   letterSpacing: "-0.01em",
-  color: "#575757",
+  color: "var(--text-body)",
 };
 
 export default function CookiePolicyPage() {
@@ -22,7 +22,7 @@ export default function CookiePolicyPage() {
     <main>
       {/* Hero image section */}
       <div className="mx-auto px-4" style={{ maxWidth: "1408px" }}>
-        <div className="relative w-full md:!h-[400px]" style={{ height: "228px" }}>
+        <div className="relative w-full md:!h-[400px] hero-image-container" style={{ height: "228px" }}>
           <Image
             src={privacy}
             alt="Cookie Policy"
@@ -30,6 +30,8 @@ export default function CookiePolicyPage() {
             className="object-cover"
             style={{ borderRadius: "16px" }}
             priority
+            sizes="(max-width: 768px) 100vw, 1408px"
+            loading="eager"
           />
           <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
             <h1
@@ -89,7 +91,7 @@ export default function CookiePolicyPage() {
               "Adjusting your browser settings to block or delete cookies",
             ].map((item, i) => (
               <div key={i} className="flex items-start" style={{ gap: "8px" }}>
-                <span style={{ width: "4px", height: "4px", borderRadius: "50%", background: "#575757", flexShrink: 0, marginTop: "8px", marginLeft: "12px" }} />
+                <span style={{ width: "4px", height: "4px", borderRadius: "50%", background: "var(--text-body)", flexShrink: 0, marginTop: "8px", marginLeft: "12px" }} />
                 <span style={{ ...bodyStyle }}>{item}</span>
               </div>
             ))}

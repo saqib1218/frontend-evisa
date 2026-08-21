@@ -48,7 +48,7 @@ export default function FAQ() {
 
   return (
     <div className="mx-auto px-4 md:!pt-[120px] md:!pb-[120px] md:!px-10" style={{ maxWidth: "1440px", paddingTop: "48px", paddingBottom: "48px" }}>
-      <div className="mx-auto px-4 md:!pt-[80px] md:!pb-[80px] md:!px-8 md:!border-none" style={{ maxWidth: "1360px", paddingTop: "32px", paddingBottom: "32px", borderRadius: "16px", background: "#FAFAF9", border: "1px solid #D9D9D9" }}>
+      <div className="mx-auto px-4 md:!pt-[80px] md:!pb-[80px] md:!px-8 md:!border-none" style={{ maxWidth: "1360px", paddingTop: "32px", paddingBottom: "32px", borderRadius: "16px", background: "var(--form-bg)", border: "1px solid var(--form-border)" }}>
         {/* Heading */}
         <div className="mx-auto flex flex-col items-center" style={{ maxWidth: "720px", gap: "8px" }}>
           <h2
@@ -59,7 +59,7 @@ export default function FAQ() {
               lineHeight: "135%",
               letterSpacing: "-0.02em",
               textAlign: "center",
-              color: "#0F0F0F",
+              color: "var(--text-heading)",
             }}
           >
             Frequently Asked Questions
@@ -90,9 +90,9 @@ export default function FAQ() {
                 style={{
                   maxWidth: "100%",
                   borderRadius: "8px",
-                  border: `1px solid ${isOpen ? "var(--primary)" : "#D9D9D9"}`,
+                  border: `1px solid ${isOpen ? "var(--primary)" : "var(--form-border)"}`,
                   padding: "20px",
-                  background: isOpen ? "#EFF4F9" : "#FFFFFF",
+                  background: isOpen ? "var(--accent-bg)" : "var(--input-bg)",
                   gap: "8px",
                 }}
               >
@@ -109,7 +109,7 @@ export default function FAQ() {
                       fontWeight: 500,
                       lineHeight: "140%",
                       letterSpacing: "-0.02em",
-                      color: isOpen ? "var(--primary)" : "#0F0F0F",
+                      color: isOpen ? "var(--primary)" : "var(--text-heading)",
                     }}
                   >
                     {faq.question}
@@ -119,7 +119,7 @@ export default function FAQ() {
                     style={{
                       width: "24px",
                       height: "24px",
-                      color: isOpen ? "var(--primary)" : "#0F0F0F",
+                      color: isOpen ? "var(--primary)" : "var(--text-heading)",
                       transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
                     }}
                   />

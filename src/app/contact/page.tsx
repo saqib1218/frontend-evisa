@@ -10,7 +10,7 @@ export default function ContactPage() {
     <main>
       {/* Hero image section */}
       <div className="mx-auto px-4" style={{ maxWidth: "1408px" }}>
-        <div className="relative w-full md:!h-[400px]" style={{ height: "245px" }}>
+        <div className="relative w-full md:!h-[400px] hero-image-container" style={{ height: "245px" }}>
           <Image
             src={contact}
             alt="Contact us"
@@ -18,6 +18,8 @@ export default function ContactPage() {
             className="object-cover"
             style={{ borderRadius: "16px" }}
             priority
+            sizes="(max-width: 768px) 100vw, 1408px"
+            loading="eager"
           />
           <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
             <button
@@ -27,8 +29,8 @@ export default function ContactPage() {
                 height: "40px",
                 gap: "16px",
                 background: "transparent",
-                border: "1px solid #FFFFFF",
-                color: "#FFFFFF",
+                border: "1px solid var(--hero-text)",
+                color: "var(--hero-text)",
               }}
             >
               Contact Us
@@ -60,7 +62,7 @@ export default function ContactPage() {
             lineHeight: "135%",
             letterSpacing: "-0.02em",
             textAlign: "center",
-            color: "#0F0F0F",
+            color: "var(--text-heading)",
           }}
         >
           Send Us A Message
@@ -73,7 +75,7 @@ export default function ContactPage() {
             maxWidth: "898px",
             gap: "32px",
             borderRadius: "24px",
-            background: "#FAFAF9",
+            background: "var(--form-bg)",
             border: "none",
           }}
         >
@@ -87,7 +89,7 @@ export default function ContactPage() {
                   fontWeight: 500,
                   lineHeight: "140%",
                   letterSpacing: "-0.02em",
-                  color: "#0F0F0F",
+                  color: "var(--text-heading)",
                 }}
               >
                 Full Name
@@ -100,14 +102,14 @@ export default function ContactPage() {
                   height: "56px",
                   gap: "10px",
                   borderRadius: "999px",
-                  border: "1px solid #D9D9D9",
+                  border: "1px solid var(--form-border)",
                   padding: "16px",
-                  background: "#FFFFFF",
+                  background: "var(--input-bg)",
                   fontSize: "16px",
                   fontWeight: 400,
                   lineHeight: "150%",
                   letterSpacing: "-0.01em",
-                  color: "#B7B7B7",
+                  color: "var(--placeholder-text)",
                   outline: "none",
                 }}
               />
@@ -121,7 +123,7 @@ export default function ContactPage() {
                   fontWeight: 500,
                   lineHeight: "140%",
                   letterSpacing: "-0.02em",
-                  color: "#0F0F0F",
+                  color: "var(--text-heading)",
                 }}
               >
                 Email
@@ -134,14 +136,14 @@ export default function ContactPage() {
                   height: "56px",
                   gap: "10px",
                   borderRadius: "999px",
-                  border: "1px solid #D9D9D9",
+                  border: "1px solid var(--form-border)",
                   padding: "16px",
-                  background: "#FFFFFF",
+                  background: "var(--input-bg)",
                   fontSize: "16px",
                   fontWeight: 400,
                   lineHeight: "150%",
                   letterSpacing: "-0.01em",
-                  color: "#B7B7B7",
+                  color: "var(--placeholder-text)",
                   outline: "none",
                 }}
               />
@@ -158,7 +160,7 @@ export default function ContactPage() {
                   fontWeight: 500,
                   lineHeight: "140%",
                   letterSpacing: "-0.02em",
-                  color: "#0F0F0F",
+                  color: "var(--text-heading)",
                 }}
               >
                 Phone Number
@@ -171,14 +173,14 @@ export default function ContactPage() {
                   height: "56px",
                   gap: "10px",
                   borderRadius: "999px",
-                  border: "1px solid #D9D9D9",
+                  border: "1px solid var(--form-border)",
                   padding: "16px",
-                  background: "#FFFFFF",
+                  background: "var(--input-bg)",
                   fontSize: "16px",
                   fontWeight: 400,
                   lineHeight: "150%",
                   letterSpacing: "-0.01em",
-                  color: "#B7B7B7",
+                  color: "var(--placeholder-text)",
                   outline: "none",
                 }}
               />
@@ -192,7 +194,7 @@ export default function ContactPage() {
                   fontWeight: 500,
                   lineHeight: "140%",
                   letterSpacing: "-0.02em",
-                  color: "#0F0F0F",
+                  color: "var(--text-heading)",
                 }}
               >
                 City
@@ -205,14 +207,14 @@ export default function ContactPage() {
                   height: "56px",
                   gap: "10px",
                   borderRadius: "999px",
-                  border: "1px solid #D9D9D9",
+                  border: "1px solid var(--form-border)",
                   padding: "16px",
-                  background: "#FFFFFF",
+                  background: "var(--input-bg)",
                   fontSize: "16px",
                   fontWeight: 400,
                   lineHeight: "150%",
                   letterSpacing: "-0.01em",
-                  color: "#B7B7B7",
+                  color: "var(--placeholder-text)",
                   outline: "none",
                 }}
               />
@@ -227,7 +229,7 @@ export default function ContactPage() {
                 fontWeight: 500,
                 lineHeight: "140%",
                 letterSpacing: "-0.02em",
-                color: "#0F0F0F",
+                color: "var(--text-heading)",
               }}
             >
               Message
@@ -239,14 +241,14 @@ export default function ContactPage() {
                 width: "100%",
                 gap: "10px",
                 borderRadius: "16px",
-                border: "1px solid #D9D9D9",
+                border: "1px solid var(--form-border)",
                 padding: "16px",
-                background: "#FFFFFF",
+                background: "var(--input-bg)",
                 fontSize: "16px",
                 fontWeight: 400,
                 lineHeight: "150%",
                 letterSpacing: "-0.01em",
-                color: "#B7B7B7",
+                color: "var(--placeholder-text)",
                 outline: "none",
                 resize: "vertical",
                 fontFamily: "inherit",

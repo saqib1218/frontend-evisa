@@ -26,27 +26,29 @@ export default function Home() {
     <main>
       {/* Hero section */}
       <div className="mx-auto max-w-[1408px] px-4 md:px-0 md:py-0">
-        <div className="relative w-full" style={{ height: "844px" }}>
+        <div className="relative w-full hero-image-container" style={{ height: "844px" }}>
           <Image
             src={homebg}
             alt="Home background"
             fill
             className="object-cover rounded-2xl"
             priority
+            sizes="100vw"
+            loading="eager"
           />
           {/* Desktop: left-aligned text + right apply card */}
           <div className="absolute inset-0 hidden md:flex md:items-center">
             <div className="ml-6 max-w-[666px]">
               <h1
                 className="text-background"
-                style={{ fontSize: "64px", fontWeight: 500, lineHeight: "110%", letterSpacing: "-0.03em" }}
+                style={{ fontSize: "64px", fontWeight: 500, lineHeight: "110%", letterSpacing: "-0.03em", color: "var(--hero-text)" }}
               >
                 Get Your UK eTA In Few <br />
                 Easy Steps
               </h1>
               <p
                 className="mt-4"
-                style={{ fontSize: "18px", fontWeight: 400, color: "#FAFAF9" }}
+                style={{ fontSize: "18px", fontWeight: 400, color: "var(--hero-text)" }}
               >
                 Fast, guided applications for Canada, the USA, Australia, New
                 Zealand and the UK reviewed by our specialists before
@@ -65,13 +67,13 @@ export default function Home() {
           <div className="absolute inset-0 flex flex-col items-center justify-center px-4 md:hidden">
             <h1
               className="text-background text-center"
-              style={{ fontSize: "40px", fontWeight: 500, lineHeight: "130%", letterSpacing: "-0.03em", textAlign: "center" }}
+              style={{ fontSize: "40px", fontWeight: 500, lineHeight: "130%", letterSpacing: "-0.03em", textAlign: "center", color: "var(--hero-text)" }}
             >
               Get Your UK eTA In Few Easy Steps
             </h1>
             <p
               className="mt-4 text-center"
-              style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#FAFAF9", maxWidth: "320px", textAlign: "center" }}
+              style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--hero-text)", maxWidth: "320px", textAlign: "center" }}
             >
               Fast, guided applications for Canada, the USA, Australia, New Zealand and the UK reviewed by our specialists before submission.
             </p>
@@ -95,7 +97,7 @@ export default function Home() {
                   fontWeight: 500,
                   lineHeight: "135%",
                   letterSpacing: "-0.02em",
-                  color: "#0F0F0F",
+                  color: "var(--text-heading)",
                 }}
               >
                 <span className="md:!text-[48px] md:!leading-[120%] md:!tracking-[-0.03em]">How the UK eTA works</span>
@@ -145,7 +147,7 @@ export default function Home() {
                       lineHeight: "130%",
                       letterSpacing: "-0.02em",
                       textAlign: "center",
-                      color: "#2D76B533",
+                      color: "var(--primary)",
                       WebkitTextStroke: "2px var(--primary)",
                     }}
                   >
@@ -173,7 +175,7 @@ export default function Home() {
                         fontWeight: 500,
                         lineHeight: "140%",
                         letterSpacing: "-0.02em",
-                        color: "#353535",
+                        color: "var(--general)",
                       }}
                     >
                       {item.title}
@@ -208,7 +210,7 @@ export default function Home() {
 
       {/* Who needs to apply section */}
       <div className="mx-auto px-4 md:!pt-[120px] md:!pb-[120px] md:!px-10" style={{ maxWidth: "1440px", paddingTop: "48px", paddingBottom: "48px" }}>
-        <div className="mx-auto px-4 md:!pt-[72px] md:!pb-[72px] md:!px-10" style={{ maxWidth: "1360px", paddingTop: "32px", paddingBottom: "32px", borderRadius: "16px", border: "1px solid #D9D9D9", background: "#FAFAF9" }}>
+        <div className="mx-auto px-4 md:!pt-[72px] md:!pb-[72px] md:!px-10" style={{ maxWidth: "1360px", paddingTop: "32px", paddingBottom: "32px", borderRadius: "16px", border: "1px solid var(--form-border)", background: "var(--form-bg)" }}>
           {/* Heading + description */}
           <div className="mx-auto flex flex-col items-center" style={{ maxWidth: "711px", gap: "8px" }}>
             <h2
@@ -259,7 +261,7 @@ export default function Home() {
                   fontWeight: 500,
                   lineHeight: "140%",
                   letterSpacing: "-0.02em",
-                  color: "#0F0F0F",
+                  color: "var(--text-heading)",
                   marginBottom: "24px",
                 }}
               >
@@ -278,7 +280,7 @@ export default function Home() {
                   style={{
                     paddingTop: "16px",
                     paddingBottom: "16px",
-                    borderBottom: i < arr.length - 1 ? "1px solid #D9D9D9" : "none",
+                    borderBottom: i < arr.length - 1 ? "1px solid var(--form-border)" : "none",
                   }}
                 >
                   <Image src={tick} alt="Tick" width={24} height={24} style={{ width: "24px", height: "24px", flexShrink: 0 }} />
@@ -304,7 +306,7 @@ export default function Home() {
                   fontWeight: 500,
                   lineHeight: "140%",
                   letterSpacing: "-0.02em",
-                  color: "#0F0F0F",
+                  color: "var(--text-heading)",
                   marginTop: "24px",
                   marginBottom: "24px",
                 }}
@@ -324,7 +326,7 @@ export default function Home() {
                   style={{
                     paddingTop: "16px",
                     paddingBottom: "16px",
-                    borderBottom: i < arr.length - 1 ? "1px solid #D9D9D9" : "none",
+                    borderBottom: i < arr.length - 1 ? "1px solid var(--form-border)" : "none",
                   }}
                 >
                   <Image src={cancel} alt="Cancel" width={24} height={24} style={{ width: "24px", height: "24px", flexShrink: 0 }} />

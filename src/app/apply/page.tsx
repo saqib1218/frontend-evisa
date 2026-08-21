@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { ChevronRight, ChevronDown, ChevronUp, Trash2, Globe, Check, ArrowRight, ArrowLeft, Plus, Upload, Clock, DollarSign, User } from "lucide-react";
 import DeleteModal from "./Models/Deletemodal/DeleteModal";
+import SuccessModal from "./Models/SuccessModal/SuccessModal";
 import about from "@/images/about.svg";
 import btick from "@/images/btick.svg";
 import pasport1 from "@/images/pasport1.svg";
@@ -22,6 +23,8 @@ import r6 from "@/images/r6.svg";
 import r7 from "@/images/r7.svg";
 import r8 from "@/images/r8.svg";
 import { countries, type Country } from "@/data/countries";
+import { api, type SubmitApplicationPayload } from "@/utils/api";
+import { useToast, ToastContainer } from "@/utils/toast";
 
 const steps = ["Applicant", "Passport", "Passport image", "Your photo", "Review", "Payment"];
 
@@ -30,7 +33,7 @@ const labelStyle = {
   fontWeight: 500,
   lineHeight: "140%",
   letterSpacing: "-0.02em",
-  color: "#0F0F0F",
+  color: "var(--text-heading)",
 };
 
 const helperStyle = {
@@ -38,18 +41,18 @@ const helperStyle = {
   fontWeight: 400,
   lineHeight: "165%",
   letterSpacing: "0em",
-  color: "#575757",
+  color: "var(--text-body)",
 };
 
 const fieldStyle = {
   height: "56px",
   borderRadius: "999px",
-  border: "1px solid #D9D9D9",
+  border: "1px solid var(--form-border)",
   padding: "16px",
-  background: "white",
+  background: "var(--input-bg)",
   fontSize: "16px",
   fontWeight: 400,
-  color: "#0F0F0F",
+  color: "var(--text-heading)",
   width: "100%",
   outline: "none",
 };
@@ -77,24 +80,24 @@ function CountryDropdown({ placeholder, value: externalValue, onChange }: { plac
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center gap-2.5 cursor-pointer"
-        style={{ height: "56px", borderRadius: "999px", border: "1px solid #D9D9D9", padding: "16px", background: "white" }}
+        className="dropdown-btn flex w-full items-center gap-2.5 cursor-pointer"
+        style={{ height: "56px", borderRadius: "999px", border: "1px solid var(--form-border)", padding: "16px", background: "var(--input-bg)" }}
       >
-        <Globe style={{ color: "#A9A9A9", width: "20px", height: "20px", flexShrink: 0 }} />
-        <span className="flex-1 text-left" style={{ color: value ? "#0F0F0F" : "#A9A9A9", fontSize: "16px", fontWeight: 400 }}>
+        <Globe style={{ color: "var(--icon-muted)", width: "20px", height: "20px", flexShrink: 0 }} />
+        <span className="flex-1 text-left" style={{ color: value ? "var(--text-heading)" : "var(--icon-muted)", fontSize: "16px", fontWeight: 400 }}>
           {value ? `${value.flag} ${value.name}` : placeholder}
         </span>
-        <ChevronDown style={{ color: "#A9A9A9", width: "20px", height: "20px", flexShrink: 0 }} />
+        <ChevronDown style={{ color: "var(--icon-muted)", width: "20px", height: "20px", flexShrink: 0 }} />
       </button>
       {open && (
-        <div className="absolute z-50 mt-2 max-h-60 w-full overflow-y-auto rounded-2xl bg-white shadow-lg [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+        <div className="absolute z-50 mt-2 max-h-60 w-full overflow-y-auto rounded-2xl shadow-lg [&::-webkit-scrollbar]:hidden [scrollbar-width:none]" style={{ background: "var(--input-bg)", border: "1px solid var(--form-border)" }}>
           {countries.map((country) => (
             <button
               key={country.code}
               type="button"
               onClick={() => { setValue(country); setOpen(false); }}
-              className="flex w-full items-center gap-3 px-4 py-3 text-left text-base hover:bg-gray-100"
-              style={{ color: "#0F0F0F" }}
+              className="dropdown-option flex w-full items-center gap-3 px-4 py-3 text-left text-base hover:opacity-80"
+              style={{ color: "var(--text-heading)" }}
             >
               <span className="text-xl">{country.flag}</span>
               <span className="flex-1">{country.name}</span>
@@ -126,23 +129,23 @@ function GenericDropdown({ placeholder, options, value: controlledValue, onChang
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between cursor-pointer"
-        style={{ height: "56px", borderRadius: "999px", border: "1px solid #D9D9D9", padding: "16px", background: "white" }}
+        className="dropdown-btn flex w-full items-center justify-between cursor-pointer"
+        style={{ height: "56px", borderRadius: "999px", border: "1px solid var(--form-border)", padding: "16px", background: "var(--input-bg)" }}
       >
-        <span className="flex-1 text-left" style={{ color: value ? "#0F0F0F" : "#A9A9A9", fontSize: "16px", fontWeight: 400 }}>
+        <span className="flex-1 text-left" style={{ color: value ? "var(--text-heading)" : "var(--icon-muted)", fontSize: "16px", fontWeight: 400 }}>
           {value || placeholder}
         </span>
-        <ChevronDown style={{ color: "#A9A9A9", width: "20px", height: "20px", flexShrink: 0 }} />
+        <ChevronDown style={{ color: "var(--icon-muted)", width: "20px", height: "20px", flexShrink: 0 }} />
       </button>
       {open && (
-        <div className="absolute z-50 mt-2 max-h-60 w-full overflow-y-auto rounded-2xl bg-white shadow-lg">
+        <div className="absolute z-50 mt-2 max-h-60 w-full overflow-y-auto rounded-2xl shadow-lg" style={{ background: "var(--input-bg)", border: "1px solid var(--form-border)" }}>
           {options.map((option) => (
             <button
               key={option}
               type="button"
               onClick={() => { setValue(option); setOpen(false); onChange?.(option); }}
-              className="flex w-full items-center px-4 py-3 text-left text-base hover:bg-gray-100"
-              style={{ color: "#0F0F0F" }}
+              className="dropdown-option flex w-full items-center px-4 py-3 text-left text-base hover:opacity-80"
+              style={{ color: "var(--text-heading)" }}
             >
               {option}
             </button>
@@ -177,23 +180,23 @@ function DateDropdown({ placeholder, options, label, value: externalValue, onCha
         <button
           type="button"
           onClick={() => setOpen(!open)}
-          className="flex w-full items-center justify-between cursor-pointer"
-          style={{ height: "56px", borderRadius: "999px", border: "1px solid #D9D9D9", padding: "16px", background: "white" }}
+          className="dropdown-btn flex w-full items-center justify-between cursor-pointer"
+          style={{ height: "56px", borderRadius: "999px", border: "1px solid var(--form-border)", padding: "16px", background: "var(--input-bg)" }}
         >
-          <span className="flex-1 text-center" style={{ color: value ? "#0F0F0F" : "#A9A9A9", fontSize: "16px", fontWeight: 400 }}>
+          <span className="flex-1 text-center" style={{ color: value ? "var(--text-heading)" : "var(--icon-muted)", fontSize: "16px", fontWeight: 400 }}>
             {value || placeholder}
           </span>
-          <ChevronDown style={{ color: "#A9A9A9", width: "20px", height: "20px", flexShrink: 0 }} />
+          <ChevronDown style={{ color: "var(--icon-muted)", width: "20px", height: "20px", flexShrink: 0 }} />
         </button>
         {open && (
-          <div className="absolute z-50 mt-2 max-h-60 w-full overflow-y-auto rounded-2xl bg-white shadow-lg">
+          <div className="absolute z-50 mt-2 max-h-60 w-full overflow-y-auto rounded-2xl shadow-lg" style={{ background: "var(--input-bg)", border: "1px solid var(--form-border)" }}>
             {options.map((option) => (
               <button
                 key={option}
                 type="button"
                 onClick={() => { setValue(option); setOpen(false); }}
-                className="flex w-full items-center justify-center px-4 py-3 text-base hover:bg-gray-100"
-                style={{ color: "#0F0F0F" }}
+                className="dropdown-option flex w-full items-center justify-center px-4 py-3 text-base hover:opacity-80"
+                style={{ color: "var(--text-heading)" }}
               >
                 {option}
               </button>
@@ -216,14 +219,14 @@ function YesNoToggle({ value, onChange }: { value: "yes" | "no"; onChange: (v: "
             width: "24px",
             height: "24px",
             borderRadius: "50%",
-            border: value === "no" ? "8px solid var(--primary)" : "1px solid #D9D9D9",
-            background: "white",
+            border: value === "no" ? "8px solid var(--primary)" : "1px solid var(--form-border)",
+            background: "var(--input-bg)",
             flexShrink: 0,
             cursor: "pointer",
             boxSizing: "border-box",
           }}
         />
-        <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+        <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
           No
         </span>
       </label>
@@ -234,14 +237,14 @@ function YesNoToggle({ value, onChange }: { value: "yes" | "no"; onChange: (v: "
             width: "24px",
             height: "24px",
             borderRadius: "50%",
-            border: value === "yes" ? "8px solid var(--primary)" : "1px solid #D9D9D9",
-            background: "white",
+            border: value === "yes" ? "8px solid var(--primary)" : "1px solid var(--form-border)",
+            background: "var(--input-bg)",
             flexShrink: 0,
             cursor: "pointer",
             boxSizing: "border-box",
           }}
         />
-        <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+        <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
           Yes
         </span>
       </label>
@@ -264,12 +267,45 @@ export default function ApplyPage() {
   // Applicant form data: { [id]: { firstName, lastName } }
   const [applicantNames, setApplicantNames] = useState<Record<number, { firstName: string; lastName: string }>>({});
   const [applicantEmails, setApplicantEmails] = useState<Record<number, string>>({});
+  const [applicantPhones, setApplicantPhones] = useState<Record<number, string>>({});
   const [applicantDOB, setApplicantDOB] = useState<Record<number, { day: string | null; month: string | null; year: string | null }>>({});
   const [applicantGender, setApplicantGender] = useState<Record<number, string>>({});
   const [applicantCountryOfBirth, setApplicantCountryOfBirth] = useState<Record<number, Country | null>>({});
 
   // Review consent
   const [reviewConsent, setReviewConsent] = useState<{ confirmInfo: boolean; privacyNotice: boolean }>({ confirmInfo: false, privacyNotice: false });
+
+  // Uploaded images: { [applicantId]: dataUrl }
+  const [passportImages, setPassportImages] = useState<Record<number, string>>({});
+  const [photoImages, setPhotoImages] = useState<Record<number, string>>({});
+  const [dragOverApplicant, setDragOverApplicant] = useState<number | null>(null);
+
+  const handleFileUpload = (applicantId: number, file: File, type: "passport" | "photo") => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      if (type === "passport") {
+        setPassportImages((prev) => ({ ...prev, [applicantId]: dataUrl }));
+      } else {
+        setPhotoImages((prev) => ({ ...prev, [applicantId]: dataUrl }));
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleFileInput = (applicantId: number, e: React.ChangeEvent<HTMLInputElement>, type: "passport" | "photo") => {
+    const file = e.target.files?.[0];
+    if (file) handleFileUpload(applicantId, file, type);
+  };
+
+  const handleDrop = (applicantId: number, e: React.DragEvent, type: "passport" | "photo") => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragOverApplicant(null);
+    const file = e.dataTransfer.files?.[0];
+    if (file) handleFileUpload(applicantId, file, type);
+  };
 
   // Processing speed selection
   const [selectedProcessing, setSelectedProcessing] = useState<"standard" | "express" | "fastest">("standard");
@@ -302,6 +338,10 @@ export default function ApplyPage() {
 
   const updateApplicantEmail = (id: number, value: string) => {
     setApplicantEmails((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const updateApplicantPhone = (id: number, value: string) => {
+    setApplicantPhones((prev) => ({ ...prev, [id]: value }));
   };
 
   const updateApplicantDOB = (id: number, part: "day" | "month" | "year", value: string | null) => {
@@ -387,6 +427,26 @@ export default function ApplyPage() {
   const multipleApplicants = applicants.length > 1;
   const allApplicantsSaved = !multipleApplicants || applicants.every((a) => a.saved);
 
+  const isApplicantValid = (id: number) => {
+    const name = applicantNames[id];
+    const email = applicantEmails[id];
+    const dob = applicantDOB[id];
+    const gender = applicantGender[id];
+    const country = applicantCountryOfBirth[id];
+    return !!(
+      name?.firstName?.trim() &&
+      name?.lastName?.trim() &&
+      email?.trim() &&
+      dob?.day &&
+      dob?.month &&
+      dob?.year &&
+      gender &&
+      country
+    );
+  };
+  const allApplicantsValid = applicants.every((a) => isApplicantValid(a.id));
+  const canGoToPassport = multipleApplicants ? allApplicantsSaved : allApplicantsValid;
+
   const goToPassportStep = () => {
     setPassportApplicants(applicants.map((a) => ({ id: a.id, expanded: true, saved: false, otherCitizen: "no" as const, prevApplied: "no" as const })));
     setCurrentStep(1);
@@ -415,6 +475,22 @@ export default function ApplyPage() {
 
   const allPassportSaved = passportApplicants.length <= 1 || passportApplicants.every((a) => a.saved);
 
+  const isPassportValid = (id: number) => {
+    const data = passportData[id];
+    return !!(
+      data?.nationality &&
+      data?.passportNumber?.trim() &&
+      data?.dateIssue?.day &&
+      data?.dateIssue?.month &&
+      data?.dateIssue?.year &&
+      data?.dateExpiry?.day &&
+      data?.dateExpiry?.month &&
+      data?.dateExpiry?.year
+    );
+  };
+  const allPassportValid = passportApplicants.every((a) => isPassportValid(a.id));
+  const canGoToImage = passportApplicants.length > 1 ? allPassportSaved : allPassportValid;
+
   const goToImageStep = () => {
     setImageApplicants(passportApplicants.map((a) => ({ id: a.id, expanded: true, saved: false })));
     setImageConsent({});
@@ -432,6 +508,11 @@ export default function ApplyPage() {
       delete next[id];
       return next;
     });
+    setPassportImages((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
   };
 
   const saveImageApplicant = (id: number) => {
@@ -443,7 +524,9 @@ export default function ApplyPage() {
   };
 
   const allImageConsented = imageApplicants.length > 0 && imageApplicants.every((a) => imageConsent[a.id]);
+  const allImageUploaded = imageApplicants.length > 0 && imageApplicants.every((a) => passportImages[a.id]);
   const allImageSaved = imageApplicants.length <= 1 || imageApplicants.every((a) => a.saved);
+  const canGoToPhoto = allImageConsented && allImageUploaded;
 
   const goToPhotoStep = () => {
     setPhotoApplicants(imageApplicants.map((a) => ({ id: a.id, expanded: true, saved: false })));
@@ -462,6 +545,11 @@ export default function ApplyPage() {
       delete next[id];
       return next;
     });
+    setPhotoImages((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
   };
 
   const savePhotoApplicant = (id: number) => {
@@ -473,7 +561,9 @@ export default function ApplyPage() {
   };
 
   const allPhotoConsented = photoApplicants.length > 0 && photoApplicants.every((a) => photoConsent[a.id]);
+  const allPhotoUploaded = photoApplicants.length > 0 && photoApplicants.every((a) => photoImages[a.id]);
   const allPhotoSaved = photoApplicants.length <= 1 || photoApplicants.every((a) => a.saved);
+  const canGoToReview = allPhotoConsented && allPhotoUploaded;
 
   const goToReviewStep = () => {
     setCurrentStep(4);
@@ -493,14 +583,113 @@ export default function ApplyPage() {
   const processingTotal = selectedPackage.processing * applicantCount;
   const grandTotal = feeTotal + processingTotal;
 
+  const { toasts, showToast, removeToast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitResult, setSubmitResult] = useState<{ applicantId: string; referenceNumber: string } | null>(null);
+
+  const formatDateForApi = (d: { day: string | null; month: string | null; year: string | null } | undefined) => {
+    if (!d || !d.day || !d.month || !d.year) return "";
+    return `${d.year}-${d.month.padStart(2, "0")}-${d.day.padStart(2, "0")}`;
+  };
+
+  const buildPayload = (): SubmitApplicationPayload => {
+    const applicantsData = applicants.map((app) => {
+      const id = app.id;
+      const names = applicantNames[id] || { firstName: "", lastName: "" };
+      const passport = passportData[id] || {};
+      const passportApp = passportApplicants.find((p) => p.id === id);
+
+      return {
+        firstName: names.firstName,
+        lastName: names.lastName,
+        email: applicantEmails[id] || "",
+        phone: applicantPhones[id] || "",
+        dateOfBirth: formatDateForApi(applicantDOB[id]),
+        gender: applicantGender[id] || "",
+        countryOfBirth: applicantCountryOfBirth[id]?.name || "",
+        nationality: passport.nationality?.name || "",
+        passportNumber: passport.passportNumber || "",
+        passportIssueDate: formatDateForApi(passport.dateIssue),
+        passportExpiryDate: formatDateForApi(passport.dateExpiry),
+        dualCitizenship: passportApp?.otherCitizen === "yes",
+        previouslyAppliedUk: passportApp?.prevApplied === "yes",
+        passportImageUrl: passportImages[id] || "",
+        personalPhotoUrl: photoImages[id] || "",
+        imageConsent: imageConsent[id] || false,
+        photoConsent: photoConsent[id] || false,
+      };
+    });
+
+    return {
+      applicants: applicantsData,
+      processingType: selectedProcessing,
+      confirmInfo: reviewConsent.confirmInfo,
+      privacyNotice: reviewConsent.privacyNotice,
+      payment: {
+        applicantCount,
+        processingType: selectedProcessing,
+        feePerApplicant: selectedPackage.fee,
+        processingFeePerApplicant: selectedPackage.processing,
+        feeTotal,
+        processingTotal,
+        grandTotal,
+      },
+    };
+  };
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    setSubmitResult(null);
+    try {
+      const payload = buildPayload();
+      const result = await api.submitApplication(payload);
+      setSubmitResult({
+        applicantId: result.applicant_id,
+        referenceNumber: result.reference_number,
+      });
+      showToast("Application submitted successfully!", "success");
+    } catch (err: any) {
+      showToast(err.message || "Failed to submit application. Please try again.", "error");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const resetForm = () => {
+    setCurrentStep(0);
+    setApplicants([{ id: 1, expanded: true, saved: false }]);
+    setNextId(2);
+    setPassportApplicants([]);
+    setImageApplicants([]);
+    setImageConsent({});
+    setPhotoApplicants([]);
+    setPhotoConsent({});
+    setApplicantNames({});
+    setApplicantEmails({});
+    setApplicantPhones({});
+    setApplicantDOB({});
+    setApplicantGender({});
+    setApplicantCountryOfBirth({});
+    setReviewConsent({ confirmInfo: false, privacyNotice: false });
+    setPassportImages({});
+    setPhotoImages({});
+    setPassportData({});
+    setSelectedProcessing("standard");
+    setSubmitResult(null);
+  };
+
+  const handleCloseSuccess = () => {
+    resetForm();
+  };
+
   return (
     <main>
       {/* Hero image section */}
       <div className="mx-auto px-4" style={{ maxWidth: "1408px" }}>
-        <div className="relative w-full md:!h-[400px]" style={{ height: "245px" }}>
-          <Image src={about} alt="Apply for eTA" fill className="object-cover" style={{ borderRadius: "16px" }} priority />
+        <div className="relative w-full md:!h-[400px] hero-image-container" style={{ height: "245px" }}>
+          <Image src={about} alt="Apply for eTA" fill className="object-cover" style={{ borderRadius: "16px" }} priority sizes="(max-width: 768px) 100vw, 1408px" loading="eager" />
           <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
-            <button className="flex items-center justify-center rounded-full" style={{ width: "127px", height: "40px", gap: "16px", background: "transparent", border: "1px solid #FFFFFF", color: "#FFFFFF" }}>
+            <button className="flex items-center justify-center rounded-full" style={{ width: "127px", height: "40px", gap: "16px", background: "transparent", border: "1px solid var(--hero-text)", color: "var(--hero-text)" }}>
               Apply for eTA
             </button>
             <div style={{ maxWidth: "697px", marginTop: "16px" }}>
@@ -514,27 +703,27 @@ export default function ApplyPage() {
 
       {/* Content section */}
       <div className="mx-auto px-4 md:!px-10 md:!pt-[120px] md:!pb-[120px]" style={{ maxWidth: "1440px", paddingTop: "48px", paddingBottom: "48px" }}>
-        <h2 className="text-center md:!text-[48px] md:!leading-[120%] md:!tracking-[-0.03em]" style={{ fontSize: "32px", fontWeight: 500, lineHeight: "120%", letterSpacing: "-0.03em", color: "#0F0F0F", textAlign: "center" }}>
+        <h2 className="text-center md:!text-[48px] md:!leading-[120%] md:!tracking-[-0.03em]" style={{ fontSize: "32px", fontWeight: 500, lineHeight: "120%", letterSpacing: "-0.03em", color: "var(--text-heading)", textAlign: "center" }}>
           {currentStep === 0 ? "Applicant Information" : currentStep === 1 ? "Passport Details" : currentStep === 2 ? "Passport Image" : currentStep === 3 ? "Your Photo" : currentStep === 4 ? "Review" : "Processing speed"}
         </h2>
 
         {/* Two divs with 32px gap */}
         <div className="flex flex-col lg:flex-row" style={{ gap: "32px", marginTop: "32px" }}>
           {/* Left div */}
-          <div style={{ maxWidth: "898px", width: "100%", alignSelf: "flex-start", borderRadius: "24px", border: "1px solid #D9D9D9" }}>
+          <div style={{ maxWidth: "898px", width: "100%", alignSelf: "flex-start", borderRadius: "24px", border: "1px solid var(--form-border)" }}>
             {/* Top section - bg #FAFAF9 */}
-            <div style={{ background: "#FAFAF9", padding: "24px", borderBottom: "1px solid #D9D9D9", borderTopLeftRadius: "24px", borderTopRightRadius: "24px" }}>
-              <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F", marginBottom: "12px" }}>
+            <div style={{ background: "var(--form-bg)", padding: "24px", borderBottom: "1px solid var(--form-border)", borderTopLeftRadius: "24px", borderTopRightRadius: "24px" }}>
+              <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginBottom: "12px" }}>
                 Application · Step {currentStep + 1} of 6
               </p>
               <div className="flex items-center flex-wrap" style={{ gap: "4px" }}>
                 {steps.map((step, index) => (
                   <div key={step} className="flex items-center" style={{ gap: "4px" }}>
-                    <span style={{ fontSize: "16px", fontWeight: 600, lineHeight: "150%", letterSpacing: "-0.01em", color: index === currentStep ? "var(--primary)" : "#A9A9A9" }}>
+                    <span style={{ fontSize: "16px", fontWeight: 600, lineHeight: "150%", letterSpacing: "-0.01em", color: index === currentStep ? "var(--primary)" : "var(--icon-muted)" }}>
                       {step}
                     </span>
                     {index < steps.length - 1 && (
-                      <ChevronRight style={{ width: "24px", height: "24px", color: index < currentStep ? "var(--primary)" : "#A9A9A9" }} />
+                      <ChevronRight style={{ width: "24px", height: "24px", color: index < currentStep ? "var(--primary)" : "var(--icon-muted)" }} />
                     )}
                   </div>
                 ))}
@@ -542,40 +731,42 @@ export default function ApplyPage() {
             </div>
 
             {/* White section */}
-            <div style={{ background: "white", padding: "24px" }}>
+            <div style={{ background: "var(--card)", padding: "24px" }}>
               {currentStep === 0 && (
                 <>
                   <div className="flex items-center justify-between">
-                    <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>Applicants</h3>
-                    <div style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>
-                      Number of travellers: <span style={{ fontWeight: 600, color: "#0F0F0F" }}>{applicants.length}</span>
+                    <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>Applicants</h3>
+                    <div style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>
+                      Number of travellers: <span style={{ fontWeight: 600, color: "var(--text-heading)" }}>{applicants.length}</span>
                     </div>
                   </div>
 
                   {/* Applicant form cards */}
                   {applicants.map((applicant, index) => (
-                    <div key={applicant.id} style={{ marginTop: "16px", borderRadius: "16px", border: "1px solid #D9D9D9" }}>
+                    <div key={applicant.id} style={{ marginTop: "16px", borderRadius: "16px", border: "1px solid var(--form-border)" }}>
                       {/* Blue header - bg #EFF6FF */}
-                      <div style={{ background: "#EFF6FF", padding: "16px 24px", borderBottom: applicant.expanded ? "1px solid #D9D9D9" : "none", borderTopLeftRadius: "16px", borderTopRightRadius: "16px", borderBottomLeftRadius: applicant.expanded ? "0" : "16px", borderBottomRightRadius: applicant.expanded ? "0" : "16px" }}>
+                      <div style={{ background: "var(--form-header-bg)", padding: "16px 24px", borderBottom: applicant.expanded ? "1px solid var(--form-border)" : "none", borderTopLeftRadius: "16px", borderTopRightRadius: "16px", borderBottomLeftRadius: applicant.expanded ? "0" : "16px", borderBottomRightRadius: applicant.expanded ? "0" : "16px" }}>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center" style={{ gap: "12px" }}>
-                            <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--primary)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", fontWeight: 500, flexShrink: 0 }}>
+                            <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--primary)", color: "var(--hero-text)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", fontWeight: 500, flexShrink: 0 }}>
                               {index + 1}
                             </div>
                             <div className="flex flex-col">
                               <div className="flex items-center flex-wrap" style={{ gap: "4px" }}>
-                                <span style={{ fontSize: "18px", fontWeight: 400, lineHeight: "140%", letterSpacing: "-0.02em", color: "#575757" }}>Applicant {index + 1}</span>
-                                <span style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>Your information</span>
+                                <span style={{ fontSize: "18px", fontWeight: 400, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-body)" }}>Applicant {index + 1}</span>
+                                <span style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>Your information</span>
                               </div>
-                              <span style={{ fontSize: "14px", fontWeight: 500, color: applicant.saved ? "#575757" : "var(--primary)", marginTop: "4px" }}>{applicant.saved ? "Saved" : "In Progress"}</span>
+                              <span style={{ fontSize: "14px", fontWeight: 500, color: applicant.saved ? "var(--text-body)" : "var(--primary)", marginTop: "4px" }}>{applicant.saved ? "Saved" : "In Progress"}</span>
                             </div>
                           </div>
                           <div className="flex items-center" style={{ gap: "24px" }}>
-                            <Trash2 style={{ width: "24px", height: "24px", color: "#A9A9A9", cursor: "pointer" }} onClick={() => deleteApplicant(applicant.id)} />
+                            {applicants.length > 1 && (
+                              <Trash2 style={{ width: "24px", height: "24px", color: "var(--icon-muted)", cursor: "pointer" }} onClick={() => deleteApplicant(applicant.id)} />
+                            )}
                             {applicant.expanded ? (
-                              <ChevronUp style={{ width: "24px", height: "24px", color: "#A9A9A9", cursor: "pointer" }} onClick={() => toggleExpand(applicant.id)} />
+                              <ChevronUp style={{ width: "24px", height: "24px", color: "var(--icon-muted)", cursor: "pointer" }} onClick={() => toggleExpand(applicant.id)} />
                             ) : (
-                              <ChevronDown style={{ width: "24px", height: "24px", color: "#A9A9A9", cursor: "pointer" }} onClick={() => toggleExpand(applicant.id)} />
+                              <ChevronDown style={{ width: "24px", height: "24px", color: "var(--icon-muted)", cursor: "pointer" }} onClick={() => toggleExpand(applicant.id)} />
                             )}
                           </div>
                         </div>
@@ -583,7 +774,7 @@ export default function ApplyPage() {
 
                       {/* Form section - bg #FAFAF9 */}
                       {applicant.expanded && (
-                        <div className="apply-form" style={{ background: "#FAFAF9", padding: "24px", borderBottomLeftRadius: "16px", borderBottomRightRadius: "16px" }}>
+                        <div className="apply-form" style={{ background: "var(--form-bg)", padding: "24px", borderBottomLeftRadius: "16px", borderBottomRightRadius: "16px" }}>
                           {/* Check if you need an eTA */}
                           <div>
                             <label style={{ ...labelStyle }}>Check if you need an eTA <span style={{ color: "#EF4444" }}>*</span></label>
@@ -600,6 +791,15 @@ export default function ApplyPage() {
                               <input type="email" placeholder="john@gmail.com" style={{ ...fieldStyle }} value={applicantEmails[applicant.id] || ""} onChange={(e) => updateApplicantEmail(applicant.id, e.target.value)} />
                             </div>
                             <p style={{ ...helperStyle, marginTop: "8px" }}>Used to send your approval confirmation and any updates about your application.</p>
+                          </div>
+
+                          {/* Phone Number */}
+                          <div style={{ marginTop: "24px" }}>
+                            <label style={{ ...labelStyle }}>Phone Number <span style={{ color: "#EF4444" }}>*</span></label>
+                            <div style={{ marginTop: "8px" }}>
+                              <input type="tel" placeholder="+1 234 567 8900" style={{ ...fieldStyle }} value={applicantPhones[applicant.id] || ""} onChange={(e) => updateApplicantPhone(applicant.id, e.target.value)} />
+                            </div>
+                            <p style={{ ...helperStyle, marginTop: "8px" }}>Used to contact you about your application if needed.</p>
                           </div>
 
                           {/* First name & Last name */}
@@ -648,7 +848,8 @@ export default function ApplyPage() {
                           {multipleApplicants && (
                             <div className="flex justify-end" style={{ marginTop: "24px" }}>
                               <button
-                                onClick={() => saveApplicant(applicant.id)}
+                                disabled={!isApplicantValid(applicant.id)}
+                                onClick={() => isApplicantValid(applicant.id) && saveApplicant(applicant.id)}
                                 className="flex items-center justify-center w-full md:w-auto"
                                 style={{
                                   height: "48px",
@@ -656,11 +857,11 @@ export default function ApplyPage() {
                                   paddingLeft: "20px",
                                   paddingRight: "20px",
                                   borderRadius: "999px",
-                                  background: "var(--primary)",
-                                  color: "#FFFFFF",
+                                  background: isApplicantValid(applicant.id) ? "var(--primary)" : "var(--form-border)",
+                                  color: "var(--hero-text)",
                                   fontSize: "16px",
                                   fontWeight: 500,
-                                  cursor: "pointer",
+                                  cursor: isApplicantValid(applicant.id) ? "pointer" : "not-allowed",
                                 }}
                               >
                                 Save
@@ -677,36 +878,38 @@ export default function ApplyPage() {
               {currentStep === 1 && (
                 <>
                   <div>
-                    <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>Applicant passport details</h3>
-                    <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757", marginTop: "8px" }}>
+                    <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>Applicant passport details</h3>
+                    <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "8px" }}>
                       Enter the details of the passport you will use to travel. The information must match the passport exactly.
                     </p>
                   </div>
 
                   {/* Passport form cards */}
                   {passportApplicants.map((applicant, index) => (
-                    <div key={applicant.id} style={{ marginTop: "16px", borderRadius: "16px", border: "1px solid #D9D9D9" }}>
+                    <div key={applicant.id} style={{ marginTop: "16px", borderRadius: "16px", border: "1px solid var(--form-border)" }}>
                       {/* Blue header - bg #EFF6FF */}
-                      <div style={{ background: "#EFF6FF", padding: "16px 24px", borderBottom: applicant.expanded ? "1px solid #D9D9D9" : "none", borderTopLeftRadius: "16px", borderTopRightRadius: "16px", borderBottomLeftRadius: applicant.expanded ? "0" : "16px", borderBottomRightRadius: applicant.expanded ? "0" : "16px" }}>
+                      <div style={{ background: "var(--form-header-bg)", padding: "16px 24px", borderBottom: applicant.expanded ? "1px solid var(--form-border)" : "none", borderTopLeftRadius: "16px", borderTopRightRadius: "16px", borderBottomLeftRadius: applicant.expanded ? "0" : "16px", borderBottomRightRadius: applicant.expanded ? "0" : "16px" }}>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center" style={{ gap: "12px" }}>
-                            <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--primary)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", fontWeight: 500, flexShrink: 0 }}>
+                            <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--primary)", color: "var(--hero-text)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", fontWeight: 500, flexShrink: 0 }}>
                               {index + 1}
                             </div>
                             <div className="flex flex-col">
                               <div className="flex items-center flex-wrap" style={{ gap: "4px" }}>
-                                <span style={{ fontSize: "18px", fontWeight: 400, lineHeight: "140%", letterSpacing: "-0.02em", color: "#575757" }}>Applicant {index + 1}</span>
-                                <span style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>Passport details</span>
+                                <span style={{ fontSize: "18px", fontWeight: 400, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-body)" }}>Applicant {index + 1}</span>
+                                <span style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>Passport details</span>
                               </div>
-                              <span style={{ fontSize: "14px", fontWeight: 500, color: applicant.saved ? "#575757" : "var(--primary)", marginTop: "4px" }}>{applicant.saved ? "Saved" : "In Progress"}</span>
+                              <span style={{ fontSize: "14px", fontWeight: 500, color: applicant.saved ? "var(--text-body)" : "var(--primary)", marginTop: "4px" }}>{applicant.saved ? "Saved" : "In Progress"}</span>
                             </div>
                           </div>
                           <div className="flex items-center" style={{ gap: "24px" }}>
-                            <Trash2 style={{ width: "24px", height: "24px", color: "#A9A9A9", cursor: "pointer" }} onClick={() => deletePassportApplicant(applicant.id)} />
+                            {passportApplicants.length > 1 && (
+                              <Trash2 style={{ width: "24px", height: "24px", color: "var(--icon-muted)", cursor: "pointer" }} onClick={() => deletePassportApplicant(applicant.id)} />
+                            )}
                             {applicant.expanded ? (
-                              <ChevronUp style={{ width: "24px", height: "24px", color: "#A9A9A9", cursor: "pointer" }} onClick={() => togglePassportExpand(applicant.id)} />
+                              <ChevronUp style={{ width: "24px", height: "24px", color: "var(--icon-muted)", cursor: "pointer" }} onClick={() => togglePassportExpand(applicant.id)} />
                             ) : (
-                              <ChevronDown style={{ width: "24px", height: "24px", color: "#A9A9A9", cursor: "pointer" }} onClick={() => togglePassportExpand(applicant.id)} />
+                              <ChevronDown style={{ width: "24px", height: "24px", color: "var(--icon-muted)", cursor: "pointer" }} onClick={() => togglePassportExpand(applicant.id)} />
                             )}
                           </div>
                         </div>
@@ -714,7 +917,7 @@ export default function ApplyPage() {
 
                       {/* Form section - bg #FAFAF9 */}
                       {applicant.expanded && (
-                        <div className="apply-form" style={{ background: "#FAFAF9", padding: "24px", borderBottomLeftRadius: "16px", borderBottomRightRadius: "16px" }}>
+                        <div className="apply-form" style={{ background: "var(--form-bg)", padding: "24px", borderBottomLeftRadius: "16px", borderBottomRightRadius: "16px" }}>
                           {/* Nationality on passport */}
                           <div>
                             <label style={{ ...labelStyle }}>Nationality on passport <span style={{ color: "#EF4444" }}>*</span></label>
@@ -776,7 +979,8 @@ export default function ApplyPage() {
                           {passportApplicants.length > 1 && (
                             <div className="flex justify-end" style={{ marginTop: "24px" }}>
                               <button
-                                onClick={() => savePassportApplicant(applicant.id)}
+                                disabled={!isPassportValid(applicant.id)}
+                                onClick={() => isPassportValid(applicant.id) && savePassportApplicant(applicant.id)}
                                 className="flex items-center justify-center w-full md:w-auto"
                                 style={{
                                   height: "48px",
@@ -784,11 +988,11 @@ export default function ApplyPage() {
                                   paddingLeft: "20px",
                                   paddingRight: "20px",
                                   borderRadius: "999px",
-                                  background: "var(--primary)",
-                                  color: "#FFFFFF",
+                                  background: isPassportValid(applicant.id) ? "var(--primary)" : "var(--form-border)",
+                                  color: "var(--hero-text)",
                                   fontSize: "16px",
                                   fontWeight: 500,
-                                  cursor: "pointer",
+                                  cursor: isPassportValid(applicant.id) ? "pointer" : "not-allowed",
                                 }}
                               >
                                 Save
@@ -805,37 +1009,39 @@ export default function ApplyPage() {
               {currentStep === 2 && (
                 <>
                   <div>
-                    <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>Photo of your passport</h3>
-                    <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757", marginTop: "8px" }}>
+                    <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>Photo of your passport</h3>
+                    <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "8px" }}>
                       You must provide a photo of your physical passport. Your application may be rejected if you upload or take a photo of a digital passport.
                     </p>
                   </div>
 
                   {imageApplicants.map((applicant, index) => (
-                    <div key={applicant.id} style={{ marginTop: "16px", borderRadius: "16px", border: "1px solid #D9D9D9" }}>
+                    <div key={applicant.id} style={{ marginTop: "16px", borderRadius: "16px", border: "1px solid var(--form-border)" }}>
                       {/* Blue header */}
-                      <div style={{ background: "#EFF6FF", padding: "16px 24px", borderBottom: applicant.expanded ? "1px solid #D9D9D9" : "none", borderTopLeftRadius: "16px", borderTopRightRadius: "16px", borderBottomLeftRadius: applicant.expanded ? "0" : "16px", borderBottomRightRadius: applicant.expanded ? "0" : "16px" }}>
+                      <div style={{ background: "var(--form-header-bg)", padding: "16px 24px", borderBottom: applicant.expanded ? "1px solid var(--form-border)" : "none", borderTopLeftRadius: "16px", borderTopRightRadius: "16px", borderBottomLeftRadius: applicant.expanded ? "0" : "16px", borderBottomRightRadius: applicant.expanded ? "0" : "16px" }}>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center" style={{ gap: "12px" }}>
-                            <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--primary)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", fontWeight: 500, flexShrink: 0 }}>
+                            <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--primary)", color: "var(--hero-text)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", fontWeight: 500, flexShrink: 0 }}>
                               {index + 1}
                             </div>
                             <div className="flex flex-col">
                               <div className="flex items-center flex-wrap" style={{ gap: "4px" }}>
-                                <span style={{ fontSize: "18px", fontWeight: 400, lineHeight: "140%", letterSpacing: "-0.02em", color: "#575757" }}>Applicant {index + 1}</span>
+                                <span style={{ fontSize: "18px", fontWeight: 400, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-body)" }}>Applicant {index + 1}</span>
                                 {applicantNames[applicant.id]?.firstName || applicantNames[applicant.id]?.lastName ? (
-                                  <span style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>{getApplicantName(applicant.id)}</span>
+                                  <span style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>{getApplicantName(applicant.id)}</span>
                                 ) : null}
                               </div>
-                              <span style={{ fontSize: "14px", fontWeight: 500, color: applicant.saved ? "#575757" : "var(--primary)", marginTop: "4px" }}>{applicant.saved ? "Saved" : "In Progress"}</span>
+                              <span style={{ fontSize: "14px", fontWeight: 500, color: applicant.saved ? "var(--text-body)" : "var(--primary)", marginTop: "4px" }}>{applicant.saved ? "Saved" : "In Progress"}</span>
                             </div>
                           </div>
                           <div className="flex items-center" style={{ gap: "24px" }}>
-                            <Trash2 style={{ width: "24px", height: "24px", color: "#A9A9A9", cursor: "pointer" }} onClick={() => deleteImageApplicant(applicant.id)} />
+                            {imageApplicants.length > 1 && (
+                              <Trash2 style={{ width: "24px", height: "24px", color: "var(--icon-muted)", cursor: "pointer" }} onClick={() => deleteImageApplicant(applicant.id)} />
+                            )}
                             {applicant.expanded ? (
-                              <ChevronUp style={{ width: "24px", height: "24px", color: "#A9A9A9", cursor: "pointer" }} onClick={() => toggleImageExpand(applicant.id)} />
+                              <ChevronUp style={{ width: "24px", height: "24px", color: "var(--icon-muted)", cursor: "pointer" }} onClick={() => toggleImageExpand(applicant.id)} />
                             ) : (
-                              <ChevronDown style={{ width: "24px", height: "24px", color: "#A9A9A9", cursor: "pointer" }} onClick={() => toggleImageExpand(applicant.id)} />
+                              <ChevronDown style={{ width: "24px", height: "24px", color: "var(--icon-muted)", cursor: "pointer" }} onClick={() => toggleImageExpand(applicant.id)} />
                             )}
                           </div>
                         </div>
@@ -843,17 +1049,17 @@ export default function ApplyPage() {
 
                       {/* Form section */}
                       {applicant.expanded && (
-                        <div className="apply-form" style={{ background: "#FAFAF9", padding: "24px", borderBottomLeftRadius: "16px", borderBottomRightRadius: "16px" }}>
+                        <div className="apply-form" style={{ background: "var(--form-bg)", padding: "24px", borderBottomLeftRadius: "16px", borderBottomRightRadius: "16px" }}>
                           {/* The passport photo must clearly show: */}
                           <div className="flex flex-col sm:flex-row" style={{ gap: "16px", alignItems: "flex-start" }}>
                             <div style={{ flex: 1 }}>
-                              <p style={{ fontSize: "16px", fontWeight: 500, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+                              <p style={{ fontSize: "16px", fontWeight: 500, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                                 The passport photo must clearly show:
                               </p>
                               <ul style={{ marginTop: "8px", paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "4px", listStyleType: "disc" }}>
-                                <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>All four corners of the passport&apos;s personal details page</li>
-                                <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Your personal details</li>
-                                <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>The Machine Readable Zone (MRZ) at the bottom of the personal details page (2–3 lines of letters, numbers, and symbols)</li>
+                                <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>All four corners of the passport&apos;s personal details page</li>
+                                <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Your personal details</li>
+                                <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>The Machine Readable Zone (MRZ) at the bottom of the personal details page (2–3 lines of letters, numbers, and symbols)</li>
                               </ul>
                             </div>
                             <div style={{ flexShrink: 0 }}>
@@ -862,54 +1068,78 @@ export default function ApplyPage() {
                           </div>
 
                           {/* The photo must be: */}
-                          <p style={{ fontSize: "16px", fontWeight: 500, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F", marginTop: "24px" }}>
+                          <p style={{ fontSize: "16px", fontWeight: 500, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)", marginTop: "24px" }}>
                             The photo must be:
                           </p>
                           <ul style={{ marginTop: "8px", paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "4px", listStyleType: "disc" }}>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Clear and in focus</li>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Free from glare and reflections</li>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Unedited (no filters or effects)</li>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Original image (not a screenshot or photocopy)</li>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>In colour</li>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Landscape orientation</li>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Minimum resolution: 600 × 750 px</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Clear and in focus</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Free from glare and reflections</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Unedited (no filters or effects)</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Original image (not a screenshot or photocopy)</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>In colour</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Landscape orientation</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Minimum resolution: 600 × 750 px</li>
                           </ul>
 
                           {/* Upload area */}
-                          <div className="upload-area-desktop" style={{ marginTop: "24px", maxWidth: "802px", width: "100%", height: "192px", border: "1px dashed #D9D9D9", borderRadius: "16px", padding: "24px", background: "#FFFFFF", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px" }}>
-                            <Image src={uploadIcon} alt="Upload" width={42} height={42} style={{ width: "42px", height: "42px" }} />
-                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F", textAlign: "center" }}>
-                              Drag your file(s) to start uploading
-                            </p>
-                            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "4px" }}>
-                              <div style={{ width: "79px", height: "1px", background: "#D9D9D9" }} />
-                              <span style={{ fontSize: "12px", fontWeight: 400, lineHeight: "165%", color: "#B7B7B7", textAlign: "center" }}>OR</span>
-                              <div style={{ width: "79px", height: "1px", background: "#D9D9D9" }} />
+                          {passportImages[applicant.id] ? (
+                            <div style={{ marginTop: "24px", maxWidth: "802px", width: "100%", borderRadius: "16px", border: "1px solid var(--form-border)", background: "var(--input-bg)", padding: "16px", display: "flex", alignItems: "center", gap: "16px" }}>
+                              <img src={passportImages[applicant.id]} alt="Passport preview" style={{ width: "120px", height: "80px", objectFit: "cover", borderRadius: "8px" }} />
+                              <div style={{ flex: 1 }}>
+                                <p style={{ fontSize: "16px", fontWeight: 500, color: "var(--text-heading)" }}>Passport image uploaded</p>
+                                <p style={{ fontSize: "14px", fontWeight: 400, color: "var(--text-body)", marginTop: "4px" }}>Click the trash icon to replace the image</p>
+                              </div>
+                              <button
+                                onClick={() => setPassportImages((prev) => { const next = { ...prev }; delete next[applicant.id]; return next; })}
+                                className="flex items-center justify-center"
+                                style={{ width: "40px", height: "40px", borderRadius: "50%", border: "1px solid var(--form-border)", background: "var(--card)", cursor: "pointer", flexShrink: 0 }}
+                              >
+                                <Trash2 style={{ width: "18px", height: "18px", color: "var(--icon-muted)" }} />
+                              </button>
                             </div>
-                            <button
-                              className="flex items-center justify-center"
-                              style={{
-                                width: "160px",
-                                height: "32px",
-                                gap: "8px",
-                                paddingTop: "6px",
-                                paddingRight: "12px",
-                                paddingBottom: "6px",
-                                paddingLeft: "12px",
-                                borderRadius: "999px",
-                                background: "var(--primary)",
-                                color: "#FFFFFF",
-                                fontSize: "14px",
-                                fontWeight: 500,
-                                cursor: "pointer",
-                              }}
+                          ) : (
+                            <div
+                              className="upload-area-desktop"
+                              style={{ marginTop: "24px", maxWidth: "802px", width: "100%", height: "192px", border: dragOverApplicant === applicant.id ? "2px dashed var(--primary)" : "1px dashed var(--form-border)", borderRadius: "16px", padding: "24px", background: "var(--input-bg)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px", transition: "border 0.2s" }}
+                              onDragOver={(e) => { e.preventDefault(); setDragOverApplicant(applicant.id); }}
+                              onDragLeave={() => setDragOverApplicant(null)}
+                              onDrop={(e) => handleDrop(applicant.id, e, "passport")}
                             >
-                              <Upload style={{ width: "16px", height: "16px" }} />
-                              Upload Images
-                            </button>
-                          </div>
+                              <Image src={uploadIcon} alt="Upload" width={42} height={42} style={{ width: "42px", height: "42px" }} />
+                              <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)", textAlign: "center" }}>
+                                Drag your file(s) to start uploading
+                              </p>
+                              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "4px" }}>
+                                <div style={{ width: "79px", height: "1px", background: "var(--form-border)" }} />
+                                <span style={{ fontSize: "12px", fontWeight: 400, lineHeight: "165%", color: "var(--placeholder-text)", textAlign: "center" }}>OR</span>
+                                <div style={{ width: "79px", height: "1px", background: "var(--form-border)" }} />
+                              </div>
+                              <label
+                                className="flex items-center justify-center"
+                                style={{
+                                  width: "160px",
+                                  height: "32px",
+                                  gap: "8px",
+                                  paddingTop: "6px",
+                                  paddingRight: "12px",
+                                  paddingBottom: "6px",
+                                  paddingLeft: "12px",
+                                  borderRadius: "999px",
+                                  background: "var(--primary)",
+                                  color: "var(--hero-text)",
+                                  fontSize: "14px",
+                                  fontWeight: 500,
+                                  cursor: "pointer",
+                                }}
+                              >
+                                <Upload style={{ width: "16px", height: "16px" }} />
+                                Upload Images
+                                <input type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => handleFileInput(applicant.id, e, "passport")} />
+                              </label>
+                            </div>
+                          )}
                           {/* Mobile upload button */}
-                          <button
+                          <label
                             className="upload-area-mobile flex items-center justify-center w-full"
                             style={{
                               marginTop: "24px",
@@ -917,7 +1147,7 @@ export default function ApplyPage() {
                               gap: "8px",
                               borderRadius: "999px",
                               background: "var(--primary)",
-                              color: "#FFFFFF",
+                              color: "var(--hero-text)",
                               fontSize: "16px",
                               fontWeight: 500,
                               cursor: "pointer",
@@ -926,10 +1156,11 @@ export default function ApplyPage() {
                           >
                             <Upload style={{ width: "20px", height: "20px" }} />
                             Upload Image
-                          </button>
+                            <input type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => handleFileInput(applicant.id, e, "passport")} />
+                          </label>
 
                           {/* File format note */}
-                          <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "#575757", marginTop: "16px" }}>
+                          <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--text-body)", marginTop: "16px" }}>
                             File format (optional): we recommend using a JPG or JPEG file format.
                           </p>
 
@@ -941,8 +1172,8 @@ export default function ApplyPage() {
                                 width: "24px",
                                 height: "24px",
                                 borderRadius: "6px",
-                                border: imageConsent[applicant.id] ? "2px solid var(--primary)" : "1px solid #D9D9D9",
-                                background: imageConsent[applicant.id] ? "var(--primary)" : "white",
+                                border: imageConsent[applicant.id] ? "2px solid var(--primary)" : "1px solid var(--form-border)",
+                                background: imageConsent[applicant.id] ? "var(--primary)" : "var(--input-bg)",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
@@ -951,9 +1182,9 @@ export default function ApplyPage() {
                                 marginTop: "2px",
                               }}
                             >
-                              {imageConsent[applicant.id] && <Check style={{ width: "16px", height: "16px", color: "white" }} />}
+                              {imageConsent[applicant.id] && <Check style={{ width: "16px", height: "16px", color: "var(--hero-text)" }} />}
                             </div>
-                            <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "#575757" }}>
+                            <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--text-body)" }}>
                               I consent to the secure collection and processing of my biometric data (passport photo and selfie) solely for my UKVI application. My data will be permanently deleted from our system within 10 days.
                             </p>
                           </div>
@@ -962,7 +1193,8 @@ export default function ApplyPage() {
                           {imageApplicants.length > 1 && (
                             <div className="flex justify-end" style={{ marginTop: "24px" }}>
                               <button
-                                onClick={() => saveImageApplicant(applicant.id)}
+                                disabled={!passportImages[applicant.id] || !imageConsent[applicant.id]}
+                                onClick={() => passportImages[applicant.id] && imageConsent[applicant.id] && saveImageApplicant(applicant.id)}
                                 className="flex items-center justify-center w-full md:w-auto"
                                 style={{
                                   height: "48px",
@@ -970,11 +1202,11 @@ export default function ApplyPage() {
                                   paddingLeft: "20px",
                                   paddingRight: "20px",
                                   borderRadius: "999px",
-                                  background: "var(--primary)",
-                                  color: "#FFFFFF",
+                                  background: passportImages[applicant.id] && imageConsent[applicant.id] ? "var(--primary)" : "var(--form-border)",
+                                  color: "var(--hero-text)",
                                   fontSize: "16px",
                                   fontWeight: 500,
-                                  cursor: "pointer",
+                                  cursor: passportImages[applicant.id] && imageConsent[applicant.id] ? "pointer" : "not-allowed",
                                 }}
                               >
                                 Save
@@ -991,37 +1223,39 @@ export default function ApplyPage() {
               {currentStep === 3 && (
                 <>
                   <div>
-                    <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>Photo of yourself</h3>
-                    <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757", marginTop: "8px" }}>
+                    <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>Photo of yourself</h3>
+                    <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "8px" }}>
                       You must provide a live photo of yourself. Do not upload a screenshot, scanned image, or another person&apos;s photo.
                     </p>
                   </div>
 
                   {photoApplicants.map((applicant, index) => (
-                    <div key={applicant.id} style={{ marginTop: "16px", borderRadius: "16px", border: "1px solid #D9D9D9" }}>
+                    <div key={applicant.id} style={{ marginTop: "16px", borderRadius: "16px", border: "1px solid var(--form-border)" }}>
                       {/* Blue header */}
-                      <div style={{ background: "#EFF6FF", padding: "16px 24px", borderBottom: applicant.expanded ? "1px solid #D9D9D9" : "none", borderTopLeftRadius: "16px", borderTopRightRadius: "16px", borderBottomLeftRadius: applicant.expanded ? "0" : "16px", borderBottomRightRadius: applicant.expanded ? "0" : "16px" }}>
+                      <div style={{ background: "var(--form-header-bg)", padding: "16px 24px", borderBottom: applicant.expanded ? "1px solid var(--form-border)" : "none", borderTopLeftRadius: "16px", borderTopRightRadius: "16px", borderBottomLeftRadius: applicant.expanded ? "0" : "16px", borderBottomRightRadius: applicant.expanded ? "0" : "16px" }}>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center" style={{ gap: "12px" }}>
-                            <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--primary)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", fontWeight: 500, flexShrink: 0 }}>
+                            <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--primary)", color: "var(--hero-text)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", fontWeight: 500, flexShrink: 0 }}>
                               {index + 1}
                             </div>
                             <div className="flex flex-col">
                               <div className="flex items-center flex-wrap" style={{ gap: "4px" }}>
-                                <span style={{ fontSize: "18px", fontWeight: 400, lineHeight: "140%", letterSpacing: "-0.02em", color: "#575757" }}>Applicant {index + 1}</span>
+                                <span style={{ fontSize: "18px", fontWeight: 400, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-body)" }}>Applicant {index + 1}</span>
                                 {applicantNames[applicant.id]?.firstName || applicantNames[applicant.id]?.lastName ? (
-                                  <span style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>{getApplicantName(applicant.id)}</span>
+                                  <span style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>{getApplicantName(applicant.id)}</span>
                                 ) : null}
                               </div>
-                              <span style={{ fontSize: "14px", fontWeight: 500, color: applicant.saved ? "#575757" : "var(--primary)", marginTop: "4px" }}>{applicant.saved ? "Saved" : "In Progress"}</span>
+                              <span style={{ fontSize: "14px", fontWeight: 500, color: applicant.saved ? "var(--text-body)" : "var(--primary)", marginTop: "4px" }}>{applicant.saved ? "Saved" : "In Progress"}</span>
                             </div>
                           </div>
                           <div className="flex items-center" style={{ gap: "24px" }}>
-                            <Trash2 style={{ width: "24px", height: "24px", color: "#A9A9A9", cursor: "pointer" }} onClick={() => deletePhotoApplicant(applicant.id)} />
+                            {photoApplicants.length > 1 && (
+                              <Trash2 style={{ width: "24px", height: "24px", color: "var(--icon-muted)", cursor: "pointer" }} onClick={() => deletePhotoApplicant(applicant.id)} />
+                            )}
                             {applicant.expanded ? (
-                              <ChevronUp style={{ width: "24px", height: "24px", color: "#A9A9A9", cursor: "pointer" }} onClick={() => togglePhotoExpand(applicant.id)} />
+                              <ChevronUp style={{ width: "24px", height: "24px", color: "var(--icon-muted)", cursor: "pointer" }} onClick={() => togglePhotoExpand(applicant.id)} />
                             ) : (
-                              <ChevronDown style={{ width: "24px", height: "24px", color: "#A9A9A9", cursor: "pointer" }} onClick={() => togglePhotoExpand(applicant.id)} />
+                              <ChevronDown style={{ width: "24px", height: "24px", color: "var(--icon-muted)", cursor: "pointer" }} onClick={() => togglePhotoExpand(applicant.id)} />
                             )}
                           </div>
                         </div>
@@ -1029,77 +1263,101 @@ export default function ApplyPage() {
 
                       {/* Form section */}
                       {applicant.expanded && (
-                        <div className="apply-form" style={{ background: "#FAFAF9", padding: "24px", borderBottomLeftRadius: "16px", borderBottomRightRadius: "16px" }}>
-                          <p style={{ fontSize: "16px", fontWeight: 500, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+                        <div className="apply-form" style={{ background: "var(--form-bg)", padding: "24px", borderBottomLeftRadius: "16px", borderBottomRightRadius: "16px" }}>
+                          <p style={{ fontSize: "16px", fontWeight: 500, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                             Make sure you have:
                           </p>
                           <ul style={{ marginTop: "8px", paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "4px", listStyleType: "disc" }}>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Plain, light-colored background (e.g., a white wall)</li>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>No people or objects in the background</li>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Head, shoulders, and upper body fully visible</li>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Position yourself at a comfortable distance from the camera</li>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Even lighting with no shadows or glare on your face or background</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Plain, light-colored background (e.g., a white wall)</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>No people or objects in the background</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Head, shoulders, and upper body fully visible</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Position yourself at a comfortable distance from the camera</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Even lighting with no shadows or glare on your face or background</li>
                           </ul>
 
                           {/* You must not: */}
-                          <p style={{ fontSize: "16px", fontWeight: 500, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F", marginTop: "24px" }}>
+                          <p style={{ fontSize: "16px", fontWeight: 500, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)", marginTop: "24px" }}>
                             You must not:
                           </p>
                           <ul style={{ marginTop: "8px", paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "4px", listStyleType: "disc" }}>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Do not cover your face or eyes</li>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Head coverings are only permitted for religious or medical reasons</li>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Do not wear fashion hair accessories that cover your face</li>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Avoid excessive makeup</li>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Do not wear glasses; your eyes must be fully visible and open</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Do not cover your face or eyes</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Head coverings are only permitted for religious or medical reasons</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Do not wear fashion hair accessories that cover your face</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Avoid excessive makeup</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Do not wear glasses; your eyes must be fully visible and open</li>
                           </ul>
 
                           {/* The photo must be: */}
-                          <p style={{ fontSize: "16px", fontWeight: 500, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F", marginTop: "24px" }}>
+                          <p style={{ fontSize: "16px", fontWeight: 500, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)", marginTop: "24px" }}>
                             The photo must be:
                           </p>
                           <ul style={{ marginTop: "8px", paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "4px", listStyleType: "disc" }}>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Different from your passport photo</li>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Recently taken (take the photo now)</li>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Portrait orientation</li>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>In colour</li>
-                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Minimum resolution: 600 × 750 px</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Different from your passport photo</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Recently taken (take the photo now)</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Portrait orientation</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>In colour</li>
+                            <li style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Minimum resolution: 600 × 750 px</li>
                           </ul>
 
                           {/* Upload area */}
-                          <div className="upload-area-desktop" style={{ marginTop: "24px", maxWidth: "802px", width: "100%", height: "192px", border: "1px dashed #D9D9D9", borderRadius: "16px", padding: "24px", background: "#FFFFFF", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px" }}>
-                            <Image src={uploadIcon} alt="Upload" width={42} height={42} style={{ width: "42px", height: "42px" }} />
-                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F", textAlign: "center" }}>
-                              Drag your file(s) to start uploading
-                            </p>
-                            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "4px" }}>
-                              <div style={{ width: "79px", height: "1px", background: "#D9D9D9" }} />
-                              <span style={{ fontSize: "12px", fontWeight: 400, lineHeight: "165%", color: "#B7B7B7", textAlign: "center" }}>OR</span>
-                              <div style={{ width: "79px", height: "1px", background: "#D9D9D9" }} />
+                          {photoImages[applicant.id] ? (
+                            <div style={{ marginTop: "24px", maxWidth: "802px", width: "100%", borderRadius: "16px", border: "1px solid var(--form-border)", background: "var(--input-bg)", padding: "16px", display: "flex", alignItems: "center", gap: "16px" }}>
+                              <img src={photoImages[applicant.id]} alt="Photo preview" style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }} />
+                              <div style={{ flex: 1 }}>
+                                <p style={{ fontSize: "16px", fontWeight: 500, color: "var(--text-heading)" }}>Photo uploaded</p>
+                                <p style={{ fontSize: "14px", fontWeight: 400, color: "var(--text-body)", marginTop: "4px" }}>Click the trash icon to replace the photo</p>
+                              </div>
+                              <button
+                                onClick={() => setPhotoImages((prev) => { const next = { ...prev }; delete next[applicant.id]; return next; })}
+                                className="flex items-center justify-center"
+                                style={{ width: "40px", height: "40px", borderRadius: "50%", border: "1px solid var(--form-border)", background: "var(--card)", cursor: "pointer", flexShrink: 0 }}
+                              >
+                                <Trash2 style={{ width: "18px", height: "18px", color: "var(--icon-muted)" }} />
+                              </button>
                             </div>
-                            <button
-                              className="flex items-center justify-center"
-                              style={{
-                                width: "160px",
-                                height: "32px",
-                                gap: "8px",
-                                paddingTop: "6px",
-                                paddingRight: "12px",
-                                paddingBottom: "6px",
-                                paddingLeft: "12px",
-                                borderRadius: "999px",
-                                background: "var(--primary)",
-                                color: "#FFFFFF",
-                                fontSize: "14px",
-                                fontWeight: 500,
-                                cursor: "pointer",
-                              }}
+                          ) : (
+                            <div
+                              className="upload-area-desktop"
+                              style={{ marginTop: "24px", maxWidth: "802px", width: "100%", height: "192px", border: dragOverApplicant === applicant.id ? "2px dashed var(--primary)" : "1px dashed var(--form-border)", borderRadius: "16px", padding: "24px", background: "var(--input-bg)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px", transition: "border 0.2s" }}
+                              onDragOver={(e) => { e.preventDefault(); setDragOverApplicant(applicant.id); }}
+                              onDragLeave={() => setDragOverApplicant(null)}
+                              onDrop={(e) => handleDrop(applicant.id, e, "photo")}
                             >
-                              <Upload style={{ width: "16px", height: "16px" }} />
-                              Upload Images
-                            </button>
-                          </div>
+                              <Image src={uploadIcon} alt="Upload" width={42} height={42} style={{ width: "42px", height: "42px" }} />
+                              <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)", textAlign: "center" }}>
+                                Drag your file(s) to start uploading
+                              </p>
+                              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "4px" }}>
+                                <div style={{ width: "79px", height: "1px", background: "var(--form-border)" }} />
+                                <span style={{ fontSize: "12px", fontWeight: 400, lineHeight: "165%", color: "var(--placeholder-text)", textAlign: "center" }}>OR</span>
+                                <div style={{ width: "79px", height: "1px", background: "var(--form-border)" }} />
+                              </div>
+                              <label
+                                className="flex items-center justify-center"
+                                style={{
+                                  width: "160px",
+                                  height: "32px",
+                                  gap: "8px",
+                                  paddingTop: "6px",
+                                  paddingRight: "12px",
+                                  paddingBottom: "6px",
+                                  paddingLeft: "12px",
+                                  borderRadius: "999px",
+                                  background: "var(--primary)",
+                                  color: "var(--hero-text)",
+                                  fontSize: "14px",
+                                  fontWeight: 500,
+                                  cursor: "pointer",
+                                }}
+                              >
+                                <Upload style={{ width: "16px", height: "16px" }} />
+                                Upload Images
+                                <input type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => handleFileInput(applicant.id, e, "photo")} />
+                              </label>
+                            </div>
+                          )}
                           {/* Mobile upload button */}
-                          <button
+                          <label
                             className="upload-area-mobile flex items-center justify-center w-full"
                             style={{
                               marginTop: "24px",
@@ -1107,7 +1365,7 @@ export default function ApplyPage() {
                               gap: "8px",
                               borderRadius: "999px",
                               background: "var(--primary)",
-                              color: "#FFFFFF",
+                              color: "var(--hero-text)",
                               fontSize: "16px",
                               fontWeight: 500,
                               cursor: "pointer",
@@ -1116,18 +1374,45 @@ export default function ApplyPage() {
                           >
                             <Upload style={{ width: "20px", height: "20px" }} />
                             Upload Image
-                          </button>
+                            <input type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => handleFileInput(applicant.id, e, "photo")} />
+                          </label>
 
                           {/* File format note */}
-                          <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "#575757", marginTop: "16px" }}>
+                          <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--text-body)", marginTop: "16px" }}>
                             File format (optional): we recommend using a JPG or JPEG file format.
                           </p>
+
+                          {/* Consent checkbox */}
+                          <div className="flex items-start" style={{ gap: "12px", marginTop: "16px" }}>
+                            <div
+                              onClick={() => togglePhotoConsent(applicant.id)}
+                              style={{
+                                width: "24px",
+                                height: "24px",
+                                borderRadius: "6px",
+                                border: photoConsent[applicant.id] ? "2px solid var(--primary)" : "1px solid var(--form-border)",
+                                background: photoConsent[applicant.id] ? "var(--primary)" : "var(--input-bg)",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                flexShrink: 0,
+                                cursor: "pointer",
+                                marginTop: "2px",
+                              }}
+                            >
+                              {photoConsent[applicant.id] && <Check style={{ width: "16px", height: "16px", color: "var(--hero-text)" }} />}
+                            </div>
+                            <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--text-body)" }}>
+                              I consent to the secure collection and processing of my biometric data (passport photo and selfie) solely for my UKVI application. My data will be permanently deleted from our system within 10 days.
+                            </p>
+                          </div>
 
                           {/* Save button */}
                           {photoApplicants.length > 1 && (
                             <div className="flex justify-end" style={{ marginTop: "24px" }}>
                               <button
-                                onClick={() => savePhotoApplicant(applicant.id)}
+                                disabled={!photoImages[applicant.id] || !photoConsent[applicant.id]}
+                                onClick={() => photoImages[applicant.id] && photoConsent[applicant.id] && savePhotoApplicant(applicant.id)}
                                 className="flex items-center justify-center w-full md:w-auto"
                                 style={{
                                   height: "48px",
@@ -1135,11 +1420,11 @@ export default function ApplyPage() {
                                   paddingLeft: "20px",
                                   paddingRight: "20px",
                                   borderRadius: "999px",
-                                  background: "var(--primary)",
-                                  color: "#FFFFFF",
+                                  background: photoImages[applicant.id] && photoConsent[applicant.id] ? "var(--primary)" : "var(--form-border)",
+                                  color: "var(--hero-text)",
                                   fontSize: "16px",
                                   fontWeight: 500,
-                                  cursor: "pointer",
+                                  cursor: photoImages[applicant.id] && photoConsent[applicant.id] ? "pointer" : "not-allowed",
                                 }}
                               >
                                 Save
@@ -1156,24 +1441,24 @@ export default function ApplyPage() {
               {currentStep === 4 && (
                 <>
                   <div className="flex items-center justify-between">
-                    <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>Applicants</h3>
-                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>
+                    <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>Applicants</h3>
+                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>
                       Number of travellers: {applicants.length}
                     </span>
                   </div>
-                  <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757", marginTop: "8px" }}>
+                  <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "8px" }}>
                     Please review the details below carefully. Once you pay, the information will be submitted for processing.
                   </p>
 
                   {applicants.map((applicant, index) => (
-                    <div key={applicant.id} style={{ marginTop: "16px", borderRadius: "16px", border: "1px solid #D9D9D9" }}>
+                    <div key={applicant.id} style={{ marginTop: "16px", borderRadius: "16px", border: "1px solid var(--form-border)" }}>
                       {/* Header */}
-                      <div style={{ background: "#EFF6FF", padding: "16px 24px", borderTopLeftRadius: "16px", borderTopRightRadius: "16px" }}>
+                      <div style={{ background: "var(--form-header-bg)", padding: "16px 24px", borderTopLeftRadius: "16px", borderTopRightRadius: "16px" }}>
                         <div className="flex items-center" style={{ gap: "12px" }}>
-                          <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--primary)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", fontWeight: 500, flexShrink: 0 }}>
+                          <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--primary)", color: "var(--hero-text)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", fontWeight: 500, flexShrink: 0 }}>
                             {index + 1}
                           </div>
-                          <span style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>
+                          <span style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
                             {getApplicantName(applicant.id)}
                           </span>
                         </div>
@@ -1181,83 +1466,91 @@ export default function ApplyPage() {
 
                       {/* Personal Information section */}
                       <div style={{ padding: "24px" }}>
-                        <div style={{ borderBottom: "1px solid #D9D9D9", paddingBottom: "16px", marginBottom: "16px" }}>
-                          <p style={{ fontSize: "18px", fontWeight: 600, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>Personal Information</p>
+                        <div style={{ borderBottom: "1px solid var(--form-border)", paddingBottom: "16px", marginBottom: "16px" }}>
+                          <p style={{ fontSize: "18px", fontWeight: 600, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>Personal Information</p>
                         </div>
 
                         {/* Email / First name / Last name */}
                         <div className="flex flex-col md:flex-row" style={{ gap: "24px" }}>
                           <div style={{ flex: 1 }}>
-                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Email:</p>
-                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F", marginTop: "4px" }}>{applicantEmails[applicant.id] || "-"}</p>
+                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Email:</p>
+                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{applicantEmails[applicant.id] || "-"}</p>
                           </div>
                           <div style={{ flex: 1 }}>
-                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>First name:</p>
-                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F", marginTop: "4px" }}>{applicantNames[applicant.id]?.firstName || "-"}</p>
+                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>First name:</p>
+                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{applicantNames[applicant.id]?.firstName || "-"}</p>
                           </div>
                           <div style={{ flex: 1 }}>
-                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Last name:</p>
-                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F", marginTop: "4px" }}>{applicantNames[applicant.id]?.lastName || "-"}</p>
+                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Last name:</p>
+                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{applicantNames[applicant.id]?.lastName || "-"}</p>
                           </div>
                         </div>
 
                         {/* DOB / Gender / Country of birth */}
                         <div className="flex flex-col md:flex-row" style={{ gap: "24px", marginTop: "16px" }}>
                           <div style={{ flex: 1 }}>
-                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Date of birth:</p>
-                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F", marginTop: "4px" }}>{formatDate(applicantDOB[applicant.id])}</p>
+                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Date of birth:</p>
+                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{formatDate(applicantDOB[applicant.id])}</p>
                           </div>
                           <div style={{ flex: 1 }}>
-                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Gender:</p>
-                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F", marginTop: "4px" }}>{applicantGender[applicant.id] || "-"}</p>
+                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Gender:</p>
+                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{applicantGender[applicant.id] || "-"}</p>
                           </div>
                           <div style={{ flex: 1 }}>
-                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Country of birth:</p>
-                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F", marginTop: "4px" }}>{applicantCountryOfBirth[applicant.id]?.name || "-"}</p>
+                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Country of birth:</p>
+                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{applicantCountryOfBirth[applicant.id]?.name || "-"}</p>
                           </div>
                         </div>
                       </div>
 
                       {/* Divider */}
-                      <div style={{ borderTop: "1px solid #D9D9D9", margin: "0 24px" }} />
+                      <div style={{ borderTop: "1px solid var(--form-border)", margin: "0 24px" }} />
 
                       {/* Passport & Personal Photo */}
                       <div style={{ padding: "24px" }}>
-                        <p style={{ fontSize: "18px", fontWeight: 600, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F", marginBottom: "16px" }}>Passport &amp; Personal Photo</p>
+                        <p style={{ fontSize: "18px", fontWeight: 600, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginBottom: "16px" }}>Passport &amp; Personal Photo</p>
                         <div className="flex" style={{ gap: "24px" }}>
-                          <div style={{ width: "139px", height: "100px", borderRadius: "8px", border: "1px dashed #D9D9D9", background: "#FAFAF9", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                            <Upload style={{ width: "24px", height: "24px", color: "#A9A9A9" }} />
+                          <div style={{ width: "139px", height: "100px", borderRadius: "8px", border: "1px dashed var(--form-border)", background: "var(--form-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, overflow: "hidden" }}>
+                            {passportImages[applicant.id] ? (
+                              <img src={passportImages[applicant.id]} alt="Passport" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                            ) : (
+                              <Upload style={{ width: "24px", height: "24px", color: "var(--icon-muted)" }} />
+                            )}
                           </div>
-                          <div style={{ width: "100px", height: "100px", borderRadius: "8px", border: "1px dashed #D9D9D9", background: "#FAFAF9", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                            <Upload style={{ width: "24px", height: "24px", color: "#A9A9A9" }} />
+                          <div style={{ width: "100px", height: "100px", borderRadius: "8px", border: "1px dashed var(--form-border)", background: "var(--form-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, overflow: "hidden" }}>
+                            {photoImages[applicant.id] ? (
+                              <img src={photoImages[applicant.id]} alt="Personal photo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                            ) : (
+                              <Upload style={{ width: "24px", height: "24px", color: "var(--icon-muted)" }} />
+                            )}
                           </div>
                         </div>
                       </div>
 
                       {/* Divider */}
-                      <div style={{ borderTop: "1px solid #D9D9D9", margin: "0 24px" }} />
+                      <div style={{ borderTop: "1px solid var(--form-border)", margin: "0 24px" }} />
 
                       {/* Passport Information */}
                       <div style={{ padding: "24px" }}>
-                        <p style={{ fontSize: "18px", fontWeight: 600, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F", marginBottom: "16px" }}>Personal Information</p>
+                        <p style={{ fontSize: "18px", fontWeight: 600, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginBottom: "16px" }}>Personal Information</p>
 
                         {/* Nationality / Document number / Issued */}
                         <div className="flex flex-col md:flex-row" style={{ gap: "24px" }}>
                           <div style={{ flex: 1 }}>
-                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Nationality:</p>
-                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F", marginTop: "4px" }}>{passportData[applicant.id]?.nationality?.name || "-"}</p>
-                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757", marginTop: "16px" }}>Expires:</p>
-                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F", marginTop: "4px" }}>{formatDate(passportData[applicant.id]?.dateExpiry)}</p>
+                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Nationality:</p>
+                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{passportData[applicant.id]?.nationality?.name || "-"}</p>
+                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "16px" }}>Expires:</p>
+                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{formatDate(passportData[applicant.id]?.dateExpiry)}</p>
                           </div>
                           <div style={{ flex: 1 }}>
-                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Document number:</p>
-                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F", marginTop: "4px" }}>{passportData[applicant.id]?.passportNumber || "-"}</p>
-                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757", marginTop: "16px" }}>Dual citizenship:</p>
-                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F", marginTop: "4px" }}>{passportApplicants.find((a) => a.id === applicant.id)?.otherCitizen === "yes" ? "Yes" : "No"}</p>
+                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Document number:</p>
+                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{passportData[applicant.id]?.passportNumber || "-"}</p>
+                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "16px" }}>Dual citizenship:</p>
+                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{passportApplicants.find((a) => a.id === applicant.id)?.otherCitizen === "yes" ? "Yes" : "No"}</p>
                           </div>
                           <div style={{ flex: 1 }}>
-                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>Issued:</p>
-                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F", marginTop: "4px" }}>{formatDate(passportData[applicant.id]?.dateIssue)}</p>
+                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Issued:</p>
+                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{formatDate(passportData[applicant.id]?.dateIssue)}</p>
                           </div>
                         </div>
                       </div>
@@ -1266,8 +1559,8 @@ export default function ApplyPage() {
 
                   {/* Consent & declaration */}
                   <div style={{ marginTop: "32px" }}>
-                    <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>Consent &amp; declaration</h3>
-                    <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757", marginTop: "8px" }}>
+                    <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>Consent &amp; declaration</h3>
+                    <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "8px" }}>
                       Please read and agree to the declarations below. Both are required before your application can be submitted.
                     </p>
                   </div>
@@ -1280,8 +1573,8 @@ export default function ApplyPage() {
                         width: "24px",
                         height: "24px",
                         borderRadius: "6px",
-                        border: reviewConsent.confirmInfo ? "2px solid var(--primary)" : "1px solid #D9D9D9",
-                        background: reviewConsent.confirmInfo ? "var(--primary)" : "white",
+                        border: reviewConsent.confirmInfo ? "2px solid var(--primary)" : "1px solid var(--form-border)",
+                        background: reviewConsent.confirmInfo ? "var(--primary)" : "var(--input-bg)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -1290,9 +1583,9 @@ export default function ApplyPage() {
                         marginTop: "2px",
                       }}
                     >
-                      {reviewConsent.confirmInfo && <Check style={{ width: "16px", height: "16px", color: "white" }} />}
+                      {reviewConsent.confirmInfo && <Check style={{ width: "16px", height: "16px", color: "var(--hero-text)" }} />}
                     </div>
-                    <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+                    <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                       I confirm that the information I have provided is true, complete, and accurate. I understand that incorrect or incomplete information may delay my application or lead to it being refused, and that approval does not by itself guarantee entry, which is decided by a border officer on arrival.*
                     </p>
                   </div>
@@ -1305,8 +1598,8 @@ export default function ApplyPage() {
                         width: "24px",
                         height: "24px",
                         borderRadius: "6px",
-                        border: reviewConsent.privacyNotice ? "2px solid var(--primary)" : "1px solid #D9D9D9",
-                        background: reviewConsent.privacyNotice ? "var(--primary)" : "white",
+                        border: reviewConsent.privacyNotice ? "2px solid var(--primary)" : "1px solid var(--form-border)",
+                        background: reviewConsent.privacyNotice ? "var(--primary)" : "var(--input-bg)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -1315,9 +1608,9 @@ export default function ApplyPage() {
                         marginTop: "2px",
                       }}
                     >
-                      {reviewConsent.privacyNotice && <Check style={{ width: "16px", height: "16px", color: "white" }} />}
+                      {reviewConsent.privacyNotice && <Check style={{ width: "16px", height: "16px", color: "var(--hero-text)" }} />}
                     </div>
-                    <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+                    <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                       I consent to the processing of my personal data as described in the Privacy Notice, and I confirm that I have read and accept the Terms &amp; Conditions. I acknowledge that Service eVisa is a private, independent provider and is not affiliated with the United Kingdom government, that a service fee is charged in addition to the government fee, and that I may apply directly through the official United Kingdom government website. *
                     </p>
                   </div>
@@ -1327,65 +1620,65 @@ export default function ApplyPage() {
               {currentStep === 5 && (
                 <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
                   <div>
-                    <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>Processing speed</h3>
-                    <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757", marginTop: "8px" }}>
+                    <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>Processing speed</h3>
+                    <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "8px" }}>
                       Choose your processing speed and pay securely to submit your application.
                     </p>
                   </div>
 
                   {/* Option 1: 2-5 Days processing */}
-                  <div style={{ padding: "16px", borderRadius: "16px", border: "1px solid #D9D9D9", display: "flex", alignItems: "flex-start", gap: "12px", cursor: "pointer", background: "white" }}
+                  <div style={{ padding: "16px", borderRadius: "16px", border: "1px solid var(--form-border)", display: "flex", alignItems: "flex-start", gap: "12px", cursor: "pointer", background: "var(--card)" }}
                     onClick={() => setSelectedProcessing("standard")}
                   >
-                    <div style={{ width: "24px", height: "24px", borderRadius: "50%", border: selectedProcessing === "standard" ? "2px solid var(--primary)" : "2px solid #D9D9D9", background: selectedProcessing === "standard" ? "var(--primary)" : "white", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "2px" }}>
-                      {selectedProcessing === "standard" && <Check style={{ width: "16px", height: "16px", color: "white" }} />}
+                    <div style={{ width: "24px", height: "24px", borderRadius: "50%", border: selectedProcessing === "standard" ? "2px solid var(--primary)" : "2px solid var(--form-border)", background: selectedProcessing === "standard" ? "var(--primary)" : "var(--input-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "2px" }}>
+                      {selectedProcessing === "standard" && <Check style={{ width: "16px", height: "16px", color: "var(--hero-text)" }} />}
                     </div>
                     <div>
-                      <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>2-5 Days processing</p>
-                      <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F", marginTop: "4px" }}>$89.90</p>
+                      <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>2-5 Days processing</p>
+                      <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)", marginTop: "4px" }}>$89.90</p>
                     </div>
                   </div>
 
                   {/* Option 2: 6-24h processing */}
-                  <div style={{ padding: "16px", borderRadius: "16px", border: "1px solid #D9D9D9", display: "flex", alignItems: "flex-start", gap: "12px", cursor: "pointer", background: "white" }}
+                  <div style={{ padding: "16px", borderRadius: "16px", border: "1px solid var(--form-border)", display: "flex", alignItems: "flex-start", gap: "12px", cursor: "pointer", background: "var(--card)" }}
                     onClick={() => setSelectedProcessing("express")}
                   >
-                    <div style={{ width: "24px", height: "24px", borderRadius: "50%", border: selectedProcessing === "express" ? "2px solid var(--primary)" : "2px solid #D9D9D9", background: selectedProcessing === "express" ? "var(--primary)" : "white", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "2px" }}>
-                      {selectedProcessing === "express" && <Check style={{ width: "16px", height: "16px", color: "white" }} />}
+                    <div style={{ width: "24px", height: "24px", borderRadius: "50%", border: selectedProcessing === "express" ? "2px solid var(--primary)" : "2px solid var(--form-border)", background: selectedProcessing === "express" ? "var(--primary)" : "var(--input-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "2px" }}>
+                      {selectedProcessing === "express" && <Check style={{ width: "16px", height: "16px", color: "var(--hero-text)" }} />}
                     </div>
                     <div>
                       <div className="flex items-center" style={{ gap: "10px" }}>
-                        <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>6-24h processing</p>
-                        <span style={{ display: "inline-flex", alignItems: "center", gap: "10px", height: "30px", borderRadius: "99px", paddingTop: "4px", paddingRight: "8px", paddingBottom: "4px", paddingLeft: "8px", background: "#EFFEFA", fontSize: "14px", fontWeight: 400, lineHeight: "160%", letterSpacing: "0em", color: "#28806F" }}>
+                        <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>6-24h processing</p>
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: "10px", height: "30px", borderRadius: "99px", paddingTop: "4px", paddingRight: "8px", paddingBottom: "4px", paddingLeft: "8px", background: "var(--success-bg)", fontSize: "14px", fontWeight: 400, lineHeight: "160%", letterSpacing: "0em", color: "var(--success-text)" }}>
                           Popular
                         </span>
                       </div>
-                      <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F", marginTop: "4px" }}>$119.90</p>
+                      <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)", marginTop: "4px" }}>$119.90</p>
                     </div>
                   </div>
 
                   {/* Option 3: 1h processing */}
-                  <div style={{ padding: "16px", borderRadius: "16px", border: "1px solid #D9D9D9", display: "flex", alignItems: "flex-start", gap: "12px", cursor: "pointer", background: "white" }}
+                  <div style={{ padding: "16px", borderRadius: "16px", border: "1px solid var(--form-border)", display: "flex", alignItems: "flex-start", gap: "12px", cursor: "pointer", background: "var(--card)" }}
                     onClick={() => setSelectedProcessing("fastest")}
                   >
-                    <div style={{ width: "24px", height: "24px", borderRadius: "50%", border: selectedProcessing === "fastest" ? "2px solid var(--primary)" : "2px solid #D9D9D9", background: selectedProcessing === "fastest" ? "var(--primary)" : "white", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "2px" }}>
-                      {selectedProcessing === "fastest" && <Check style={{ width: "16px", height: "16px", color: "white" }} />}
+                    <div style={{ width: "24px", height: "24px", borderRadius: "50%", border: selectedProcessing === "fastest" ? "2px solid var(--primary)" : "2px solid var(--form-border)", background: selectedProcessing === "fastest" ? "var(--primary)" : "var(--input-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "2px" }}>
+                      {selectedProcessing === "fastest" && <Check style={{ width: "16px", height: "16px", color: "var(--hero-text)" }} />}
                     </div>
                     <div>
                       <div className="flex items-center" style={{ gap: "10px" }}>
-                        <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>1h processing</p>
-                        <span style={{ display: "inline-flex", alignItems: "center", gap: "10px", height: "30px", borderRadius: "99px", paddingTop: "4px", paddingRight: "8px", paddingBottom: "4px", paddingLeft: "8px", background: "#EFF4F9", fontSize: "14px", fontWeight: 400, lineHeight: "160%", letterSpacing: "0em", color: "#2D76B5" }}>
+                        <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>1h processing</p>
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: "10px", height: "30px", borderRadius: "99px", paddingTop: "4px", paddingRight: "8px", paddingBottom: "4px", paddingLeft: "8px", background: "var(--accent-bg)", fontSize: "14px", fontWeight: 400, lineHeight: "160%", letterSpacing: "0em", color: "var(--info-text)" }}>
                           Fastest
                         </span>
                       </div>
-                      <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F", marginTop: "4px" }}>$139.90</p>
+                      <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)", marginTop: "4px" }}>$139.90</p>
                     </div>
                   </div>
                 </div>
               )}
             </div>
             {currentStep === 0 && (
-              <div style={{ padding: "24px", background: "white" }}>
+              <div style={{ padding: "24px", background: "var(--card)" }}>
                 <button
                   onClick={addApplicant}
                   className="flex items-center justify-center"
@@ -1394,9 +1687,9 @@ export default function ApplyPage() {
                     height: "56px",
                     gap: "8px",
                     borderRadius: "99px",
-                    border: "1px dashed #D9D9D9",
+                    border: "1px dashed var(--form-border)",
                     padding: "16px",
-                    background: "#EFF4F9",
+                    background: "var(--accent-bg)",
                     color: "var(--primary)",
                     fontSize: "16px",
                     fontWeight: 500,
@@ -1409,15 +1702,15 @@ export default function ApplyPage() {
               </div>
             )}
             {/* Bottom section with border top */}
-            <div className="flex flex-col-reverse md:flex-row items-center md:items-center justify-between gap-4" style={{ borderTop: "1px solid #D9D9D9", padding: "24px", background: "white", borderBottomLeftRadius: "24px", borderBottomRightRadius: "24px" }}>
+            <div className="flex flex-col-reverse md:flex-row items-center md:items-center justify-between gap-4" style={{ borderTop: "1px solid var(--form-border)", padding: "24px", background: "var(--card)", borderBottomLeftRadius: "24px", borderBottomRightRadius: "24px" }}>
               {currentStep === 0 ? (
                 <>
-                  <p className="order-2 md:order-1" style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757", textAlign: "center" }}>
+                  <p className="order-2 md:order-1" style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", textAlign: "center" }}>
                     Each traveller requires a separate authorization.
                   </p>
                   <button
-                    disabled={!allApplicantsSaved}
-                    onClick={goToPassportStep}
+                    disabled={!canGoToPassport}
+                    onClick={canGoToPassport ? goToPassportStep : undefined}
                     className="flex items-center justify-center order-1 md:order-2 w-full md:w-auto md:max-w-[283px]"
                     style={{
                       width: "100%",
@@ -1428,12 +1721,12 @@ export default function ApplyPage() {
                       paddingBottom: "12px",
                       paddingLeft: "20px",
                       borderRadius: "999px",
-                      background: allApplicantsSaved ? "var(--primary)" : "#D9D9D9",
-                      color: "#FFFFFF",
+                      background: canGoToPassport ? "var(--primary)" : "var(--form-border)",
+                      color: "var(--hero-text)",
                       fontSize: "16px",
                       fontWeight: 500,
                       flexShrink: 0,
-                      cursor: allApplicantsSaved ? "pointer" : "not-allowed",
+                      cursor: canGoToPassport ? "pointer" : "not-allowed",
                     }}
                   >
                     Continue to passport details
@@ -1451,8 +1744,8 @@ export default function ApplyPage() {
                       paddingLeft: "20px",
                       paddingRight: "20px",
                       borderRadius: "999px",
-                      background: "white",
-                      border: "1px solid #D9D9D9",
+                      background: "var(--card)",
+                      border: "1px solid var(--form-border)",
                       color: "var(--primary)",
                       fontSize: "16px",
                       fontWeight: 500,
@@ -1463,8 +1756,8 @@ export default function ApplyPage() {
                     Back
                   </button>
                   <button
-                    disabled={!allPassportSaved}
-                    onClick={goToImageStep}
+                    disabled={!canGoToImage}
+                    onClick={canGoToImage ? goToImageStep : undefined}
                     className="flex items-center justify-center order-1 md:order-2 w-full md:w-auto md:max-w-[283px]"
                     style={{
                       width: "100%",
@@ -1475,12 +1768,12 @@ export default function ApplyPage() {
                       paddingBottom: "12px",
                       paddingLeft: "20px",
                       borderRadius: "999px",
-                      background: allPassportSaved ? "var(--primary)" : "#D9D9D9",
-                      color: "#FFFFFF",
+                      background: canGoToImage ? "var(--primary)" : "var(--form-border)",
+                      color: "var(--hero-text)",
                       fontSize: "16px",
                       fontWeight: 500,
                       flexShrink: 0,
-                      cursor: allPassportSaved ? "pointer" : "not-allowed",
+                      cursor: canGoToImage ? "pointer" : "not-allowed",
                     }}
                   >
                     Continue to passport image
@@ -1498,8 +1791,8 @@ export default function ApplyPage() {
                       paddingLeft: "20px",
                       paddingRight: "20px",
                       borderRadius: "999px",
-                      background: "white",
-                      border: "1px solid #D9D9D9",
+                      background: "var(--card)",
+                      border: "1px solid var(--form-border)",
                       color: "var(--primary)",
                       fontSize: "16px",
                       fontWeight: 500,
@@ -1510,8 +1803,8 @@ export default function ApplyPage() {
                     Back
                   </button>
                   <button
-                    disabled={!allImageConsented}
-                    onClick={goToPhotoStep}
+                    disabled={!canGoToPhoto}
+                    onClick={canGoToPhoto ? goToPhotoStep : undefined}
                     className="flex items-center justify-center order-1 md:order-2 w-full md:w-auto md:max-w-[283px]"
                     style={{
                       width: "100%",
@@ -1522,12 +1815,12 @@ export default function ApplyPage() {
                       paddingBottom: "12px",
                       paddingLeft: "20px",
                       borderRadius: "999px",
-                      background: allImageConsented ? "var(--primary)" : "#D9D9D9",
-                      color: "#FFFFFF",
+                      background: canGoToPhoto ? "var(--primary)" : "var(--form-border)",
+                      color: "var(--hero-text)",
                       fontSize: "16px",
                       fontWeight: 500,
                       flexShrink: 0,
-                      cursor: allImageConsented ? "pointer" : "not-allowed",
+                      cursor: canGoToPhoto ? "pointer" : "not-allowed",
                     }}
                   >
                     Continue to your image
@@ -1545,8 +1838,8 @@ export default function ApplyPage() {
                       paddingLeft: "20px",
                       paddingRight: "20px",
                       borderRadius: "999px",
-                      background: "white",
-                      border: "1px solid #D9D9D9",
+                      background: "var(--card)",
+                      border: "1px solid var(--form-border)",
                       color: "var(--primary)",
                       fontSize: "16px",
                       fontWeight: 500,
@@ -1557,8 +1850,9 @@ export default function ApplyPage() {
                     Back
                   </button>
                   <button
+                    disabled={!canGoToReview}
+                    onClick={canGoToReview ? goToReviewStep : undefined}
                     className="flex items-center justify-center order-1 md:order-2 w-full md:w-auto md:max-w-[283px]"
-                    onClick={goToReviewStep}
                     style={{
                       width: "100%",
                       height: "48px",
@@ -1568,12 +1862,12 @@ export default function ApplyPage() {
                       paddingBottom: "12px",
                       paddingLeft: "20px",
                       borderRadius: "999px",
-                      background: "var(--primary)",
-                      color: "#FFFFFF",
+                      background: canGoToReview ? "var(--primary)" : "var(--form-border)",
+                      color: "var(--hero-text)",
                       fontSize: "16px",
                       fontWeight: 500,
                       flexShrink: 0,
-                      cursor: "pointer",
+                      cursor: canGoToReview ? "pointer" : "not-allowed",
                     }}
                   >
                     Continue to review
@@ -1591,8 +1885,8 @@ export default function ApplyPage() {
                       paddingLeft: "20px",
                       paddingRight: "20px",
                       borderRadius: "999px",
-                      background: "white",
-                      border: "1px solid #D9D9D9",
+                      background: "var(--card)",
+                      border: "1px solid var(--form-border)",
                       color: "var(--primary)",
                       fontSize: "16px",
                       fontWeight: 500,
@@ -1615,8 +1909,8 @@ export default function ApplyPage() {
                       paddingBottom: "12px",
                       paddingLeft: "20px",
                       borderRadius: "999px",
-                      background: allReviewConsented ? "var(--primary)" : "#D9D9D9",
-                      color: "#FFFFFF",
+                      background: allReviewConsented ? "var(--primary)" : "var(--form-border)",
+                      color: "var(--hero-text)",
                       fontSize: "16px",
                       fontWeight: 500,
                       flexShrink: 0,
@@ -1638,8 +1932,8 @@ export default function ApplyPage() {
                       paddingLeft: "20px",
                       paddingRight: "20px",
                       borderRadius: "999px",
-                      background: "white",
-                      border: "1px solid #D9D9D9",
+                      background: "var(--card)",
+                      border: "1px solid var(--form-border)",
                       color: "var(--primary)",
                       fontSize: "16px",
                       fontWeight: 500,
@@ -1650,6 +1944,8 @@ export default function ApplyPage() {
                     Back
                   </button>
                   <button
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
                     className="flex items-center justify-center order-1 md:order-2 w-full md:w-auto md:max-w-[283px]"
                     style={{
                       width: "100%",
@@ -1660,15 +1956,15 @@ export default function ApplyPage() {
                       paddingBottom: "12px",
                       paddingLeft: "20px",
                       borderRadius: "999px",
-                      background: "var(--primary)",
-                      color: "#FFFFFF",
+                      background: isSubmitting ? "var(--form-border)" : "var(--primary)",
+                      color: "var(--hero-text)",
                       fontSize: "16px",
                       fontWeight: 500,
                       flexShrink: 0,
-                      cursor: "pointer",
+                      cursor: isSubmitting ? "not-allowed" : "pointer",
                     }}
                   >
-                    Pay &amp; Submit application
+                    {isSubmitting ? "Submitting..." : "Pay & Submit application"}
                     <ArrowRight style={{ width: "20px", height: "20px" }} />
                   </button>
                 </>
@@ -1678,14 +1974,14 @@ export default function ApplyPage() {
 
           {/* Right div */}
           {currentStep !== 5 && (
-          <div className="w-full md:w-auto" style={{ flex: 1, maxWidth: "442px", alignSelf: "flex-start", borderRadius: "24px", border: "1px solid #D9D9D9", padding: "24px", display: "flex", flexDirection: "column", gap: "24px" }}>
+          <div className="w-full md:w-auto" style={{ flex: 1, maxWidth: "442px", alignSelf: "flex-start", borderRadius: "24px", border: "1px solid var(--form-border)", background: "var(--card)", padding: "24px", display: "flex", flexDirection: "column", gap: "24px" }}>
             {currentStep === 0 ? (
               <>
                 <div>
-                  <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>
+                  <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
                     UK eTA Application
                   </h3>
-                  <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757", marginTop: "8px" }}>
+                  <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "8px" }}>
                     Electronic Travel Authorization
                   </p>
                 </div>
@@ -1693,43 +1989,43 @@ export default function ApplyPage() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                   <div className="flex items-center" style={{ gap: "8px" }}>
                     <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
-                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                       Travel document required to enter the United Kingdom
                     </span>
                   </div>
                   <div className="flex items-center" style={{ gap: "8px" }}>
                     <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
-                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                       Valid for up to 2 years and electronically linked to the holder&apos;s passport
                     </span>
                   </div>
                   <div className="flex items-center" style={{ gap: "8px" }}>
                     <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
-                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                       Permits multiple short visits to the UK — up to 6 months per entry
                     </span>
                   </div>
                   <div className="flex items-center" style={{ gap: "8px" }}>
                     <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
-                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                       Each traveller requires a separate authorization
                     </span>
                   </div>
                 </div>
 
                 <div>
-                  <p style={{ fontSize: "20px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>
+                  <p style={{ fontSize: "20px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
                     Note:
                   </p>
-                  <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757", marginTop: "8px" }}>
+                  <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "8px" }}>
                     Your application is checked before submission. Approval is sent to the email address you provide.
                   </p>
                 </div>
               </>
             ) : currentStep === 1 ? (
               <>
-                <div style={{ background: "#FAFAF9", margin: "-24px -24px 0 -24px", padding: "24px", borderTopLeftRadius: "24px", borderTopRightRadius: "24px", borderBottom: "1px solid #D9D9D9" }}>
-                  <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>
+                <div style={{ background: "var(--form-bg)", margin: "-24px -24px 0 -24px", padding: "24px", borderTopLeftRadius: "24px", borderTopRightRadius: "24px", borderBottom: "1px solid var(--form-border)" }}>
+                  <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
                     UK eTA · Summary
                   </h3>
                 </div>
@@ -1737,41 +2033,41 @@ export default function ApplyPage() {
                 {passportApplicants.map((applicant, index) => (
                   <div key={applicant.id}>
                     {index > 0 && (
-                      <div style={{ borderTop: "1px solid #D9D9D9", margin: "0 -24px 24px -24px" }} />
+                      <div style={{ borderTop: "1px solid var(--form-border)", margin: "0 -24px 24px -24px" }} />
                     )}
 
                     {/* Applicant header with number, name, and chevron */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center" style={{ gap: "12px" }}>
-                        <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--primary)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", fontWeight: 500, flexShrink: 0 }}>
+                        <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--primary)", color: "var(--hero-text)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", fontWeight: 500, flexShrink: 0 }}>
                           {index + 1}
                         </div>
-                        <span style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>
+                        <span style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
                           {getApplicantName(applicant.id)}
                         </span>
                       </div>
                       {applicant.expanded ? (
-                        <ChevronUp style={{ width: "24px", height: "24px", color: "#A9A9A9", cursor: "pointer" }} onClick={() => togglePassportExpand(applicant.id)} />
+                        <ChevronUp style={{ width: "24px", height: "24px", color: "var(--icon-muted)", cursor: "pointer" }} onClick={() => togglePassportExpand(applicant.id)} />
                       ) : (
-                        <ChevronDown style={{ width: "24px", height: "24px", color: "#A9A9A9", cursor: "pointer" }} onClick={() => togglePassportExpand(applicant.id)} />
+                        <ChevronDown style={{ width: "24px", height: "24px", color: "var(--icon-muted)", cursor: "pointer" }} onClick={() => togglePassportExpand(applicant.id)} />
                       )}
                     </div>
 
                     {/* Document no & Type row */}
                     <div className="flex flex-col md:flex-row" style={{ gap: "24px", marginTop: "16px" }}>
                       <div style={{ flex: 1 }}>
-                        <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>
+                        <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>
                           Document no:
                         </p>
-                        <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F", marginTop: "4px" }}>
+                        <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>
                           {passportData[applicant.id]?.passportNumber || "-"}
                         </p>
                       </div>
                       <div style={{ flex: 1 }}>
-                        <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>
+                        <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>
                           Type:
                         </p>
-                        <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F", marginTop: "4px" }}>
+                        <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>
                           {passportData[applicant.id]?.nationality ? "Passport" : "-"}
                         </p>
                       </div>
@@ -1780,18 +2076,18 @@ export default function ApplyPage() {
                     {/* Issued & Expires row */}
                     <div className="flex flex-col md:flex-row" style={{ gap: "24px", marginTop: "16px" }}>
                       <div style={{ flex: 1 }}>
-                        <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>
+                        <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>
                           Issued:
                         </p>
-                        <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F", marginTop: "4px" }}>
+                        <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>
                           {formatDate(passportData[applicant.id]?.dateIssue)}
                         </p>
                       </div>
                       <div style={{ flex: 1 }}>
-                        <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757" }}>
+                        <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>
                           Expires:
                         </p>
-                        <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F", marginTop: "4px" }}>
+                        <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>
                           {formatDate(passportData[applicant.id]?.dateExpiry)}
                         </p>
                       </div>
@@ -1801,8 +2097,8 @@ export default function ApplyPage() {
               </>
             ) : currentStep === 2 ? (
               <>
-                <div style={{ background: "#FAFAF9", margin: "-24px -24px 0 -24px", padding: "24px", borderTopLeftRadius: "24px", borderTopRightRadius: "24px", borderBottom: "1px solid #D9D9D9" }}>
-                  <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>
+                <div style={{ background: "var(--form-bg)", margin: "-24px -24px 0 -24px", padding: "24px", borderTopLeftRadius: "24px", borderTopRightRadius: "24px", borderBottom: "1px solid var(--form-border)" }}>
+                  <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
                     Image Guide
                   </h3>
                 </div>
@@ -1813,7 +2109,7 @@ export default function ApplyPage() {
                     <Image src={p1} alt="Example 1" width={183} height={131} className="guide-img" style={{ borderRadius: "8px", flexShrink: 0 }} />
                     <div className="flex items-start" style={{ gap: "8px", marginTop: "8px" }}>
                       <Image src={pc} alt="Cross" width={24} height={24} style={{ width: "24px", height: "24px", flexShrink: 0, marginTop: "2px" }} />
-                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "#0F0F0F" }}>
+                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--text-heading)" }}>
                         The image is not acceptable: it is out of focus or blurred.
                       </p>
                     </div>
@@ -1822,7 +2118,7 @@ export default function ApplyPage() {
                     <Image src={p2} alt="Example 2" width={183} height={131} className="guide-img" style={{ borderRadius: "8px", flexShrink: 0 }} />
                     <div className="flex items-start" style={{ gap: "8px", marginTop: "8px" }}>
                       <Image src={pc} alt="Cross" width={24} height={24} style={{ width: "24px", height: "24px", flexShrink: 0, marginTop: "2px" }} />
-                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "#0F0F0F" }}>
+                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--text-heading)" }}>
                         The image is not acceptable: there is glare or light reflection
                       </p>
                     </div>
@@ -1834,7 +2130,7 @@ export default function ApplyPage() {
                   <Image src={p3} alt="Example 3" width={183} height={131} className="guide-img" style={{ borderRadius: "8px" }} />
                   <div className="flex items-start" style={{ gap: "8px", marginTop: "8px" }}>
                     <Image src={pt} alt="Tick" width={24} height={24} style={{ width: "24px", height: "24px", flexShrink: 0, marginTop: "2px" }} />
-                    <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "#0F0F0F" }}>
+                    <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--text-heading)" }}>
                       The image is not acceptable: it is visible and in frame.
                     </p>
                   </div>
@@ -1842,8 +2138,8 @@ export default function ApplyPage() {
               </>
             ) : currentStep === 3 ? (
               <>
-                <div style={{ background: "#FAFAF9", margin: "-24px -24px 0 -24px", padding: "24px", borderTopLeftRadius: "24px", borderTopRightRadius: "24px", borderBottom: "1px solid #D9D9D9" }}>
-                  <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>
+                <div style={{ background: "var(--form-bg)", margin: "-24px -24px 0 -24px", padding: "24px", borderTopLeftRadius: "24px", borderTopRightRadius: "24px", borderBottom: "1px solid var(--form-border)" }}>
+                  <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
                     Image Guide
                   </h3>
                 </div>
@@ -1854,7 +2150,7 @@ export default function ApplyPage() {
                     <Image src={r1} alt="Example 1" width={183} height={131} className="guide-img" style={{ borderRadius: "16px", flexShrink: 0 }} />
                     <div className="flex items-start" style={{ gap: "8px", marginTop: "8px" }}>
                       <Image src={pt} alt="Tick" width={24} height={24} style={{ width: "24px", height: "24px", flexShrink: 0, marginTop: "2px" }} />
-                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "#0F0F0F" }}>
+                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--text-heading)" }}>
                         Head-and-shoulders photo on a plain, light background
                       </p>
                     </div>
@@ -1863,7 +2159,7 @@ export default function ApplyPage() {
                     <Image src={r2} alt="Example 2" width={183} height={131} className="guide-img" style={{ borderRadius: "16px", flexShrink: 0 }} />
                     <div className="flex items-start" style={{ gap: "8px", marginTop: "8px" }}>
                       <Image src={pc} alt="Cross" width={24} height={24} style={{ width: "24px", height: "24px", flexShrink: 0, marginTop: "2px" }} />
-                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "#0F0F0F" }}>
+                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--text-heading)" }}>
                         Head-and-shoulders photo with objects in the background
                       </p>
                     </div>
@@ -1876,7 +2172,7 @@ export default function ApplyPage() {
                     <Image src={r3} alt="Example 3" width={183} height={131} className="guide-img" style={{ borderRadius: "16px", flexShrink: 0 }} />
                     <div className="flex items-start" style={{ gap: "8px", marginTop: "8px" }}>
                       <Image src={pc} alt="Cross" width={24} height={24} style={{ width: "24px", height: "24px", flexShrink: 0, marginTop: "2px" }} />
-                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "#0F0F0F" }}>
+                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--text-heading)" }}>
                         Head-and-shoulders photo with even lighting
                       </p>
                     </div>
@@ -1885,7 +2181,7 @@ export default function ApplyPage() {
                     <Image src={r4} alt="Example 4" width={183} height={131} className="guide-img" style={{ borderRadius: "16px", flexShrink: 0 }} />
                     <div className="flex items-start" style={{ gap: "8px", marginTop: "8px" }}>
                       <Image src={pt} alt="Tick" width={24} height={24} style={{ width: "24px", height: "24px", flexShrink: 0, marginTop: "2px" }} />
-                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "#0F0F0F" }}>
+                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--text-heading)" }}>
                         Head-and-shoulders photo with a shadow behind them
                       </p>
                     </div>
@@ -1898,7 +2194,7 @@ export default function ApplyPage() {
                     <Image src={r5} alt="Example 5" width={183} height={131} className="guide-img" style={{ borderRadius: "16px", flexShrink: 0 }} />
                     <div className="flex items-start" style={{ gap: "8px", marginTop: "8px" }}>
                       <Image src={pc} alt="Cross" width={24} height={24} style={{ width: "24px", height: "24px", flexShrink: 0, marginTop: "2px" }} />
-                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "#0F0F0F" }}>
+                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--text-heading)" }}>
                         Photo of a person&apos;s wearing religious headwear
                       </p>
                     </div>
@@ -1907,7 +2203,7 @@ export default function ApplyPage() {
                     <Image src={r6} alt="Example 6" width={183} height={131} className="guide-img" style={{ borderRadius: "16px", flexShrink: 0 }} />
                     <div className="flex items-start" style={{ gap: "8px", marginTop: "8px" }}>
                       <Image src={pt} alt="Tick" width={24} height={24} style={{ width: "24px", height: "24px", flexShrink: 0, marginTop: "2px" }} />
-                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "#0F0F0F" }}>
+                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--text-heading)" }}>
                         Photo of a person&apos;s wearing fashion hair accessory
                       </p>
                     </div>
@@ -1920,7 +2216,7 @@ export default function ApplyPage() {
                     <Image src={r7} alt="Example 7" width={183} height={131} className="guide-img" style={{ borderRadius: "16px", flexShrink: 0 }} />
                     <div className="flex items-start" style={{ gap: "8px", marginTop: "8px" }}>
                       <Image src={pc} alt="Cross" width={24} height={24} style={{ width: "24px", height: "24px", flexShrink: 0, marginTop: "2px" }} />
-                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "#0F0F0F" }}>
+                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--text-heading)" }}>
                         Head-and-shoulders photo with eyes clearly visible
                       </p>
                     </div>
@@ -1929,7 +2225,7 @@ export default function ApplyPage() {
                     <Image src={r8} alt="Example 8" width={183} height={131} className="guide-img" style={{ borderRadius: "16px", flexShrink: 0 }} />
                     <div className="flex items-start" style={{ gap: "8px", marginTop: "8px" }}>
                       <Image src={pt} alt="Tick" width={24} height={24} style={{ width: "24px", height: "24px", flexShrink: 0, marginTop: "2px" }} />
-                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "#0F0F0F" }}>
+                      <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--text-heading)" }}>
                         Head-and-shoulders photo of a person wearing glasses that cover their eyes
                       </p>
                     </div>
@@ -1939,10 +2235,10 @@ export default function ApplyPage() {
             ) : currentStep === 4 ? (
               <>
                 <div>
-                  <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>
+                  <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
                     UK eTA Application
                   </h3>
-                  <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757", marginTop: "8px" }}>
+                  <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "8px" }}>
                     Electronic Travel Authorization
                   </p>
                 </div>
@@ -1950,35 +2246,35 @@ export default function ApplyPage() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                   <div className="flex items-center" style={{ gap: "8px" }}>
                     <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
-                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                       Travel document required to enter the United Kingdom
                     </span>
                   </div>
                   <div className="flex items-center" style={{ gap: "8px" }}>
                     <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
-                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                       Valid for up to 2 years and electronically linked to the holder&apos;s passport
                     </span>
                   </div>
                   <div className="flex items-center" style={{ gap: "8px" }}>
                     <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
-                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                       Permits multiple short visits to the UK — up to 6 months per entry
                     </span>
                   </div>
                   <div className="flex items-center" style={{ gap: "8px" }}>
                     <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
-                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                       Each traveller requires a separate authorization
                     </span>
                   </div>
                 </div>
 
                 <div>
-                  <p style={{ fontSize: "20px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>
+                  <p style={{ fontSize: "20px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
                     Note:
                   </p>
-                  <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757", marginTop: "8px" }}>
+                  <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "8px" }}>
                     Your application is checked before submission. Approval is sent to the email address you provide.
                   </p>
                 </div>
@@ -1991,14 +2287,14 @@ export default function ApplyPage() {
           {currentStep === 5 && (
             <div className="w-full md:w-auto" style={{ flex: 1, maxWidth: "442px", alignSelf: "flex-start", display: "flex", flexDirection: "column", gap: "24px" }}>
               {/* Fees div */}
-              <div style={{ borderRadius: "24px", border: "1px solid #D9D9D9", padding: "24px", display: "flex", flexDirection: "column", gap: "24px" }}>
+              <div style={{ borderRadius: "24px", border: "1px solid var(--form-border)", background: "var(--card)", padding: "24px", display: "flex", flexDirection: "column", gap: "24px" }}>
                 {/* Header with bg #EFF4F9 */}
-                <div style={{ background: "#EFF4F9", margin: "-24px -24px 0 -24px", padding: "24px", borderTopLeftRadius: "24px", borderTopRightRadius: "24px", borderBottom: "1px solid #D9D9D9" }}>
+                <div style={{ background: "var(--accent-bg)", margin: "-24px -24px 0 -24px", padding: "24px", borderTopLeftRadius: "24px", borderTopRightRadius: "24px", borderBottom: "1px solid var(--form-border)" }}>
                   <div className="flex items-center justify-between">
                     <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--primary)" }}>
                       UK eTA Fees
                     </h3>
-                    <span style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>
+                    <span style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
                       ${grandTotal.toFixed(2)}
                     </span>
                   </div>
@@ -2008,74 +2304,74 @@ export default function ApplyPage() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                   <div className="flex items-center" style={{ gap: "8px" }}>
                     <User style={{ width: "24px", height: "24px", color: "var(--primary)", flexShrink: 0 }} />
-                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                       {applicantCount} {applicantCount === 1 ? "applicant" : "applicants"}
                     </span>
                   </div>
                   <div className="flex items-center" style={{ gap: "8px" }}>
                     <Clock style={{ width: "24px", height: "24px", color: "var(--primary)", flexShrink: 0 }} />
-                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                       {selectedPackage.label}
                     </span>
                   </div>
                   <div className="flex items-center" style={{ gap: "8px" }}>
                     <DollarSign style={{ width: "24px", height: "24px", color: "var(--primary)", flexShrink: 0 }} />
-                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                       ${selectedPackage.total.toFixed(2)} each
                     </span>
                   </div>
                 </div>
 
                 {/* Divider */}
-                <div style={{ borderTop: "1px solid #D9D9D9" }} />
+                <div style={{ borderTop: "1px solid var(--form-border)" }} />
 
                 {/* Fee breakdown */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>UK eTA Fees:</p>
-                      <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757", marginTop: "4px" }}>
+                      <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>UK eTA Fees:</p>
+                      <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "4px" }}>
                         ${selectedPackage.fee.toFixed(2)} × {applicantCount} {applicantCount === 1 ? "applicant" : "applicants"}
                       </p>
                     </div>
-                    <span style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>
+                    <span style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
                       ${feeTotal.toFixed(2)}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>Processing upgrade</p>
-                      <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757", marginTop: "4px" }}>
+                      <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>Processing upgrade</p>
+                      <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "4px" }}>
                         ${selectedPackage.processing.toFixed(2)} × {applicantCount} {applicantCount === 1 ? "applicant" : "applicants"}
                       </p>
                     </div>
-                    <span style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>
+                    <span style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
                       ${processingTotal.toFixed(2)}
                     </span>
                   </div>
                 </div>
 
                 {/* Divider */}
-                <div style={{ borderTop: "1px solid #D9D9D9" }} />
+                <div style={{ borderTop: "1px solid var(--form-border)" }} />
 
                 {/* Applicants in submission */}
                 <div>
-                  <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F", marginBottom: "16px" }}>
+                  <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginBottom: "16px" }}>
                     Applicant in submission
                   </p>
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                     {applicants.map((applicant, index) => (
                       <div key={applicant.id} className="flex items-center justify-between">
                         <div className="flex items-center" style={{ gap: "12px" }}>
-                          <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--primary)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", fontWeight: 500, flexShrink: 0 }}>
+                          <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--primary)", color: "var(--hero-text)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", fontWeight: 500, flexShrink: 0 }}>
                             {index + 1}
                           </div>
-                          <span style={{ fontSize: "18px", fontWeight: 400, lineHeight: "140%", letterSpacing: "-0.02em", color: "#575757" }}>
+                          <span style={{ fontSize: "18px", fontWeight: 400, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-body)" }}>
                             {getApplicantName(applicant.id)}
                           </span>
                         </div>
-                        <Trash2 style={{ width: "20px", height: "20px", color: "#A9A9A9", cursor: "pointer" }} onClick={() => setDeleteModalApplicant(applicant.id)} />
+                        <Trash2 style={{ width: "20px", height: "20px", color: "var(--icon-muted)", cursor: "pointer" }} onClick={() => setDeleteModalApplicant(applicant.id)} />
                       </div>
                     ))}
                   </div>
@@ -2083,17 +2379,17 @@ export default function ApplyPage() {
               </div>
 
               {/* What's included div */}
-              <div style={{ borderRadius: "24px", border: "1px solid #D9D9D9", padding: "24px", display: "flex", flexDirection: "column", gap: "24px" }}>
-                <div style={{ borderBottom: "1px solid #D9D9D9", paddingBottom: "16px" }}>
-                  <p style={{ fontSize: "18px", fontWeight: 600, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>What&apos;s included in your application</p>
+              <div style={{ borderRadius: "24px", border: "1px solid var(--form-border)", background: "var(--card)", padding: "24px", display: "flex", flexDirection: "column", gap: "24px" }}>
+                <div style={{ borderBottom: "1px solid var(--form-border)", paddingBottom: "16px" }}>
+                  <p style={{ fontSize: "18px", fontWeight: 600, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>What&apos;s included in your application</p>
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
                   <div className="flex items-start" style={{ gap: "12px" }}>
                     <Image src={btick} alt="Tick" width={24} height={24} style={{ width: "24px", height: "24px", flexShrink: 0, marginTop: "2px" }} />
                     <div>
-                      <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>Encrypted personal data</p>
-                      <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757", marginTop: "4px" }}>
+                      <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>Encrypted personal data</p>
+                      <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "4px" }}>
                         Information transmitted using Secure Sockets Layer (SSL) and stored in line with applicable data-protection standards.
                       </p>
                     </div>
@@ -2102,8 +2398,8 @@ export default function ApplyPage() {
                   <div className="flex items-start" style={{ gap: "12px" }}>
                     <Image src={btick} alt="Tick" width={24} height={24} style={{ width: "24px", height: "24px", flexShrink: 0, marginTop: "2px" }} />
                     <div>
-                      <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>Multilingual support</p>
-                      <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757", marginTop: "4px" }}>
+                      <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>Multilingual support</p>
+                      <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "4px" }}>
                         Email support available in eleven languages, seven days a week. Replies within 90 minutes during business hours.
                       </p>
                     </div>
@@ -2112,12 +2408,12 @@ export default function ApplyPage() {
               </div>
 
               {/* UK eTA Application summary div */}
-              <div style={{ borderRadius: "24px", border: "1px solid #D9D9D9", padding: "24px", display: "flex", flexDirection: "column", gap: "24px" }}>
+              <div style={{ borderRadius: "24px", border: "1px solid var(--form-border)", background: "var(--card)", padding: "24px", display: "flex", flexDirection: "column", gap: "24px" }}>
                 <div>
-                  <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>
+                  <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
                     UK eTA Application
                   </h3>
-                  <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757", marginTop: "8px" }}>
+                  <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "8px" }}>
                     Electronic Travel Authorization
                   </p>
                 </div>
@@ -2125,35 +2421,35 @@ export default function ApplyPage() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                   <div className="flex items-center" style={{ gap: "8px" }}>
                     <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
-                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                       Travel document required to enter the United Kingdom
                     </span>
                   </div>
                   <div className="flex items-center" style={{ gap: "8px" }}>
                     <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
-                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                       Valid for up to 2 years and electronically linked to the holder&apos;s passport
                     </span>
                   </div>
                   <div className="flex items-center" style={{ gap: "8px" }}>
                     <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
-                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                       Permits multiple short visits to the UK — up to 6 months per entry
                     </span>
                   </div>
                   <div className="flex items-center" style={{ gap: "8px" }}>
                     <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
-                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+                    <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                       Each traveller requires a separate authorization
                     </span>
                   </div>
                 </div>
 
                 <div>
-                  <p style={{ fontSize: "20px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#0F0F0F" }}>
+                  <p style={{ fontSize: "20px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
                     Note:
                   </p>
-                  <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#575757", marginTop: "8px" }}>
+                  <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "8px" }}>
                     Your application is checked before submission. Approval is sent to the email address you provide.
                   </p>
                 </div>
@@ -2172,6 +2468,14 @@ export default function ApplyPage() {
           }}
         />
       )}
+      {submitResult && (
+        <SuccessModal
+          applicantId={submitResult.applicantId}
+          referenceNumber={submitResult.referenceNumber}
+          onClose={handleCloseSuccess}
+        />
+      )}
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
     </main>
   );
 }

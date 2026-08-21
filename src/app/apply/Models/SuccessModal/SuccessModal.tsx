@@ -1,14 +1,14 @@
 "use client";
 
-import { Trash2, X } from "lucide-react";
+import { Check, X, ArrowRight } from "lucide-react";
 
-interface DeleteModalProps {
-  applicantName: string;
-  onKeep: () => void;
-  onRemove: () => void;
+interface SuccessModalProps {
+  applicantId: string;
+  referenceNumber: string;
+  onClose: () => void;
 }
 
-export default function DeleteModal({ applicantName, onKeep, onRemove }: DeleteModalProps) {
+export default function SuccessModal({ applicantId, referenceNumber, onClose }: SuccessModalProps) {
   return (
     <div
       style={{
@@ -20,7 +20,7 @@ export default function DeleteModal({ applicantName, onKeep, onRemove }: DeleteM
         justifyContent: "center",
         zIndex: 50,
       }}
-      onClick={onKeep}
+      onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
@@ -35,42 +35,54 @@ export default function DeleteModal({ applicantName, onKeep, onRemove }: DeleteM
           gap: "24px",
         }}
       >
-        {/* Top row: delete icon + title + close */}
+        {/* Top row: close button */}
         <div className="flex items-start justify-between">
           <div className="flex items-center" style={{ gap: "16px" }}>
             <div
               style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "999px",
-                background: "#FEEFF2",
+                width: "48px",
+                height: "48px",
+                borderRadius: "50%",
+                background: "var(--success-text)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 flexShrink: 0,
               }}
             >
-              <Trash2 style={{ width: "20px", height: "20px", color: "#DF1C41" }} />
+              <Check style={{ width: "24px", height: "24px", color: "var(--hero-text)" }} />
             </div>
-            <p style={{ fontSize: "20px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "#DF1C41" }}>
-              Remove {applicantName}?
+            <p style={{ fontSize: "20px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
+              Application Submitted!
             </p>
           </div>
           <X
             style={{ width: "24px", height: "24px", color: "var(--placeholder-text)", cursor: "pointer", flexShrink: 0 }}
-            onClick={onKeep}
+            onClick={onClose}
           />
         </div>
 
         {/* Description */}
         <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>
-          This will permanently delete all application details entered for this applicant. You&apos;ll need to re-enter their information if you add them again.
+          Your application has been received. Save your Applicant ID to track your status.
         </p>
+
+        {/* Applicant ID + Reference */}
+        <div style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
+          <div style={{ flex: 1, minWidth: "180px", padding: "16px", borderRadius: "16px", background: "var(--accent-bg)" }}>
+            <p style={{ fontSize: "14px", fontWeight: 400, color: "var(--text-body)" }}>Applicant ID</p>
+            <p style={{ fontSize: "20px", fontWeight: 600, color: "var(--text-heading)", marginTop: "4px" }}>{applicantId}</p>
+          </div>
+          <div style={{ flex: 1, minWidth: "180px", padding: "16px", borderRadius: "16px", background: "var(--accent-bg)" }}>
+            <p style={{ fontSize: "14px", fontWeight: 400, color: "var(--text-body)" }}>Reference Number</p>
+            <p style={{ fontSize: "20px", fontWeight: 600, color: "var(--text-heading)", marginTop: "4px" }}>{referenceNumber}</p>
+          </div>
+        </div>
 
         {/* Buttons */}
         <div className="flex items-center justify-end" style={{ gap: "16px" }}>
           <button
-            onClick={onKeep}
+            onClick={onClose}
             className="flex items-center justify-center"
             style={{
               height: "48px",
@@ -88,10 +100,10 @@ export default function DeleteModal({ applicantName, onKeep, onRemove }: DeleteM
               cursor: "pointer",
             }}
           >
-            Keep applicant
+            Close
           </button>
-          <button
-            onClick={onRemove}
+          <a
+            href="/track-status"
             className="flex items-center justify-center"
             style={{
               height: "48px",
@@ -101,15 +113,17 @@ export default function DeleteModal({ applicantName, onKeep, onRemove }: DeleteM
               paddingRight: "20px",
               paddingBottom: "12px",
               paddingLeft: "20px",
-              background: "#DF1C41",
+              background: "var(--primary)",
               color: "var(--hero-text)",
               fontSize: "16px",
               fontWeight: 500,
+              textDecoration: "none",
               cursor: "pointer",
             }}
           >
-            Remove Applicant
-          </button>
+            Track Application
+            <ArrowRight style={{ width: "20px", height: "20px" }} />
+          </a>
         </div>
       </div>
     </div>

@@ -48,7 +48,7 @@ export default function Footer() {
             </span>
           </div>
           <div className="flex items-center justify-center">
-            <div style={{ width: "1px", height: "56px", backgroundColor: "#FFFFFF" }} />
+            <div style={{ width: "1px", height: "56px", backgroundColor: "var(--hero-text)" }} />
           </div>
           <div className="flex flex-col items-center justify-center text-center" style={{ padding: "16px 24px" }}>
             <span className="text-white" style={{ fontSize: "32px", fontWeight: 500, lineHeight: "135%", letterSpacing: "-0.02em" }}>
@@ -61,11 +61,11 @@ export default function Footer() {
 
           {/* Divider row */}
           <div className="flex items-center justify-start">
-            <div style={{ height: "1px", backgroundColor: "#FFFFFF", width: "calc(100% - 24px)" }} />
+            <div style={{ height: "1px", backgroundColor: "var(--hero-text)", width: "calc(100% - 24px)" }} />
           </div>
           <div />
           <div className="flex items-center justify-end">
-            <div style={{ height: "1px", backgroundColor: "#FFFFFF", width: "calc(100% - 24px)" }} />
+            <div style={{ height: "1px", backgroundColor: "var(--hero-text)", width: "calc(100% - 24px)" }} />
           </div>
 
           {/* Row 2 */}
@@ -78,7 +78,7 @@ export default function Footer() {
             </span>
           </div>
           <div className="flex items-center justify-center">
-            <div style={{ width: "1px", height: "56px", backgroundColor: "#FFFFFF" }} />
+            <div style={{ width: "1px", height: "56px", backgroundColor: "var(--hero-text)" }} />
           </div>
           <div className="flex flex-col items-center justify-center text-center" style={{ padding: "16px 24px" }}>
             <span className="text-white" style={{ fontSize: "32px", fontWeight: 500, lineHeight: "135%", letterSpacing: "-0.02em" }}>
@@ -103,7 +103,7 @@ export default function Footer() {
                 </span>
               </div>
               {index < stats.length - 1 && (
-                <div style={{ width: "1px", height: "56px", backgroundColor: "#FFFFFF" }} />
+                <div style={{ width: "1px", height: "56px", backgroundColor: "var(--hero-text)" }} />
               )}
             </div>
           ))}
@@ -112,8 +112,8 @@ export default function Footer() {
 
       {/* Main footer content */}
       <div
-        className="mx-auto bg-[#FAFAF9] px-4 py-8 md:px-10 md:py-8"
-        style={{ maxWidth: "1440px" }}
+        className="mx-auto px-4 py-8 md:px-10 md:py-8"
+        style={{ maxWidth: "1440px", background: "var(--form-bg)" }}
       >
         <div className="flex flex-col md:flex-row" style={{ gap: "32px" }}>
           {/* Column 1: Logo + description + button */}
@@ -161,7 +161,7 @@ export default function Footer() {
                 fontWeight: 500,
                 lineHeight: "140%",
                 letterSpacing: "-0.02em",
-                color: "#262626",
+                color: "var(--text-heading)",
               }}
             >
               General
@@ -191,7 +191,7 @@ export default function Footer() {
                 fontWeight: 500,
                 lineHeight: "140%",
                 letterSpacing: "-0.02em",
-                color: "#262626",
+                color: "var(--text-heading)",
               }}
             >
               Application
@@ -221,7 +221,7 @@ export default function Footer() {
                 fontWeight: 500,
                 lineHeight: "140%",
                 letterSpacing: "-0.02em",
-                color: "#262626",
+                color: "var(--text-heading)",
               }}
             >
               Policy Information

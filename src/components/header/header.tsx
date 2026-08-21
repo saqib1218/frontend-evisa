@@ -83,10 +83,10 @@ export default function Header() {
           />
           {/* Drawer panel */}
           <div
-            className="absolute right-0 top-0 h-full bg-white shadow-lg"
-            style={{ width: "280px" }}
+            className="absolute right-0 top-0 h-full shadow-lg"
+            style={{ width: "280px", background: "var(--card)" }}
           >
-            <div className="flex items-center justify-between p-4 border-b border-gray-100">
+            <div className="flex items-center justify-between p-4 border-b border-border">
               <Image
                 src={logo}
                 alt="Evisa logo"
@@ -110,7 +110,7 @@ export default function Header() {
                     <Link
                       href={link.href}
                       onClick={() => setDrawerOpen(false)}
-                      className={`block px-4 py-4 text-base transition-colors border-b border-gray-50 ${
+                      className={`block px-4 py-4 text-base transition-colors border-b border-border ${
                         isActive
                           ? "font-semibold text-primary"
                           : "font-normal text-general hover:text-primary"

@@ -61,7 +61,7 @@ export default function AboutPage() {
     <main>
       {/* Hero image section */}
       <div className="mx-auto px-4" style={{ maxWidth: "1408px" }}>
-        <div className="relative w-full md:!h-[400px]" style={{ height: "245px" }}>
+        <div className="relative w-full md:!h-[400px] hero-image-container" style={{ height: "245px" }}>
           <Image
             src={about}
             alt="About us"
@@ -69,6 +69,8 @@ export default function AboutPage() {
             className="object-cover"
             style={{ borderRadius: "16px" }}
             priority
+            sizes="(max-width: 768px) 100vw, 1408px"
+            loading="eager"
           />
           <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
             <button
@@ -78,8 +80,8 @@ export default function AboutPage() {
                 height: "40px",
                 gap: "16px",
                 background: "transparent",
-                border: "1px solid #FFFFFF",
-                color: "#FFFFFF",
+                border: "1px solid var(--hero-text)",
+                color: "var(--hero-text)",
               }}
             >
               About Us
@@ -127,7 +129,7 @@ export default function AboutPage() {
                 fontWeight: 500,
                 lineHeight: "135%",
                 letterSpacing: "-0.02em",
-                color: "#0F0F0F",
+                color: "var(--text-heading)",
                 marginTop: "12px",
               }}
             >
@@ -140,7 +142,7 @@ export default function AboutPage() {
                 fontWeight: 400,
                 lineHeight: "150%",
                 letterSpacing: "-0.01em",
-                color: "#6B6B69",
+                color: "var(--text-body)",
                 marginTop: "12px",
               }}
             >
@@ -150,19 +152,19 @@ export default function AboutPage() {
             {/* Tick items */}
             <div className="flex items-center" style={{ marginTop: "12px", gap: "8px" }}>
               <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
-              <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+              <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                 Independent service, not affiliated with any government
               </span>
             </div>
             <div className="flex items-center" style={{ marginTop: "12px", gap: "8px" }}>
               <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
-              <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+              <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                 Real specialists reviewing every application, not just a bot
               </span>
             </div>
             <div className="flex items-center" style={{ marginTop: "12px", gap: "8px" }}>
               <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
-              <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+              <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                 Honest guidance, so you know exactly where you stand
               </span>
             </div>
@@ -239,7 +241,7 @@ export default function AboutPage() {
                 fontWeight: 500,
                 lineHeight: "135%",
                 letterSpacing: "-0.02em",
-                color: "#0F0F0F",
+                color: "var(--text-heading)",
                 marginTop: "12px",
               }}
             >
@@ -252,7 +254,7 @@ export default function AboutPage() {
                 fontWeight: 400,
                 lineHeight: "150%",
                 letterSpacing: "-0.01em",
-                color: "#6B6B69",
+                color: "var(--text-body)",
                 marginTop: "12px",
               }}
             >
@@ -262,19 +264,19 @@ export default function AboutPage() {
             {/* Tick items */}
             <div className="flex items-center" style={{ marginTop: "12px", gap: "8px" }}>
               <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
-              <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+              <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                 Every application reviewed for accuracy before submission
               </span>
             </div>
             <div className="flex items-center" style={{ marginTop: "12px", gap: "8px" }}>
               <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
-              <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+              <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                 Support available around the clock, not just office hours
               </span>
             </div>
             <div className="flex items-center" style={{ marginTop: "12px", gap: "8px" }}>
               <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
-              <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "#0F0F0F" }}>
+              <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
                 Clear status updates, so you&apos;re never left guessing
               </span>
             </div>
@@ -306,7 +308,7 @@ export default function AboutPage() {
 
       {/* Why Choose Us section */}
       <div className="mx-auto" style={{ maxWidth: "1440px", paddingBottom: "120px" }}>
-        <div className="px-4 py-8 md:!px-10 md:!py-[72px]" style={{ background: "#FAFAF9", gap: "8px", paddingTop: "32px", paddingBottom: "32px" }}>
+        <div className="px-4 py-8 md:!px-10 md:!py-[72px]" style={{ background: "var(--form-bg)", gap: "8px", paddingTop: "32px", paddingBottom: "32px" }}>
           <div className="flex flex-col md:flex-row" style={{ gap: "56px" }}>
             {/* Left side - sticky on desktop, static on mobile */}
             <div className="flex flex-col md:!max-w-[540px] md:flex-shrink-0 md:sticky md:top-10 md:h-fit md:self-start" style={{ flexShrink: 0 }}>
@@ -330,7 +332,7 @@ export default function AboutPage() {
                   fontStyle: "italic",
                   lineHeight: "135%",
                   letterSpacing: "-0.02em",
-                  color: "#0F0F0F",
+                  color: "var(--text-heading)",
                   marginTop: "12px",
                 }}
               >
@@ -343,7 +345,7 @@ export default function AboutPage() {
                   fontWeight: 400,
                   lineHeight: "140%",
                   letterSpacing: "-0.02em",
-                  color: "#575757",
+                  color: "var(--text-body)",
                   marginTop: "24px",
                 }}
               >
@@ -402,7 +404,7 @@ export default function AboutPage() {
                             width: "48px",
                             height: "48px",
                             borderRadius: "1000px",
-                            background: isActive ? "var(--primary)" : "#FFFFFF",
+                            background: isActive ? "var(--primary)" : "var(--input-bg)",
                             zIndex: 1,
                             transition: "background 0.3s ease",
                           }}
@@ -413,7 +415,7 @@ export default function AboutPage() {
                               fontSize: "18px",
                               fontWeight: 500,
                               lineHeight: "26px",
-                              color: isActive ? "#FFFFFF" : "var(--primary)",
+                              color: isActive ? "var(--hero-text)" : "var(--primary)",
                               transition: "color 0.3s ease",
                             }}
                           >
@@ -429,7 +431,7 @@ export default function AboutPage() {
                           maxWidth: "100%",
                           gap: "20px",
                           borderRadius: "12px",
-                          background: isActive ? "#EFF4F9" : "#FFFFFF",
+                          background: isActive ? "var(--accent-bg)" : "var(--input-bg)",
                           flex: 1,
                           border: isActive ? "1px solid var(--primary)" : "1px solid transparent",
                           transition: "border 0.3s ease",
@@ -441,7 +443,7 @@ export default function AboutPage() {
                             width: "48px",
                             height: "48px",
                             borderRadius: "1000px",
-                            background: isActive ? "var(--primary)" : "#EFF4F9",
+                            background: isActive ? "var(--primary)" : "var(--accent-bg)",
                             transition: "background 0.3s ease",
                           }}
                         >
@@ -457,7 +459,7 @@ export default function AboutPage() {
                             fontWeight: 500,
                             lineHeight: "140%",
                             letterSpacing: "-0.02em",
-                            color: isActive ? "var(--primary)" : "#0F0F0F",
+                            color: isActive ? "var(--primary)" : "var(--text-heading)",
                             marginTop: "20px",
                             transition: "color 0.3s ease",
                           }}
@@ -470,7 +472,7 @@ export default function AboutPage() {
                             fontWeight: 400,
                             lineHeight: "150%",
                             letterSpacing: "-0.01em",
-                            color: "#575757",
+                            color: "var(--text-body)",
                           }}
                         >
                           {card.desc}
