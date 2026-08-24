@@ -395,7 +395,77 @@ export default function ApplyPage() {
 
   const days = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0"));
   const months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
-  const years = Array.from({ length: 100 }, (_, i) => String(2025 - i));
+
+  const currentYear = new Date().getFullYear();
+  const currentMonth = String(new Date().getMonth() + 1).padStart(2, "0");
+  const currentDay = String(new Date().getDate()).padStart(2, "0");
+
+  // DOB: 1925 to current year
+  const dobYears = Array.from({ length: currentYear - 1925 + 1 }, (_, i) => String(currentYear - i));
+  // Issue: 1925 to current year
+  const issueYears = Array.from({ length: currentYear - 1925 + 1 }, (_, i) => String(currentYear - i));
+  // Expiry: current year to current year + 20
+  const expiryYears = Array.from({ length: 21 }, (_, i) => String(currentYear + i));
+
+  // Helper: get valid days for a given year/month combination
+  const getValidDays = (year: string | null, month: string | null) => {
+    if (!year || !month) return days;
+    const numDays = new Date(parseInt(year), parseInt(month), 0).getDate();
+    return Array.from({ length: numDays }, (_, i) => String(i + 1).padStart(2, "0"));
+  };
+
+  // Helper: get valid months for DOB (up to current month if same year)
+  const getValidMonthsDOB = (year: string | null) => {
+    if (year && parseInt(year) === currentYear) {
+      return months.filter((m) => parseInt(m) <= parseInt(currentMonth));
+    }
+    return months;
+  };
+
+  // Helper: get valid days for DOB
+  const getValidDaysDOB = (year: string | null, month: string | null) => {
+    const validDays = getValidDays(year, month);
+    if (year && parseInt(year) === currentYear && month && parseInt(month) === parseInt(currentMonth)) {
+      return validDays.filter((d) => parseInt(d) <= parseInt(currentDay));
+    }
+    return validDays;
+  };
+
+  // Helper: get valid months for issue date (up to current month if same year)
+  const getValidMonthsIssue = (year: string | null) => {
+    if (year && parseInt(year) === currentYear) {
+      return months.filter((m) => parseInt(m) <= parseInt(currentMonth));
+    }
+    return months;
+  };
+
+  // Helper: get valid days for issue date
+  const getValidDaysIssue = (year: string | null, month: string | null) => {
+    const validDays = getValidDays(year, month);
+    if (year && parseInt(year) === currentYear && month && parseInt(month) === parseInt(currentMonth)) {
+      return validDays.filter((d) => parseInt(d) <= parseInt(currentDay));
+    }
+    return validDays;
+  };
+
+  // Helper: get valid months for expiry (from issue month if same year)
+  const getValidMonthsExpiry = (year: string | null, issueDate: { day: string | null; month: string | null; year: string | null } | undefined) => {
+    if (!year || !issueDate?.year) return months;
+    if (parseInt(year) === parseInt(issueDate.year)) {
+      return months.filter((m) => issueDate.month ? parseInt(m) >= parseInt(issueDate.month) : months);
+    }
+    return months;
+  };
+
+  // Helper: get valid days for expiry (from issue day if same year+month)
+  const getValidDaysExpiry = (year: string | null, month: string | null, issueDate: { day: string | null; month: string | null; year: string | null } | undefined) => {
+    const validDays = getValidDays(year, month);
+    if (!year || !month || !issueDate?.year || !issueDate?.month || !issueDate?.day) return validDays;
+    if (parseInt(year) === parseInt(issueDate.year) && parseInt(month) === parseInt(issueDate.month)) {
+      return validDays.filter((d) => parseInt(d) >= parseInt(issueDate.day));
+    }
+    return validDays;
+  };
 
   const addApplicant = () => {
     setApplicants([...applicants, { id: nextId, expanded: true, saved: false }]);
@@ -823,9 +893,9 @@ export default function ApplyPage() {
                             <div style={{ flex: 1 }}>
                               <label style={{ ...labelStyle }}>Date of birth <span style={{ color: "#EF4444" }}>*</span></label>
                               <div className="flex" style={{ gap: "8px", marginTop: "8px" }}>
-                                <DateDropdown placeholder="DD" options={days} label="Day" value={applicantDOB[applicant.id]?.day ?? null} onChange={(v) => updateApplicantDOB(applicant.id, "day", v)} />
-                                <DateDropdown placeholder="MM" options={months} label="Month" value={applicantDOB[applicant.id]?.month ?? null} onChange={(v) => updateApplicantDOB(applicant.id, "month", v)} />
-                                <DateDropdown placeholder="YYYY" options={years} label="Year" value={applicantDOB[applicant.id]?.year ?? null} onChange={(v) => updateApplicantDOB(applicant.id, "year", v)} />
+                                <DateDropdown placeholder="DD" options={getValidDaysDOB(applicantDOB[applicant.id]?.year ?? null, applicantDOB[applicant.id]?.month ?? null)} label="Day" value={applicantDOB[applicant.id]?.day ?? null} onChange={(v) => updateApplicantDOB(applicant.id, "day", v)} />
+                                <DateDropdown placeholder="MM" options={getValidMonthsDOB(applicantDOB[applicant.id]?.year ?? null)} label="Month" value={applicantDOB[applicant.id]?.month ?? null} onChange={(v) => { updateApplicantDOB(applicant.id, "month", v); if (applicantDOB[applicant.id]?.day && v) { const maxDay = new Date(parseInt(applicantDOB[applicant.id]?.year || currentYear), parseInt(v), 0).getDate(); if (parseInt(applicantDOB[applicant.id].day!) > maxDay) updateApplicantDOB(applicant.id, "day", null); } }} />
+                                <DateDropdown placeholder="YYYY" options={dobYears} label="Year" value={applicantDOB[applicant.id]?.year ?? null} onChange={(v) => { updateApplicantDOB(applicant.id, "year", v); if (applicantDOB[applicant.id]?.month && v && parseInt(v) === currentYear && parseInt(applicantDOB[applicant.id].month!) > parseInt(currentMonth)) updateApplicantDOB(applicant.id, "month", null); }} />
                               </div>
                             </div>
                             <div style={{ flex: 1 }}>
@@ -940,17 +1010,17 @@ export default function ApplyPage() {
                             <div style={{ flex: 1 }}>
                               <label style={{ ...labelStyle }}>Date of issue <span style={{ color: "#EF4444" }}>*</span></label>
                               <div className="flex" style={{ gap: "8px", marginTop: "8px" }}>
-                                <DateDropdown placeholder="DD" options={days} label="Day" value={passportData[applicant.id]?.dateIssue?.day ?? null} onChange={(v) => updatePassportDateField(applicant.id, "dateIssue", "day", v)} />
-                                <DateDropdown placeholder="MM" options={months} label="Month" value={passportData[applicant.id]?.dateIssue?.month ?? null} onChange={(v) => updatePassportDateField(applicant.id, "dateIssue", "month", v)} />
-                                <DateDropdown placeholder="YYYY" options={years} label="Year" value={passportData[applicant.id]?.dateIssue?.year ?? null} onChange={(v) => updatePassportDateField(applicant.id, "dateIssue", "year", v)} />
+                                <DateDropdown placeholder="DD" options={getValidDaysIssue(passportData[applicant.id]?.dateIssue?.year ?? null, passportData[applicant.id]?.dateIssue?.month ?? null)} label="Day" value={passportData[applicant.id]?.dateIssue?.day ?? null} onChange={(v) => updatePassportDateField(applicant.id, "dateIssue", "day", v)} />
+                                <DateDropdown placeholder="MM" options={getValidMonthsIssue(passportData[applicant.id]?.dateIssue?.year ?? null)} label="Month" value={passportData[applicant.id]?.dateIssue?.month ?? null} onChange={(v) => { updatePassportDateField(applicant.id, "dateIssue", "month", v); if (passportData[applicant.id]?.dateIssue?.day && v) { const maxDay = new Date(parseInt(passportData[applicant.id]?.dateIssue?.year || currentYear), parseInt(v), 0).getDate(); if (parseInt(passportData[applicant.id].dateIssue!.day!) > maxDay) updatePassportDateField(applicant.id, "dateIssue", "day", null); } }} />
+                                <DateDropdown placeholder="YYYY" options={issueYears} label="Year" value={passportData[applicant.id]?.dateIssue?.year ?? null} onChange={(v) => { updatePassportDateField(applicant.id, "dateIssue", "year", v); if (passportData[applicant.id]?.dateIssue?.month && v && parseInt(v) === currentYear && parseInt(passportData[applicant.id].dateIssue!.month!) > parseInt(currentMonth)) updatePassportDateField(applicant.id, "dateIssue", "month", null); }} />
                               </div>
                             </div>
                             <div style={{ flex: 1 }}>
                               <label style={{ ...labelStyle }}>Date of expiry <span style={{ color: "#EF4444" }}>*</span></label>
                               <div className="flex" style={{ gap: "8px", marginTop: "8px" }}>
-                                <DateDropdown placeholder="DD" options={days} label="Day" value={passportData[applicant.id]?.dateExpiry?.day ?? null} onChange={(v) => updatePassportDateField(applicant.id, "dateExpiry", "day", v)} />
-                                <DateDropdown placeholder="MM" options={months} label="Month" value={passportData[applicant.id]?.dateExpiry?.month ?? null} onChange={(v) => updatePassportDateField(applicant.id, "dateExpiry", "month", v)} />
-                                <DateDropdown placeholder="YYYY" options={years} label="Year" value={passportData[applicant.id]?.dateExpiry?.year ?? null} onChange={(v) => updatePassportDateField(applicant.id, "dateExpiry", "year", v)} />
+                                <DateDropdown placeholder="DD" options={getValidDaysExpiry(passportData[applicant.id]?.dateExpiry?.year ?? null, passportData[applicant.id]?.dateExpiry?.month ?? null, passportData[applicant.id]?.dateIssue)} label="Day" value={passportData[applicant.id]?.dateExpiry?.day ?? null} onChange={(v) => updatePassportDateField(applicant.id, "dateExpiry", "day", v)} />
+                                <DateDropdown placeholder="MM" options={getValidMonthsExpiry(passportData[applicant.id]?.dateExpiry?.year ?? null, passportData[applicant.id]?.dateIssue)} label="Month" value={passportData[applicant.id]?.dateExpiry?.month ?? null} onChange={(v) => { updatePassportDateField(applicant.id, "dateExpiry", "month", v); if (passportData[applicant.id]?.dateExpiry?.day && v) { const maxDay = new Date(parseInt(passportData[applicant.id]?.dateExpiry?.year || currentYear), parseInt(v), 0).getDate(); if (parseInt(passportData[applicant.id].dateExpiry!.day!) > maxDay) updatePassportDateField(applicant.id, "dateExpiry", "day", null); } }} />
+                                <DateDropdown placeholder="YYYY" options={expiryYears} label="Year" value={passportData[applicant.id]?.dateExpiry?.year ?? null} onChange={(v) => { updatePassportDateField(applicant.id, "dateExpiry", "year", v); const issue = passportData[applicant.id]?.dateIssue; if (issue?.year && v && parseInt(v) < parseInt(issue.year)) { updatePassportDateField(applicant.id, "dateExpiry", "year", null); updatePassportDateField(applicant.id, "dateExpiry", "month", null); updatePassportDateField(applicant.id, "dateExpiry", "day", null); } else if (issue?.year && issue?.month && v && parseInt(v) === parseInt(issue.year) && parseInt(issue.month) > parseInt(passportData[applicant.id]?.dateExpiry?.month || "13")) { updatePassportDateField(applicant.id, "dateExpiry", "month", null); updatePassportDateField(applicant.id, "dateExpiry", "day", null); } }} />
                               </div>
                             </div>
                           </div>
