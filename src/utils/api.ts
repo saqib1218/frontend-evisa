@@ -82,6 +82,26 @@ export const api = {
     });
   },
 
+  async createCheckoutSession(payload: {
+    applicants: ApplicantPayload[];
+    processingType: string;
+    confirmInfo: boolean;
+    privacyNotice: boolean;
+  }): Promise<{ url: string }> {
+    return request("/payments/create-checkout-session", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+
+  async getPaymentStatus(sessionId: string): Promise<{
+    status: "pending" | "paid" | "failed";
+    applicantId?: string;
+    referenceNumber?: string;
+  }> {
+    return request(`/payments/status/${encodeURIComponent(sessionId)}`);
+  },
+
   async trackApplication(applicantId: string, email: string) {
     return request("/applications/track", {
       method: "POST",

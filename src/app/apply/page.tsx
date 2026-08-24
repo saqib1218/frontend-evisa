@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { ChevronRight, ChevronDown, ChevronUp, Trash2, Globe, Check, ArrowRight, ArrowLeft, Plus, Upload, Clock, DollarSign, User } from "lucide-react";
 import DeleteModal from "./Models/Deletemodal/DeleteModal";
-import SuccessModal from "./Models/SuccessModal/SuccessModal";
 import about from "@/images/about.svg";
 import btick from "@/images/btick.svg";
 import pasport1 from "@/images/pasport1.svg";
@@ -23,7 +22,7 @@ import r6 from "@/images/r6.svg";
 import r7 from "@/images/r7.svg";
 import r8 from "@/images/r8.svg";
 import { countries, type Country } from "@/data/countries";
-import { api, type SubmitApplicationPayload } from "@/utils/api";
+import { api } from "@/utils/api";
 import { useToast, ToastContainer } from "@/utils/toast";
 
 const steps = ["Applicant", "Passport", "Passport image", "Your photo", "Review", "Payment"];
@@ -655,14 +654,13 @@ export default function ApplyPage() {
 
   const { toasts, showToast, removeToast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitResult, setSubmitResult] = useState<{ applicantId: string; referenceNumber: string } | null>(null);
 
   const formatDateForApi = (d: { day: string | null; month: string | null; year: string | null } | undefined) => {
     if (!d || !d.day || !d.month || !d.year) return "";
     return `${d.year}-${d.month.padStart(2, "0")}-${d.day.padStart(2, "0")}`;
   };
 
-  const buildPayload = (): SubmitApplicationPayload => {
+  const buildPayload = () => {
     const applicantsData = applicants.map((app) => {
       const id = app.id;
       const names = applicantNames[id] || { firstName: "", lastName: "" };
@@ -695,32 +693,20 @@ export default function ApplyPage() {
       processingType: selectedProcessing,
       confirmInfo: reviewConsent.confirmInfo,
       privacyNotice: reviewConsent.privacyNotice,
-      payment: {
-        applicantCount,
-        processingType: selectedProcessing,
-        feePerApplicant: selectedPackage.fee,
-        processingFeePerApplicant: selectedPackage.processing,
-        feeTotal,
-        processingTotal,
-        grandTotal,
-      },
     };
   };
 
   const handleSubmit = async () => {
+    if (isSubmitting) return;
     setIsSubmitting(true);
-    setSubmitResult(null);
     try {
       const payload = buildPayload();
-      const result = await api.submitApplication(payload);
-      setSubmitResult({
-        applicantId: result.applicant_id,
-        referenceNumber: result.reference_number,
-      });
-      showToast("Application submitted successfully!", "success");
+      const { url } = await api.createCheckoutSession(payload);
+      // Redirect to Stripe Checkout — the application is only saved to the
+      // database after Stripe confirms payment via webhook.
+      window.location.href = url;
     } catch (err: any) {
-      showToast(err.message || "Failed to submit application. Please try again.", "error");
-    } finally {
+      showToast(err.message || "Failed to start payment. Please try again.", "error");
       setIsSubmitting(false);
     }
   };
@@ -745,11 +731,6 @@ export default function ApplyPage() {
     setPhotoImages({});
     setPassportData({});
     setSelectedProcessing("standard");
-    setSubmitResult(null);
-  };
-
-  const handleCloseSuccess = () => {
-    resetForm();
   };
 
   return (
@@ -2034,7 +2015,7 @@ export default function ApplyPage() {
                       cursor: isSubmitting ? "not-allowed" : "pointer",
                     }}
                   >
-                    {isSubmitting ? "Submitting..." : "Pay & Submit application"}
+                    {isSubmitting ? "Processing..." : "Pay & Submit"}
                     <ArrowRight style={{ width: "20px", height: "20px" }} />
                   </button>
                 </>
@@ -2536,13 +2517,6 @@ export default function ApplyPage() {
             deleteApplicant(deleteModalApplicant!);
             setDeleteModalApplicant(null);
           }}
-        />
-      )}
-      {submitResult && (
-        <SuccessModal
-          applicantId={submitResult.applicantId}
-          referenceNumber={submitResult.referenceNumber}
-          onClose={handleCloseSuccess}
         />
       )}
       <ToastContainer toasts={toasts} removeToast={removeToast} />
