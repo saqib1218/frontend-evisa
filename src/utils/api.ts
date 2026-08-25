@@ -135,4 +135,17 @@ export const api = {
       body: JSON.stringify({ refreshToken }),
     });
   },
+
+  async submitQuery(data: {
+    fullName: string;
+    email: string;
+    phone: string;
+    city: string;
+    message: string;
+  }) {
+    return request("/queries", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  },
 };

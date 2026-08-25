@@ -366,7 +366,7 @@ export default function ApplyPage() {
   };
 
   // Processing speed selection
-  const [selectedProcessing, setSelectedProcessing] = useState<"standard" | "express" | "fastest" | "testing">("standard");
+  const [selectedProcessing, setSelectedProcessing] = useState<"standard" | "express" | "fastest">("standard");
 
   // Delete modal
   const [deleteModalApplicant, setDeleteModalApplicant] = useState<number | null>(null);
@@ -726,7 +726,6 @@ export default function ApplyPage() {
     standard: { total: 89.90, fee: 59.00, processing: 30.90, label: "2-5 Days processing" },
     express: { total: 119.90, fee: 89.00, processing: 30.90, label: "6-24h processing" },
     fastest: { total: 139.90, fee: 109.00, processing: 30.90, label: "1h processing" },
-    testing: { total: 2.00, fee: 2.00, processing: 0.00, label: "Testing - $2 only" },
   };
   const selectedPackage = processingPackages[selectedProcessing];
   const applicantCount = applicants.length;
@@ -1884,23 +1883,6 @@ export default function ApplyPage() {
                     </div>
                   </div>
 
-                  {/* Option 4: Testing - $2 only */}
-                  <div style={{ padding: "16px", borderRadius: "16px", border: "1px solid var(--form-border)", display: "flex", alignItems: "flex-start", gap: "12px", cursor: "pointer", background: "var(--card)" }}
-                    onClick={() => setSelectedProcessing("testing")}
-                  >
-                    <div style={{ width: "24px", height: "24px", borderRadius: "50%", border: selectedProcessing === "testing" ? "2px solid var(--primary)" : "2px solid var(--form-border)", background: selectedProcessing === "testing" ? "var(--primary)" : "var(--input-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "2px" }}>
-                      {selectedProcessing === "testing" && <Check style={{ width: "16px", height: "16px", color: "var(--hero-text)" }} />}
-                    </div>
-                    <div>
-                      <div className="flex items-center" style={{ gap: "10px" }}>
-                        <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>Testing - $2 only</p>
-                        <span style={{ display: "inline-flex", alignItems: "center", gap: "10px", height: "30px", borderRadius: "99px", paddingTop: "4px", paddingRight: "8px", paddingBottom: "4px", paddingLeft: "8px", background: "var(--warning-bg)", fontSize: "14px", fontWeight: 400, lineHeight: "160%", letterSpacing: "0em", color: "var(--warning-text)" }}>
-                          Test
-                        </span>
-                      </div>
-                      <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)", marginTop: "4px" }}>$2.00</p>
-                    </div>
-                  </div>
                 </div>
               )}
             </div>
@@ -2368,7 +2350,7 @@ export default function ApplyPage() {
                   <div className="flex items-start" style={{ gap: "8px", marginTop: "8px" }}>
                     <Image src={pt} alt="Tick" width={24} height={24} style={{ width: "24px", height: "24px", flexShrink: 0, marginTop: "2px" }} />
                     <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--text-heading)" }}>
-                      The image is not acceptable: it is visible and in frame.
+                      The image is acceptable: it is visible and in frame.
                     </p>
                   </div>
                 </div>
