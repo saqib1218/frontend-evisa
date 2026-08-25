@@ -50,9 +50,8 @@ export default function Home() {
                 className="mt-4"
                 style={{ fontSize: "18px", fontWeight: 400, color: "var(--hero-text)" }}
               >
-                Fast, guided applications for Canada, the USA, Australia, New
-                Zealand and the UK reviewed by our specialists before
-                submission.
+                Fast, guided applications for the UK, reviewed by our
+                specialists before submission.
               </p>
             </div>
           </div>
@@ -75,7 +74,7 @@ export default function Home() {
               className="mt-4 text-center"
               style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--hero-text)", maxWidth: "320px", textAlign: "center" }}
             >
-              Fast, guided applications for Canada, the USA, Australia, New Zealand and the UK reviewed by our specialists before submission.
+              Fast, guided applications for the UK, reviewed by our specialists before submission.
             </p>
             <div className="mt-6 w-full flex justify-center">
               <Applycard />

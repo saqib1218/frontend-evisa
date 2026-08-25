@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { ChevronRight, ChevronDown, ChevronUp, Trash2, Globe, Check, ArrowRight, ArrowLeft, Plus, Upload, Clock, DollarSign, User } from "lucide-react";
+import { ChevronRight, ChevronDown, ChevronUp, Trash2, Globe, Check, ArrowRight, ArrowLeft, Plus, Upload, Clock, DollarSign, User, Search } from "lucide-react";
 import DeleteModal from "./Models/Deletemodal/DeleteModal";
 import about from "@/images/about.svg";
 import btick from "@/images/btick.svg";
@@ -59,20 +59,35 @@ const fieldStyle = {
 function CountryDropdown({ placeholder, value: externalValue, onChange }: { placeholder: string; value?: Country | null; onChange?: (v: Country | null) => void }) {
   const [open, setOpen] = useState(false);
   const [internalValue, setInternalValue] = useState<Country | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const value = externalValue !== undefined ? externalValue : internalValue;
   const setValue = (v: Country | null) => {
     setInternalValue(v);
     onChange?.(v);
   };
   const ref = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+        setSearchQuery("");
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    if (open && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [open]);
+
+  const filteredCountries = searchQuery
+    ? countries.filter((c) => c.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    : countries;
 
   return (
     <div ref={ref} className="relative">
@@ -90,11 +105,25 @@ function CountryDropdown({ placeholder, value: externalValue, onChange }: { plac
       </button>
       {open && (
         <div className="absolute z-50 mt-2 max-h-60 w-full overflow-y-auto rounded-2xl shadow-lg [&::-webkit-scrollbar]:hidden [scrollbar-width:none]" style={{ background: "var(--input-bg)", border: "1px solid var(--form-border)" }}>
-          {countries.map((country) => (
+          <div className="sticky top-0" style={{ background: "var(--input-bg)", padding: "8px", borderBottom: "1px solid var(--form-border)" }}>
+            <div className="flex items-center gap-2 rounded-full px-3" style={{ background: "var(--form-bg)", height: "36px" }}>
+              <Search style={{ width: "14px", height: "14px", color: "var(--icon-muted)" }} />
+              <input
+                ref={inputRef}
+                type="text"
+                placeholder="Search country..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1 bg-transparent outline-none"
+                style={{ fontSize: "14px", color: "var(--text-heading)" }}
+              />
+            </div>
+          </div>
+          {filteredCountries.map((country) => (
             <button
               key={country.code}
               type="button"
-              onClick={() => { setValue(country); setOpen(false); }}
+              onClick={() => { setValue(country); setOpen(false); setSearchQuery(""); }}
               className="dropdown-option flex w-full items-center gap-3 px-4 py-3 text-left text-base hover:opacity-80"
               style={{ color: "var(--text-heading)" }}
             >
@@ -103,6 +132,11 @@ function CountryDropdown({ placeholder, value: externalValue, onChange }: { plac
               {value?.code === country.code && <Check className="h-4 w-4" style={{ color: "var(--primary)" }} />}
             </button>
           ))}
+          {filteredCountries.length === 0 && (
+            <div className="px-4 py-3 text-center" style={{ color: "var(--icon-muted)", fontSize: "14px" }}>
+              No countries found
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -253,6 +287,17 @@ function YesNoToggle({ value, onChange }: { value: "yes" | "no"; onChange: (v: "
 
 export default function ApplyPage() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [showErrors, setShowErrors] = useState(false);
+  const topRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [currentStep]);
+
   const [applicants, setApplicants] = useState<{ id: number; expanded: boolean; saved: boolean }[]>([
     { id: 1, expanded: true, saved: false },
   ]);
@@ -496,6 +541,10 @@ export default function ApplyPage() {
   const multipleApplicants = applicants.length > 1;
   const allApplicantsSaved = !multipleApplicants || applicants.every((a) => a.saved);
 
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  };
+
   const isApplicantValid = (id: number) => {
     const name = applicantNames[id];
     const email = applicantEmails[id];
@@ -506,6 +555,7 @@ export default function ApplyPage() {
       name?.firstName?.trim() &&
       name?.lastName?.trim() &&
       email?.trim() &&
+      isValidEmail(email) &&
       dob?.day &&
       dob?.month &&
       dob?.year &&
@@ -736,6 +786,7 @@ export default function ApplyPage() {
 
   return (
     <main>
+      <div ref={topRef} />
       {/* Hero image section */}
       <div className="mx-auto px-4" style={{ maxWidth: "1408px" }}>
         <div className="relative w-full md:!h-[400px] hero-image-container" style={{ height: "245px" }}>
@@ -840,8 +891,14 @@ export default function ApplyPage() {
                           <div style={{ marginTop: "24px" }}>
                             <label style={{ ...labelStyle }}>Email Address <span style={{ color: "#EF4444" }}>*</span></label>
                             <div style={{ marginTop: "8px" }}>
-                              <input type="email" placeholder="john@gmail.com" style={{ ...fieldStyle }} value={applicantEmails[applicant.id] || ""} onChange={(e) => updateApplicantEmail(applicant.id, e.target.value)} />
+                              <input type="email" placeholder="john@gmail.com" style={{ ...fieldStyle, ...(showErrors && applicantEmails[applicant.id] && !isValidEmail(applicantEmails[applicant.id]) ? { border: "1px solid var(--error-text)" } : {}) }} value={applicantEmails[applicant.id] || ""} onChange={(e) => updateApplicantEmail(applicant.id, e.target.value)} />
                             </div>
+                            {showErrors && applicantEmails[applicant.id] && !isValidEmail(applicantEmails[applicant.id]) && (
+                              <p style={{ ...helperStyle, marginTop: "4px", color: "var(--error-text)" }}>Please enter a valid email address.</p>
+                            )}
+                            {showErrors && !applicantEmails[applicant.id]?.trim() && (
+                              <p style={{ ...helperStyle, marginTop: "4px", color: "var(--error-text)" }}>Email address is required.</p>
+                            )}
                             <p style={{ ...helperStyle, marginTop: "8px" }}>Used to send your approval confirmation and any updates about your application.</p>
                           </div>
 
@@ -849,8 +906,14 @@ export default function ApplyPage() {
                           <div style={{ marginTop: "24px" }}>
                             <label style={{ ...labelStyle }}>Phone Number <span style={{ color: "#EF4444" }}>*</span></label>
                             <div style={{ marginTop: "8px" }}>
-                              <input type="tel" placeholder="+1 234 567 8900" style={{ ...fieldStyle }} value={applicantPhones[applicant.id] || ""} onChange={(e) => updateApplicantPhone(applicant.id, e.target.value)} />
+                              <input type="tel" placeholder="+1 234 567 8900" style={{ ...fieldStyle, ...(showErrors && !applicantPhones[applicant.id]?.trim() ? { border: "1px solid var(--error-text)" } : {}) }} value={applicantPhones[applicant.id] || ""} onChange={(e) => { const val = e.target.value.replace(/[^0-9+\s\-()]/g, ""); updateApplicantPhone(applicant.id, val); }} />
                             </div>
+                            {showErrors && !applicantPhones[applicant.id]?.trim() && (
+                              <p style={{ ...helperStyle, marginTop: "4px", color: "var(--error-text)" }}>Phone number is required.</p>
+                            )}
+                            {showErrors && applicantPhones[applicant.id]?.trim() && !/^[0-9+\s\-()]+$/.test(applicantPhones[applicant.id].trim()) && (
+                              <p style={{ ...helperStyle, marginTop: "4px", color: "var(--error-text)" }}>Please enter a valid phone number (numbers only).</p>
+                            )}
                             <p style={{ ...helperStyle, marginTop: "8px" }}>Used to contact you about your application if needed.</p>
                           </div>
 
@@ -859,14 +922,20 @@ export default function ApplyPage() {
                             <div style={{ flex: 1 }}>
                               <label style={{ ...labelStyle }}>First name(s) <span style={{ color: "#EF4444" }}>*</span></label>
                               <div style={{ marginTop: "8px" }}>
-                                <input type="text" placeholder="As shown on your passport" style={{ ...fieldStyle }} value={applicantNames[applicant.id]?.firstName || ""} onChange={(e) => updateApplicantName(applicant.id, "firstName", e.target.value)} />
+                                <input type="text" placeholder="As shown on your passport" style={{ ...fieldStyle, ...(showErrors && !applicantNames[applicant.id]?.firstName?.trim() ? { border: "1px solid var(--error-text)" } : {}) }} value={applicantNames[applicant.id]?.firstName || ""} onChange={(e) => updateApplicantName(applicant.id, "firstName", e.target.value)} />
                               </div>
+                              {showErrors && !applicantNames[applicant.id]?.firstName?.trim() && (
+                                <p style={{ ...helperStyle, marginTop: "4px", color: "var(--error-text)" }}>First name is required.</p>
+                              )}
                             </div>
                             <div style={{ flex: 1 }}>
                               <label style={{ ...labelStyle }}>Last name (surname) <span style={{ color: "#EF4444" }}>*</span></label>
                               <div style={{ marginTop: "8px" }}>
-                                <input type="text" placeholder="As shown on your passport" style={{ ...fieldStyle }} value={applicantNames[applicant.id]?.lastName || ""} onChange={(e) => updateApplicantName(applicant.id, "lastName", e.target.value)} />
+                                <input type="text" placeholder="As shown on your passport" style={{ ...fieldStyle, ...(showErrors && !applicantNames[applicant.id]?.lastName?.trim() ? { border: "1px solid var(--error-text)" } : {}) }} value={applicantNames[applicant.id]?.lastName || ""} onChange={(e) => updateApplicantName(applicant.id, "lastName", e.target.value)} />
                               </div>
+                              {showErrors && !applicantNames[applicant.id]?.lastName?.trim() && (
+                                <p style={{ ...helperStyle, marginTop: "4px", color: "var(--error-text)" }}>Last name is required.</p>
+                              )}
                             </div>
                           </div>
 
@@ -879,12 +948,18 @@ export default function ApplyPage() {
                                 <DateDropdown placeholder="MM" options={getValidMonthsDOB(applicantDOB[applicant.id]?.year ?? null)} label="Month" value={applicantDOB[applicant.id]?.month ?? null} onChange={(v) => { updateApplicantDOB(applicant.id, "month", v); if (applicantDOB[applicant.id]?.day && v) { const maxDay = new Date(parseInt(applicantDOB[applicant.id]?.year || String(currentYear)), parseInt(v), 0).getDate(); if (parseInt(applicantDOB[applicant.id].day!) > maxDay) updateApplicantDOB(applicant.id, "day", null); } }} />
                                 <DateDropdown placeholder="YYYY" options={dobYears} label="Year" value={applicantDOB[applicant.id]?.year ?? null} onChange={(v) => { updateApplicantDOB(applicant.id, "year", v); if (applicantDOB[applicant.id]?.month && v && parseInt(v) === currentYear && parseInt(applicantDOB[applicant.id].month!) > parseInt(currentMonth)) updateApplicantDOB(applicant.id, "month", null); }} />
                               </div>
+                              {showErrors && (!applicantDOB[applicant.id]?.day || !applicantDOB[applicant.id]?.month || !applicantDOB[applicant.id]?.year) && (
+                                <p style={{ ...helperStyle, marginTop: "4px", color: "var(--error-text)" }}>Date of birth is required.</p>
+                              )}
                             </div>
                             <div style={{ flex: 1 }}>
                               <label style={{ ...labelStyle }}>Gender<span style={{ color: "#EF4444" }}>*</span></label>
                               <div style={{ marginTop: "8px" }}>
                                 <GenericDropdown placeholder="Select" options={["Male", "Female", "Other", "Prefer not to say"]} value={applicantGender[applicant.id] ?? null} onChange={(v) => updateApplicantGender(applicant.id, v)} />
                               </div>
+                              {showErrors && !applicantGender[applicant.id] && (
+                                <p style={{ ...helperStyle, marginTop: "4px", color: "var(--error-text)" }}>Gender is required.</p>
+                              )}
                             </div>
                           </div>
 
@@ -894,6 +969,9 @@ export default function ApplyPage() {
                             <div style={{ marginTop: "8px" }}>
                               <CountryDropdown placeholder="Select country" value={applicantCountryOfBirth[applicant.id] ?? null} onChange={(v) => updateApplicantCountryOfBirth(applicant.id, v)} />
                             </div>
+                            {showErrors && !applicantCountryOfBirth[applicant.id] && (
+                              <p style={{ ...helperStyle, marginTop: "4px", color: "var(--error-text)" }}>Country of birth is required.</p>
+                            )}
                           </div>
 
                           {/* Save button */}
@@ -976,14 +1054,20 @@ export default function ApplyPage() {
                             <div style={{ marginTop: "8px" }}>
                               <CountryDropdown placeholder="Select passport nationality" value={passportData[applicant.id]?.nationality ?? null} onChange={(v) => updatePassportData(applicant.id, "nationality", v)} />
                             </div>
+                            {showErrors && !passportData[applicant.id]?.nationality && (
+                              <p style={{ ...helperStyle, marginTop: "4px", color: "var(--error-text)" }}>Nationality is required.</p>
+                            )}
                           </div>
 
                           {/* Passport number */}
                           <div style={{ marginTop: "24px" }}>
                             <label style={{ ...labelStyle }}>Passport number <span style={{ color: "#EF4444" }}>*</span></label>
                             <div style={{ marginTop: "8px" }}>
-                              <input type="text" placeholder="xxxxxxxxx" style={{ ...fieldStyle }} value={passportData[applicant.id]?.passportNumber || ""} onChange={(e) => updatePassportData(applicant.id, "passportNumber", e.target.value)} />
+                              <input type="text" maxLength={20} placeholder="xxxxxxxxx" style={{ ...fieldStyle, ...(showErrors && !passportData[applicant.id]?.passportNumber?.trim() ? { border: "1px solid var(--error-text)" } : {}) }} value={passportData[applicant.id]?.passportNumber || ""} onChange={(e) => updatePassportData(applicant.id, "passportNumber", e.target.value)} />
                             </div>
+                            {showErrors && !passportData[applicant.id]?.passportNumber?.trim() && (
+                              <p style={{ ...helperStyle, marginTop: "4px", color: "var(--error-text)" }}>Passport number is required.</p>
+                            )}
                             <p style={{ ...helperStyle, marginTop: "8px" }}>Typically 8–11 characters. Use letters and numbers exactly as printed.</p>
                           </div>
 
@@ -996,6 +1080,9 @@ export default function ApplyPage() {
                                 <DateDropdown placeholder="MM" options={getValidMonthsIssue(passportData[applicant.id]?.dateIssue?.year ?? null)} label="Month" value={passportData[applicant.id]?.dateIssue?.month ?? null} onChange={(v) => { updatePassportDateField(applicant.id, "dateIssue", "month", v); if (passportData[applicant.id]?.dateIssue?.day && v) { const maxDay = new Date(parseInt(passportData[applicant.id]?.dateIssue?.year || String(currentYear)), parseInt(v), 0).getDate(); if (parseInt(passportData[applicant.id].dateIssue!.day!) > maxDay) updatePassportDateField(applicant.id, "dateIssue", "day", null); } }} />
                                 <DateDropdown placeholder="YYYY" options={issueYears} label="Year" value={passportData[applicant.id]?.dateIssue?.year ?? null} onChange={(v) => { updatePassportDateField(applicant.id, "dateIssue", "year", v); if (passportData[applicant.id]?.dateIssue?.month && v && parseInt(v) === currentYear && parseInt(passportData[applicant.id].dateIssue!.month!) > parseInt(currentMonth)) updatePassportDateField(applicant.id, "dateIssue", "month", null); }} />
                               </div>
+                              {showErrors && (!passportData[applicant.id]?.dateIssue?.day || !passportData[applicant.id]?.dateIssue?.month || !passportData[applicant.id]?.dateIssue?.year) && (
+                                <p style={{ ...helperStyle, marginTop: "4px", color: "var(--error-text)" }}>Date of issue is required.</p>
+                              )}
                             </div>
                             <div style={{ flex: 1 }}>
                               <label style={{ ...labelStyle }}>Date of expiry <span style={{ color: "#EF4444" }}>*</span></label>
@@ -1004,6 +1091,9 @@ export default function ApplyPage() {
                                 <DateDropdown placeholder="MM" options={getValidMonthsExpiry(passportData[applicant.id]?.dateExpiry?.year ?? null, passportData[applicant.id]?.dateIssue)} label="Month" value={passportData[applicant.id]?.dateExpiry?.month ?? null} onChange={(v) => { updatePassportDateField(applicant.id, "dateExpiry", "month", v); if (passportData[applicant.id]?.dateExpiry?.day && v) { const maxDay = new Date(parseInt(passportData[applicant.id]?.dateExpiry?.year || String(currentYear)), parseInt(v), 0).getDate(); if (parseInt(passportData[applicant.id].dateExpiry!.day!) > maxDay) updatePassportDateField(applicant.id, "dateExpiry", "day", null); } }} />
                                 <DateDropdown placeholder="YYYY" options={expiryYears} label="Year" value={passportData[applicant.id]?.dateExpiry?.year ?? null} onChange={(v) => { updatePassportDateField(applicant.id, "dateExpiry", "year", v); const issue = passportData[applicant.id]?.dateIssue; if (issue?.year && v && parseInt(v) < parseInt(issue.year)) { updatePassportDateField(applicant.id, "dateExpiry", "year", null); updatePassportDateField(applicant.id, "dateExpiry", "month", null); updatePassportDateField(applicant.id, "dateExpiry", "day", null); } else if (issue?.year && issue?.month && v && parseInt(v) === parseInt(issue.year) && parseInt(issue.month) > parseInt(passportData[applicant.id]?.dateExpiry?.month || "13")) { updatePassportDateField(applicant.id, "dateExpiry", "month", null); updatePassportDateField(applicant.id, "dateExpiry", "day", null); } }} />
                               </div>
+                              {showErrors && (!passportData[applicant.id]?.dateExpiry?.day || !passportData[applicant.id]?.dateExpiry?.month || !passportData[applicant.id]?.dateExpiry?.year) && (
+                                <p style={{ ...helperStyle, marginTop: "4px", color: "var(--error-text)" }}>Date of expiry is required.</p>
+                              )}
                             </div>
                           </div>
 
@@ -1780,7 +1870,10 @@ export default function ApplyPage() {
                   </p>
                   <button
                     disabled={!canGoToPassport}
-                    onClick={canGoToPassport ? goToPassportStep : undefined}
+                    onClick={() => {
+                      if (!allApplicantsValid) { setShowErrors(true); return; }
+                      if (canGoToPassport) goToPassportStep();
+                    }}
                     className="flex items-center justify-center order-1 md:order-2 w-full md:w-auto md:max-w-[283px]"
                     style={{
                       width: "100%",
@@ -1806,7 +1899,7 @@ export default function ApplyPage() {
               ) : currentStep === 1 ? (
                 <>
                   <button
-                    onClick={() => setCurrentStep(0)}
+                    onClick={() => { setShowErrors(false); setCurrentStep(0); }}
                     className="flex items-center justify-center order-2 md:order-1 w-full md:w-auto"
                     style={{
                       height: "48px",
@@ -1827,7 +1920,10 @@ export default function ApplyPage() {
                   </button>
                   <button
                     disabled={!canGoToImage}
-                    onClick={canGoToImage ? goToImageStep : undefined}
+                    onClick={() => {
+                      if (!allPassportValid) { setShowErrors(true); return; }
+                      if (canGoToImage) goToImageStep();
+                    }}
                     className="flex items-center justify-center order-1 md:order-2 w-full md:w-auto md:max-w-[283px]"
                     style={{
                       width: "100%",
@@ -1853,7 +1949,7 @@ export default function ApplyPage() {
               ) : currentStep === 2 ? (
                 <>
                   <button
-                    onClick={() => setCurrentStep(1)}
+                    onClick={() => { setShowErrors(false); setCurrentStep(1); }}
                     className="flex items-center justify-center order-2 md:order-1 w-full md:w-auto"
                     style={{
                       height: "48px",
@@ -1900,7 +1996,7 @@ export default function ApplyPage() {
               ) : currentStep === 3 ? (
                 <>
                   <button
-                    onClick={() => setCurrentStep(2)}
+                    onClick={() => { setShowErrors(false); setCurrentStep(2); }}
                     className="flex items-center justify-center order-2 md:order-1 w-full md:w-auto"
                     style={{
                       height: "48px",
@@ -1947,7 +2043,7 @@ export default function ApplyPage() {
               ) : currentStep === 4 ? (
                 <>
                   <button
-                    onClick={() => setCurrentStep(3)}
+                    onClick={() => { setShowErrors(false); setCurrentStep(3); }}
                     className="flex items-center justify-center order-2 md:order-1 w-full md:w-auto"
                     style={{
                       height: "48px",
@@ -1994,7 +2090,7 @@ export default function ApplyPage() {
               ) : currentStep === 5 ? (
                 <>
                   <button
-                    onClick={() => setCurrentStep(4)}
+                    onClick={() => { setShowErrors(false); setCurrentStep(4); }}
                     className="flex items-center justify-center order-2 md:order-1 w-full md:w-auto"
                     style={{
                       height: "48px",
