@@ -291,6 +291,7 @@ export default function ApplyPage() {
   const topRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setShowErrors(false);
     if (topRef.current) {
       topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     } else {
@@ -315,6 +316,7 @@ export default function ApplyPage() {
   const [applicantDOB, setApplicantDOB] = useState<Record<number, { day: string | null; month: string | null; year: string | null }>>({});
   const [applicantGender, setApplicantGender] = useState<Record<number, string>>({});
   const [applicantCountryOfBirth, setApplicantCountryOfBirth] = useState<Record<number, Country | null>>({});
+  const [applicantEtaCheckCountry, setApplicantEtaCheckCountry] = useState<Record<number, Country | null>>({});
 
   // Review consent
   const [reviewConsent, setReviewConsent] = useState<{ confirmInfo: boolean; privacyNotice: boolean }>({ confirmInfo: false, privacyNotice: false });
@@ -375,6 +377,7 @@ export default function ApplyPage() {
     passportNumber: string;
     dateIssue: { day: string | null; month: string | null; year: string | null };
     dateExpiry: { day: string | null; month: string | null; year: string | null };
+    otherNationality: Country | null;
   }>>({});
 
   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -413,6 +416,10 @@ export default function ApplyPage() {
 
   const updateApplicantCountryOfBirth = (id: number, value: Country | null) => {
     setApplicantCountryOfBirth((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const updateApplicantEtaCheckCountry = (id: number, value: Country | null) => {
+    setApplicantEtaCheckCountry((prev) => ({ ...prev, [id]: value }));
   };
 
   const updatePassportData = (id: number, field: string, value: unknown) => {
@@ -557,17 +564,26 @@ export default function ApplyPage() {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   };
 
+  const isValidPhone = (phone: string) => {
+    return /^[0-9+\s\-()]+$/.test(phone.trim()) && phone.trim().length > 0;
+  };
+
   const isApplicantValid = (id: number) => {
     const name = applicantNames[id];
     const email = applicantEmails[id];
+    const phone = applicantPhones[id];
     const dob = applicantDOB[id];
     const gender = applicantGender[id];
     const country = applicantCountryOfBirth[id];
+    const etaCheckCountry = applicantEtaCheckCountry[id];
     return !!(
+      etaCheckCountry &&
       name?.firstName?.trim() &&
       name?.lastName?.trim() &&
       email?.trim() &&
       isValidEmail(email) &&
+      phone?.trim() &&
+      isValidPhone(phone) &&
       dob?.day &&
       dob?.month &&
       dob?.year &&
@@ -608,6 +624,7 @@ export default function ApplyPage() {
 
   const isPassportValid = (id: number) => {
     const data = passportData[id];
+    const passportApp = passportApplicants.find((a) => a.id === id);
     return !!(
       data?.nationality &&
       data?.passportNumber?.trim() &&
@@ -616,7 +633,9 @@ export default function ApplyPage() {
       data?.dateIssue?.year &&
       data?.dateExpiry?.day &&
       data?.dateExpiry?.month &&
-      data?.dateExpiry?.year
+      data?.dateExpiry?.year &&
+      (passportApp?.otherCitizen !== "yes" || data?.otherNationality) &&
+      passportApp?.prevApplied
     );
   };
   const allPassportValid = passportApplicants.every((a) => isPassportValid(a.id));
@@ -789,6 +808,7 @@ export default function ApplyPage() {
     setApplicantDOB({});
     setApplicantGender({});
     setApplicantCountryOfBirth({});
+    setApplicantEtaCheckCountry({});
     setReviewConsent({ confirmInfo: false, privacyNotice: false });
     setPassportImages({});
     setPhotoImages({});
@@ -894,8 +914,11 @@ export default function ApplyPage() {
                           <div>
                             <label style={{ ...labelStyle }}>Check if you need an eTA <span style={{ color: "#EF4444" }}>*</span></label>
                             <div style={{ marginTop: "8px" }}>
-                              <CountryDropdown placeholder="Select passport nationality" />
+                              <CountryDropdown placeholder="Select passport nationality" value={applicantEtaCheckCountry[applicant.id] ?? null} onChange={(v) => updateApplicantEtaCheckCountry(applicant.id, v)} />
                             </div>
+                            {showErrors && !applicantEtaCheckCountry[applicant.id] && (
+                              <p style={{ ...helperStyle, marginTop: "4px", color: "var(--error-text)" }}>Please select your passport nationality.</p>
+                            )}
                             <p style={{ ...helperStyle, marginTop: "8px" }}>Used to check whether you need an eTA.</p>
                           </div>
 
@@ -1117,8 +1140,11 @@ export default function ApplyPage() {
                               <div style={{ marginTop: "16px" }}>
                                 <label style={{ ...labelStyle }}>What is your other nationality? <span style={{ color: "#EF4444" }}>*</span></label>
                                 <div style={{ marginTop: "8px" }}>
-                                  <CountryDropdown placeholder="Select country" />
+                                  <CountryDropdown placeholder="Select country" value={passportData[applicant.id]?.otherNationality ?? null} onChange={(v) => updatePassportData(applicant.id, "otherNationality", v)} />
                                 </div>
+                                {showErrors && !passportData[applicant.id]?.otherNationality && (
+                                  <p style={{ ...helperStyle, marginTop: "4px", color: "var(--error-text)" }}>Please select your other nationality.</p>
+                                )}
                               </div>
                             )}
                           </div>
@@ -1349,6 +1375,12 @@ export default function ApplyPage() {
                               I consent to the secure collection and processing of my biometric data (passport photo and selfie) solely for my UKVI application. My data will be permanently deleted from our system within 10 days.
                             </p>
                           </div>
+                          {showErrors && !passportImages[applicant.id] && (
+                            <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--error-text)", marginTop: "8px" }}>Please upload your passport image.</p>
+                          )}
+                          {showErrors && !imageConsent[applicant.id] && (
+                            <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--error-text)", marginTop: "8px" }}>Please provide consent to continue.</p>
+                          )}
 
                           {/* Save button */}
                           {imageApplicants.length > 1 && (
@@ -1574,6 +1606,12 @@ export default function ApplyPage() {
                               I consent to the secure collection and processing of my biometric data (passport photo and selfie) solely for my UKVI application. My data will be permanently deleted from our system within 10 days.
                             </p>
                           </div>
+                          {showErrors && !photoImages[applicant.id] && (
+                            <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--error-text)", marginTop: "8px" }}>Please upload your photo.</p>
+                          )}
+                          {showErrors && !photoConsent[applicant.id] && (
+                            <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--error-text)", marginTop: "8px" }}>Please provide consent to continue.</p>
+                          )}
 
                           {/* Save button */}
                           {photoApplicants.length > 1 && (
@@ -1782,6 +1820,9 @@ export default function ApplyPage() {
                       I consent to the processing of my personal data as described in the Privacy Notice, and I confirm that I have read and accept the Terms &amp; Conditions. I acknowledge that Service eVisa is a private, independent provider and is not affiliated with the United Kingdom government, that a service fee is charged in addition to the government fee, and that I may apply directly through the official United Kingdom government website. *
                     </p>
                   </div>
+                  {showErrors && !allReviewConsented && (
+                    <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--error-text)", marginTop: "12px" }}>Please accept both consent checkboxes above to continue.</p>
+                  )}
                 </>
               )}
 
@@ -1895,10 +1936,9 @@ export default function ApplyPage() {
                     Each traveller requires a separate authorization.
                   </p>
                   <button
-                    disabled={!canGoToPassport}
                     onClick={() => {
-                      if (!allApplicantsValid) { setShowErrors(true); return; }
-                      if (canGoToPassport) goToPassportStep();
+                      if (!canGoToPassport) { setShowErrors(true); return; }
+                      goToPassportStep();
                     }}
                     className="flex items-center justify-center order-1 md:order-2 w-full md:w-auto md:max-w-[283px]"
                     style={{
@@ -1915,7 +1955,7 @@ export default function ApplyPage() {
                       fontSize: "16px",
                       fontWeight: 500,
                       flexShrink: 0,
-                      cursor: canGoToPassport ? "pointer" : "not-allowed",
+                      cursor: "pointer",
                     }}
                   >
                     Continue to passport details
@@ -1945,10 +1985,9 @@ export default function ApplyPage() {
                     Back
                   </button>
                   <button
-                    disabled={!canGoToImage}
                     onClick={() => {
-                      if (!allPassportValid) { setShowErrors(true); return; }
-                      if (canGoToImage) goToImageStep();
+                      if (!canGoToImage) { setShowErrors(true); return; }
+                      goToImageStep();
                     }}
                     className="flex items-center justify-center order-1 md:order-2 w-full md:w-auto md:max-w-[283px]"
                     style={{
@@ -1965,7 +2004,7 @@ export default function ApplyPage() {
                       fontSize: "16px",
                       fontWeight: 500,
                       flexShrink: 0,
-                      cursor: canGoToImage ? "pointer" : "not-allowed",
+                      cursor: "pointer",
                     }}
                   >
                     Continue to passport image
@@ -1995,8 +2034,10 @@ export default function ApplyPage() {
                     Back
                   </button>
                   <button
-                    disabled={!canGoToPhoto}
-                    onClick={canGoToPhoto ? goToPhotoStep : undefined}
+                    onClick={() => {
+                      if (!canGoToPhoto) { setShowErrors(true); return; }
+                      goToPhotoStep();
+                    }}
                     className="flex items-center justify-center order-1 md:order-2 w-full md:w-auto md:max-w-[283px]"
                     style={{
                       width: "100%",
@@ -2012,7 +2053,7 @@ export default function ApplyPage() {
                       fontSize: "16px",
                       fontWeight: 500,
                       flexShrink: 0,
-                      cursor: canGoToPhoto ? "pointer" : "not-allowed",
+                      cursor: "pointer",
                     }}
                   >
                     Continue to your image
@@ -2042,8 +2083,10 @@ export default function ApplyPage() {
                     Back
                   </button>
                   <button
-                    disabled={!canGoToReview}
-                    onClick={canGoToReview ? goToReviewStep : undefined}
+                    onClick={() => {
+                      if (!canGoToReview) { setShowErrors(true); return; }
+                      goToReviewStep();
+                    }}
                     className="flex items-center justify-center order-1 md:order-2 w-full md:w-auto md:max-w-[283px]"
                     style={{
                       width: "100%",
@@ -2059,7 +2102,7 @@ export default function ApplyPage() {
                       fontSize: "16px",
                       fontWeight: 500,
                       flexShrink: 0,
-                      cursor: canGoToReview ? "pointer" : "not-allowed",
+                      cursor: "pointer",
                     }}
                   >
                     Continue to review
@@ -2089,8 +2132,10 @@ export default function ApplyPage() {
                     Back
                   </button>
                   <button
-                    disabled={!allReviewConsented}
-                    onClick={() => allReviewConsented && setCurrentStep(5)}
+                    onClick={() => {
+                      if (!allReviewConsented) { setShowErrors(true); return; }
+                      setCurrentStep(5);
+                    }}
                     className="flex items-center justify-center order-1 md:order-2 w-full md:w-auto md:max-w-[283px]"
                     style={{
                       width: "100%",
@@ -2106,7 +2151,7 @@ export default function ApplyPage() {
                       fontSize: "16px",
                       fontWeight: 500,
                       flexShrink: 0,
-                      cursor: allReviewConsented ? "pointer" : "not-allowed",
+                      cursor: "pointer",
                     }}
                   >
                     Continue to payment

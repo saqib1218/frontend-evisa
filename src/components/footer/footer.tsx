@@ -32,8 +32,9 @@ export default function Footer() {
   return (
     <footer className="w-full">
       {/* Stats bar */}
+      <div className="w-full bg-primary">
       <div
-        className="mx-auto bg-primary px-4 py-10 md:px-10 md:py-10"
+        className="mx-auto px-4 py-10 md:px-10 md:py-10"
         style={{ maxWidth: "1440px" }}
       >
         {/* Mobile: 2x2 grid with gapped dividers (no plus-sign overlap) */}
@@ -109,11 +110,13 @@ export default function Footer() {
           ))}
         </div>
       </div>
+      </div>
 
       {/* Main footer content */}
+      <div className="w-full" style={{ background: "var(--form-bg)" }}>
       <div
         className="mx-auto px-4 py-8 md:px-10 md:py-8"
-        style={{ maxWidth: "1440px", background: "var(--form-bg)" }}
+        style={{ maxWidth: "1440px" }}
       >
         <div className="flex flex-col md:flex-row" style={{ gap: "32px" }}>
           {/* Column 1: Logo + description + button */}
@@ -266,10 +269,12 @@ export default function Footer() {
           Copyright © 2026 evisaeta.co.uk, All rights reserved.
         </p>
       </div>
+      </div>
 
       {/* Powered by bar */}
+      <div className="w-full bg-primary">
       <div
-        className="mx-auto flex items-center justify-center bg-primary"
+        className="mx-auto flex items-center justify-center"
         style={{ maxWidth: "1440px", paddingTop: "16px", paddingBottom: "16px" }}
       >
         <span
@@ -283,6 +288,7 @@ export default function Footer() {
           <span style={{ fontWeight: 400 }}>Powered by </span>
           <span style={{ fontWeight: 700 }}>Design Dundies</span>
         </span>
+      </div>
       </div>
     </footer>
   );
