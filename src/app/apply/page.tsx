@@ -323,9 +323,21 @@ export default function ApplyPage() {
   const [passportImages, setPassportImages] = useState<Record<number, string>>({});
   const [photoImages, setPhotoImages] = useState<Record<number, string>>({});
   const [dragOverApplicant, setDragOverApplicant] = useState<number | null>(null);
+  const [imageErrors, setImageErrors] = useState<Record<number, string>>({});
+  const MAX_IMAGE_SIZE_MB = 5;
 
   const handleFileUpload = (applicantId: number, file: File, type: "passport" | "photo") => {
     if (!file) return;
+    const sizeMB = file.size / (1024 * 1024);
+    if (sizeMB > MAX_IMAGE_SIZE_MB) {
+      setImageErrors((prev) => ({ ...prev, [applicantId]: `Image is too large (${sizeMB.toFixed(1)}MB). Maximum allowed is ${MAX_IMAGE_SIZE_MB}MB. Please upload a smaller image.` }));
+      return;
+    }
+    if (!file.type.startsWith("image/")) {
+      setImageErrors((prev) => ({ ...prev, [applicantId]: "Please upload a valid image file (JPG, PNG, etc)." }));
+      return;
+    }
+    setImageErrors((prev) => { const next = { ...prev }; delete next[applicantId]; return next; });
     const reader = new FileReader();
     reader.onload = (e) => {
       const dataUrl = e.target?.result as string;
@@ -1303,8 +1315,15 @@ export default function ApplyPage() {
 
                           {/* File format note */}
                           <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--text-body)", marginTop: "16px" }}>
-                            File format (optional): we recommend using a JPG or JPEG file format.
+                            File format (optional): we recommend using a JPG or JPEG file format. Maximum size: {MAX_IMAGE_SIZE_MB}MB.
                           </p>
+
+                          {/* Upload error */}
+                          {imageErrors[applicant.id] && (
+                            <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--error-text)", marginTop: "8px" }}>
+                              {imageErrors[applicant.id]}
+                            </p>
+                          )}
 
                           {/* Consent checkbox */}
                           <div className="flex items-start" style={{ gap: "12px", marginTop: "16px" }}>
@@ -1521,8 +1540,15 @@ export default function ApplyPage() {
 
                           {/* File format note */}
                           <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--text-body)", marginTop: "16px" }}>
-                            File format (optional): we recommend using a JPG or JPEG file format.
+                            File format (optional): we recommend using a JPG or JPEG file format. Maximum size: {MAX_IMAGE_SIZE_MB}MB.
                           </p>
+
+                          {/* Upload error */}
+                          {imageErrors[applicant.id] && (
+                            <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "160%", color: "var(--error-text)", marginTop: "8px" }}>
+                              {imageErrors[applicant.id]}
+                            </p>
+                          )}
 
                           {/* Consent checkbox */}
                           <div className="flex items-start" style={{ gap: "12px", marginTop: "16px" }}>
