@@ -366,7 +366,29 @@ export default function ApplyPage() {
   };
 
   // Processing speed selection
-  const [selectedProcessing, setSelectedProcessing] = useState<"standard" | "express" | "fastest">("standard");
+  const [selectedProcessing, setSelectedProcessing] = useState<string>("standard");
+
+  // Packages from API
+  const [apiPackages, setApiPackages] = useState<Array<{
+    key: string;
+    label: string;
+    fee: number;
+    processing_fee: number;
+    processing_time: string;
+    badge: string | null;
+    sort_order: number;
+  }>>([]);
+
+  useEffect(() => {
+    api.getPackages().then((data) => {
+      if (data.packages && data.packages.length > 0) {
+        setApiPackages(data.packages);
+        setSelectedProcessing(data.packages[0].key);
+      }
+    }).catch((err) => {
+      console.error("Failed to fetch packages:", err);
+    });
+  }, []);
 
   // Delete modal
   const [deleteModalApplicant, setDeleteModalApplicant] = useState<number | null>(null);
@@ -721,17 +743,13 @@ export default function ApplyPage() {
 
   const allReviewConsented = reviewConsent.confirmInfo && reviewConsent.privacyNotice;
 
-  // Processing pricing logic
-  const processingPackages = {
-    standard: { total: 89.90, fee: 59.00, processing: 30.90, label: "2-5 Days processing" },
-    express: { total: 119.90, fee: 89.00, processing: 30.90, label: "6-24h processing" },
-    fastest: { total: 139.90, fee: 109.00, processing: 30.90, label: "1h processing" },
-  };
-  const selectedPackage = processingPackages[selectedProcessing];
+  // Processing pricing logic — from API
+  const selectedPackage = apiPackages.find((p) => p.key === selectedProcessing);
   const applicantCount = applicants.length;
-  const feeTotal = selectedPackage.fee * applicantCount;
-  const processingTotal = selectedPackage.processing * applicantCount;
+  const feeTotal = selectedPackage ? parseFloat(String(selectedPackage.fee)) * applicantCount : 0;
+  const processingTotal = selectedPackage ? parseFloat(String(selectedPackage.processing_fee)) * applicantCount : 0;
   const grandTotal = feeTotal + processingTotal;
+  const perApplicantTotal = selectedPackage ? parseFloat(String(selectedPackage.fee)) + parseFloat(String(selectedPackage.processing_fee)) : 0;
 
   const { toasts, showToast, removeToast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -1834,54 +1852,30 @@ export default function ApplyPage() {
                     </p>
                   </div>
 
-                  {/* Option 1: 2-5 Days processing */}
-                  <div style={{ padding: "16px", borderRadius: "16px", border: "1px solid var(--form-border)", display: "flex", alignItems: "flex-start", gap: "12px", cursor: "pointer", background: "var(--card)" }}
-                    onClick={() => setSelectedProcessing("standard")}
-                  >
-                    <div style={{ width: "24px", height: "24px", borderRadius: "50%", border: selectedProcessing === "standard" ? "2px solid var(--primary)" : "2px solid var(--form-border)", background: selectedProcessing === "standard" ? "var(--primary)" : "var(--input-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "2px" }}>
-                      {selectedProcessing === "standard" && <Check style={{ width: "16px", height: "16px", color: "var(--hero-text)" }} />}
-                    </div>
-                    <div>
-                      <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>2-5 Days processing</p>
-                      <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)", marginTop: "4px" }}>$89.90</p>
-                    </div>
-                  </div>
-
-                  {/* Option 2: 6-24h processing */}
-                  <div style={{ padding: "16px", borderRadius: "16px", border: "1px solid var(--form-border)", display: "flex", alignItems: "flex-start", gap: "12px", cursor: "pointer", background: "var(--card)" }}
-                    onClick={() => setSelectedProcessing("express")}
-                  >
-                    <div style={{ width: "24px", height: "24px", borderRadius: "50%", border: selectedProcessing === "express" ? "2px solid var(--primary)" : "2px solid var(--form-border)", background: selectedProcessing === "express" ? "var(--primary)" : "var(--input-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "2px" }}>
-                      {selectedProcessing === "express" && <Check style={{ width: "16px", height: "16px", color: "var(--hero-text)" }} />}
-                    </div>
-                    <div>
-                      <div className="flex items-center" style={{ gap: "10px" }}>
-                        <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>6-24h processing</p>
-                        <span style={{ display: "inline-flex", alignItems: "center", gap: "10px", height: "30px", borderRadius: "99px", paddingTop: "4px", paddingRight: "8px", paddingBottom: "4px", paddingLeft: "8px", background: "var(--success-bg)", fontSize: "14px", fontWeight: 400, lineHeight: "160%", letterSpacing: "0em", color: "var(--success-text)" }}>
-                          Popular
-                        </span>
+                  {/* Package options from API */}
+                  {apiPackages.map((pkg) => {
+                    const total = parseFloat(String(pkg.fee)) + parseFloat(String(pkg.processing_fee));
+                    return (
+                      <div key={pkg.key} style={{ padding: "16px", borderRadius: "16px", border: "1px solid var(--form-border)", display: "flex", alignItems: "flex-start", gap: "12px", cursor: "pointer", background: "var(--card)" }}
+                        onClick={() => setSelectedProcessing(pkg.key)}
+                      >
+                        <div style={{ width: "24px", height: "24px", borderRadius: "50%", border: selectedProcessing === pkg.key ? "2px solid var(--primary)" : "2px solid var(--form-border)", background: selectedProcessing === pkg.key ? "var(--primary)" : "var(--input-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "2px" }}>
+                          {selectedProcessing === pkg.key && <Check style={{ width: "16px", height: "16px", color: "var(--hero-text)" }} />}
+                        </div>
+                        <div>
+                          <div className="flex items-center" style={{ gap: "10px" }}>
+                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>{pkg.label}</p>
+                            {pkg.badge && (
+                              <span style={{ display: "inline-flex", alignItems: "center", gap: "10px", height: "30px", borderRadius: "99px", paddingTop: "4px", paddingRight: "8px", paddingBottom: "4px", paddingLeft: "8px", background: pkg.badge === "Popular" ? "var(--success-bg)" : "var(--accent-bg)", fontSize: "14px", fontWeight: 400, lineHeight: "160%", letterSpacing: "0em", color: pkg.badge === "Popular" ? "var(--success-text)" : "var(--info-text)" }}>
+                                {pkg.badge}
+                              </span>
+                            )}
+                          </div>
+                          <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)", marginTop: "4px" }}>${total.toFixed(2)}</p>
+                        </div>
                       </div>
-                      <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)", marginTop: "4px" }}>$119.90</p>
-                    </div>
-                  </div>
-
-                  {/* Option 3: 1h processing */}
-                  <div style={{ padding: "16px", borderRadius: "16px", border: "1px solid var(--form-border)", display: "flex", alignItems: "flex-start", gap: "12px", cursor: "pointer", background: "var(--card)" }}
-                    onClick={() => setSelectedProcessing("fastest")}
-                  >
-                    <div style={{ width: "24px", height: "24px", borderRadius: "50%", border: selectedProcessing === "fastest" ? "2px solid var(--primary)" : "2px solid var(--form-border)", background: selectedProcessing === "fastest" ? "var(--primary)" : "var(--input-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "2px" }}>
-                      {selectedProcessing === "fastest" && <Check style={{ width: "16px", height: "16px", color: "var(--hero-text)" }} />}
-                    </div>
-                    <div>
-                      <div className="flex items-center" style={{ gap: "10px" }}>
-                        <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>1h processing</p>
-                        <span style={{ display: "inline-flex", alignItems: "center", gap: "10px", height: "30px", borderRadius: "99px", paddingTop: "4px", paddingRight: "8px", paddingBottom: "4px", paddingLeft: "8px", background: "var(--accent-bg)", fontSize: "14px", fontWeight: 400, lineHeight: "160%", letterSpacing: "0em", color: "var(--info-text)" }}>
-                          Fastest
-                        </span>
-                      </div>
-                      <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)", marginTop: "4px" }}>$139.90</p>
-                    </div>
-                  </div>
+                    );
+                  })}
 
                 </div>
               )}
@@ -2530,13 +2524,13 @@ export default function ApplyPage() {
                   <div className="flex items-center" style={{ gap: "8px" }}>
                     <Clock style={{ width: "24px", height: "24px", color: "var(--primary)", flexShrink: 0 }} />
                     <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
-                      {selectedPackage.label}
+                      {selectedPackage?.label || ""}
                     </span>
                   </div>
                   <div className="flex items-center" style={{ gap: "8px" }}>
                     <DollarSign style={{ width: "24px", height: "24px", color: "var(--primary)", flexShrink: 0 }} />
                     <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
-                      ${selectedPackage.total.toFixed(2)} each
+                      ${perApplicantTotal.toFixed(2)} each
                     </span>
                   </div>
                 </div>
@@ -2550,7 +2544,7 @@ export default function ApplyPage() {
                     <div>
                       <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>UK eTA Fees:</p>
                       <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "4px" }}>
-                        ${selectedPackage.fee.toFixed(2)} × {applicantCount} {applicantCount === 1 ? "applicant" : "applicants"}
+                        ${selectedPackage ? parseFloat(String(selectedPackage.fee)).toFixed(2) : "0.00"} × {applicantCount} {applicantCount === 1 ? "applicant" : "applicants"}
                       </p>
                     </div>
                     <span style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
@@ -2562,7 +2556,7 @@ export default function ApplyPage() {
                     <div>
                       <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>Processing upgrade</p>
                       <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "4px" }}>
-                        ${selectedPackage.processing.toFixed(2)} × {applicantCount} {applicantCount === 1 ? "applicant" : "applicants"}
+                        ${selectedPackage ? parseFloat(String(selectedPackage.processing_fee)).toFixed(2) : "0.00"} × {applicantCount} {applicantCount === 1 ? "applicant" : "applicants"}
                       </p>
                     </div>
                     <span style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
