@@ -53,13 +53,16 @@ export default function MigrationRulesPage() {
       {/* Content section */}
       <div className="mx-auto px-4 md:!px-10 md:!pt-[120px] md:!pb-[120px]" style={{ maxWidth: "1440px", paddingTop: "48px", paddingBottom: "48px" }}>
         <div className="mx-auto" style={{ maxWidth: "968px" }}>
+          <p style={{ fontSize: "14px", fontWeight: 400, color: "var(--muted)", marginBottom: "16px" }}>
+            Last updated: September 5, 2026
+          </p>
           <p style={{ ...bodyStyle, marginBottom: "24px" }}>
             This disclaimer applies to all information provided on evisaeta.co.uk (the &quot;Website&quot;) and through our application assistance services (the &quot;Services&quot;). Please read it carefully before using our Services.
           </p>
 
           <h2 className="md:!text-[24px]" style={{ ...headingStyle, marginTop: "24px" }}>Independent Service</h2>
           <p style={{ ...bodyStyle, marginTop: "8px" }}>
-            Evisaeta is an independent, privately-operated service. We are not a government department, embassy, consulate, or agency of the UK government or any other government. We are not affiliated with, endorsed by, or acting under the authority of any government body. References to &quot;UK eTA&quot; or similar terms on this Website relate to the official Electronic Travel Authorisation scheme operated by the UK government, which we assist applicants in applying for.
+            Evisaeta is an independent, privately-operated service. We are not a government department, embassy, consulate, or agency of the UK government or any other government. We are not affiliated with, endorsed by, or acting under the authority of any government body. References to &quot;UK ETA&quot; or similar terms on this Website relate to the official Electronic Travel Authorisation scheme operated by the UK government, which we assist applicants in applying for.
           </p>
 
           <h2 className="md:!text-[24px]" style={{ ...headingStyle, marginTop: "24px" }}>No Legal or Immigration Advice</h2>
@@ -91,7 +94,7 @@ export default function MigrationRulesPage() {
 
           <h2 className="md:!text-[24px]" style={{ ...headingStyle, marginTop: "24px" }}>No Guarantee of Approval</h2>
           <p style={{ ...bodyStyle, marginTop: "8px" }}>
-            Submitting an application through our Services does not guarantee approval of your eTA. All decisions regarding travel authorization, entry, or visa status are made solely by the relevant government authority, based on its own criteria, discretion, and procedures. We have no influence over, and are not responsible for, the outcome of any application.
+            Submitting an application through our Services does not guarantee approval of your ETA. All decisions regarding travel authorization, entry, or visa status are made solely by the relevant government authority, based on its own criteria, discretion, and procedures. We have no influence over, and are not responsible for, the outcome of any application.
           </p>
 
           <h2 className="md:!text-[24px]" style={{ ...headingStyle, marginTop: "24px" }}>Applicant Responsibility</h2>

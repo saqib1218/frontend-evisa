@@ -53,13 +53,16 @@ export default function RefundPolicyPage() {
       {/* Content section */}
       <div className="mx-auto px-4 md:!px-10 md:!pt-[120px] md:!pb-[120px]" style={{ maxWidth: "1440px", paddingTop: "48px", paddingBottom: "48px" }}>
         <div className="mx-auto" style={{ maxWidth: "968px" }}>
+          <p style={{ fontSize: "14px", fontWeight: 400, color: "var(--muted)", marginBottom: "16px" }}>
+            Last updated: September 5, 2026
+          </p>
           <p style={{ ...bodyStyle, marginBottom: "24px" }}>
             This Refund Policy explains when and how you may request a refund for services provided by Evisaeta (&quot;we,&quot; &quot;us,&quot; &quot;our&quot;) through evisaeta.co.uk (the &quot;Website&quot;). By using our Services, you agree to the terms outlined below.
           </p>
 
           <h2 className="md:!text-[24px]" style={{ ...headingStyle, marginTop: "24px" }}>Our Service Fee</h2>
           <p style={{ ...bodyStyle, marginTop: "8px" }}>
-            Our fee covers the guidance, review, and submission assistance we provide for your UK eTA application. This fee is separate from any government application fee, where applicable, and is charged for the work performed by our team regardless of the final outcome of your application.
+            Our fee covers the guidance, review, and submission assistance we provide for your UK ETA application. This fee is separate from any government application fee, where applicable, and is charged for the work performed by our team regardless of the final outcome of your application.
           </p>
 
           <h2 className="md:!text-[24px]" style={{ ...headingStyle, marginTop: "24px" }}>When You Are Eligible for a Refund</h2>
@@ -120,7 +123,7 @@ export default function RefundPolicyPage() {
 
           <h2 className="md:!text-[24px]" style={{ ...headingStyle, marginTop: "24px" }}>Refund Processing</h2>
           <p style={{ ...bodyStyle, marginTop: "8px" }}>
-            Approved refunds will be processed back to your original payment method within the business days of approval. Processing times may vary depending on your bank or payment provider.
+            Approved refunds will be processed back to your original payment method within 5-10 business days of approval. Processing times may vary depending on your bank or payment provider.
           </p>
 
           <h2 className="md:!text-[24px]" style={{ ...headingStyle, marginTop: "24px" }}>Government Fees</h2>

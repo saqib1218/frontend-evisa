@@ -146,7 +146,7 @@ export default function Applycard() {
             letterSpacing: "-0.02em",
           }}
         >
-          Apply for your UK eTA
+          Apply for your UK ETA
         </h2>
       </div>
 
@@ -223,7 +223,7 @@ export default function Applycard() {
           cursor: isReady ? "pointer" : "not-allowed",
         }}
       >
-        Get started
+        Get Started
         <ArrowRight className="h-5 w-5" />
       </button>
     </div>

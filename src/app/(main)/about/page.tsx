@@ -4,9 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Search, FileText, UsersRound } from "lucide-react";
-import Advantages from "@/components/Advantages/Advantages";
-import FAQ from "@/components/FAQ/faq";
-import Ready from "@/components/Ready/Ready";
 import about from "@/images/about.svg";
 import about2 from "@/images/about2.svg";
 import about3 from "@/images/about3.svg";
@@ -133,7 +130,7 @@ export default function AboutPage() {
                 marginTop: "12px",
               }}
             >
-              We Make Your eTA Application Easier
+              We Make Your ETA Application Easier
             </h2>
             <p
               className="md:!text-[16px]"
@@ -187,7 +184,7 @@ export default function AboutPage() {
                 letterSpacing: "-0.01em",
               }}
             >
-              Apply for an eTA
+              Apply for ETA
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -245,7 +242,7 @@ export default function AboutPage() {
                 marginTop: "12px",
               }}
             >
-              We catch the mistakes before they cost you a trip
+              We Catch the Mistakes Before They Cost You a Trip
             </h2>
             <p
               className="md:!text-[16px]"
@@ -487,14 +484,6 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Advantages section */}
-      <Advantages />
-
-      {/* FAQ section */}
-      <FAQ />
-
-      {/* Ready section */}
-      <Ready />
     </main>
   );
 }

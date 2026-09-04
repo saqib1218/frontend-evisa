@@ -53,6 +53,9 @@ export default function CookiePolicyPage() {
       {/* Content section */}
       <div className="mx-auto px-4 md:!px-10 md:!pt-[120px] md:!pb-[120px]" style={{ maxWidth: "1440px", paddingTop: "48px", paddingBottom: "48px" }}>
         <div className="mx-auto" style={{ maxWidth: "968px" }}>
+          <p style={{ fontSize: "14px", fontWeight: 400, color: "var(--muted)", marginBottom: "16px" }}>
+            Last updated: September 5, 2026
+          </p>
           <p style={{ ...bodyStyle, marginBottom: "24px" }}>
             This Cookie Policy explains how Evisaeta (&quot;we,&quot; &quot;us,&quot; &quot;our&quot;) uses cookies and similar tracking technologies on evisaeta.co.uk (the &quot;Website&quot;). By continuing to use our Website, you agree to our use of cookies as described in this policy, unless you disable them as explained below.
           </p>

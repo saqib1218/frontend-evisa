@@ -4,9 +4,6 @@ import { useState } from "react";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import contact from "@/images/contact.svg";
-import Advantages from "@/components/Advantages/Advantages";
-import FAQ from "@/components/FAQ/faq";
-import Ready from "@/components/Ready/Ready";
 import { api } from "@/utils/api";
 import { Check, X } from "lucide-react";
 
@@ -277,15 +274,6 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
-
-      {/* Advantages section */}
-      <Advantages />
-
-      {/* FAQ section */}
-      <FAQ />
-
-      {/* Ready section */}
-      <Ready />
 
       {/* Success Popup */}
       {showSuccess && (

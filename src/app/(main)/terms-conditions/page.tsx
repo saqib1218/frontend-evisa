@@ -123,6 +123,9 @@ export default function TermsConditionsPage() {
 
       {/* Content section */}
       <div className="mx-auto px-4 md:!px-10 md:!pt-[120px] md:!pb-[120px]" style={{ maxWidth: "1440px", paddingTop: "48px", paddingBottom: "48px" }}>
+        <p style={{ fontSize: "14px", fontWeight: 400, color: "var(--muted)", marginBottom: "16px" }}>
+          Last updated: September 5, 2026
+        </p>
         {/* Mobile: Table of Contents Dropdown */}
         <div className="md:hidden" style={{ marginBottom: "24px" }}>
           <button
@@ -201,10 +204,10 @@ export default function TermsConditionsPage() {
             <div ref={(el) => { sectionRefs.current[0] = el; }} data-index={0} id={sections[0].id}>
               <h2 className="md:!text-[24px]" style={{ ...headingStyle, marginTop: "24px" }}>About Us</h2>
               <p style={{ ...bodyStyle, marginTop: "8px" }}>
-                Evisaeta is an independent, privately-operated travel assistance service. We are not a government agency, embassy, consulate, or law firm, and we are not affiliated with, endorsed by, or acting on behalf of the UK government or any government department. We assist applicants in completing and submitting UK Electronic Travel Authorisation (eTA) applications correctly. All final decisions regarding travel authorization are made solely by the relevant government authority.
+                Evisaeta is an independent, privately-operated travel assistance service. We are not a government agency, embassy, consulate, or law firm, and we are not affiliated with, endorsed by, or acting on behalf of the UK government or any government department. We assist applicants in completing and submitting UK Electronic Travel Authorisation (ETA) applications correctly. All final decisions regarding travel authorization are made solely by the relevant government authority.
               </p>
               <p style={{ ...bodyStyle, marginTop: "8px" }}>
-                You may apply for a UK eTA directly through the official UK government website without using our Services. Our fee is charged for our review, guidance, and assistance, and is separate from any government application fee.
+                You may apply for a UK ETA directly through the official UK government website without using our Services. Our fee is charged for our review, guidance, and assistance, and is separate from any government application fee.
               </p>
             </div>
 
@@ -242,7 +245,7 @@ export default function TermsConditionsPage() {
             <div ref={(el) => { sectionRefs.current[3] = el; }} data-index={3} id={sections[3].id}>
               <h2 className="md:!text-[24px]" style={{ ...headingStyle, marginTop: "24px" }}>Fees and Payment</h2>
               <BulletList items={[
-                "Our service fee is charged separately from any government eTA fee, where applicable",
+                "Our service fee is charged separately from any government ETA fee, where applicable",
                 "Fees are disclosed clearly before you complete your application and payment",
                 "Payment must be completed in full before we submit your application to the relevant authority",
                 "All fees are quoted in the currency displayed at checkout unless otherwise stated",

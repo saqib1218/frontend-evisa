@@ -106,6 +106,9 @@ export default function PrivacyPolicyPage() {
 
       {/* Content section */}
       <div className="mx-auto px-4 md:!px-10 md:!pt-[120px] md:!pb-[120px]" style={{ maxWidth: "1440px", paddingTop: "48px", paddingBottom: "48px" }}>
+        <p style={{ fontSize: "14px", fontWeight: 400, color: "var(--muted)", marginBottom: "16px" }}>
+          Last updated: September 5, 2026
+        </p>
         {/* Mobile: Table of Contents Dropdown */}
         <div className="md:hidden" style={{ marginBottom: "24px" }}>
           <button
@@ -179,7 +182,7 @@ export default function PrivacyPolicyPage() {
           {/* Right: Content */}
           <div className="flex flex-col" style={{ flex: 1 }}>
             <p style={{ ...bodyStyle, marginBottom: "24px" }}>
-              Evisaeta (&quot;we,&quot; &quot;us,&quot; &quot;our&quot;) is an independent travel assistance service that helps applicants prepare and submit UK Electronic Travel Authorisation (eTA) applications. We are not affiliated with, endorsed by, or acting on behalf of the UK government or any government agency. This Privacy Policy explains how we collect, use, store, and protect your personal information when you use evisaeta.co.uk (the &quot;Website&quot;) or our services.
+              Evisaeta (&quot;we,&quot; &quot;us,&quot; &quot;our&quot;) is an independent travel assistance service that helps applicants prepare and submit UK Electronic Travel Authorisation (ETA) applications. We are not affiliated with, endorsed by, or acting on behalf of the UK government or any government agency. This Privacy Policy explains how we collect, use, store, and protect your personal information when you use evisaeta.co.uk (the &quot;Website&quot;) or our services.
             </p>
 
             {/* Information We Collect */}
@@ -211,7 +214,7 @@ export default function PrivacyPolicyPage() {
               <p style={{ ...bodyStyle, marginTop: "8px" }}>We use your information to:</p>
               <div style={{ marginTop: "8px", display: "flex", flexDirection: "column", gap: "8px" }}>
                 {[
-                  "Prepare, review, and submit your eTA application to the relevant government portal",
+                  "Prepare, review, and submit your ETA application to the relevant government portal",
                   "Communicate with you about your application status, approvals, or issues",
                   "Verify the accuracy of the information provided and reduce the risk of application errors or rejection",
                   "Process payments for our service fees",
@@ -236,7 +239,7 @@ export default function PrivacyPolicyPage() {
               <p style={{ ...bodyStyle, marginTop: "8px" }}>We may share your information with:</p>
               <div style={{ marginTop: "8px", display: "flex", flexDirection: "column", gap: "8px" }}>
                 {[
-                  "Relevant government authorities, solely for the purpose of submitting your eTA application on your behalf",
+                  "Relevant government authorities, solely for the purpose of submitting your ETA application on your behalf",
                   "Payment processors, to complete secure transactions",
                   "IT and hosting providers, who help us operate the Website and store data securely",
                   "Professional advisors (e.g. auditors, legal counsel), where necessary",
@@ -317,7 +320,7 @@ export default function PrivacyPolicyPage() {
             <div ref={(el) => { sectionRefs.current[7] = el; }} data-index={7} id={sections[7].id}>
               <h2 className="md:!text-[24px]" style={{ ...headingStyle, marginTop: "24px" }}>Children&apos;s Privacy</h2>
               <p style={{ ...bodyStyle, marginTop: "8px" }}>
-                Our services may involve processing information for minors (as eTA applications must be submitted individually for travellers of all ages, including infants). Such information is submitted by a parent or legal guardian on the minor&apos;s behalf, and we process it solely for the purpose of the travel authorization application.
+                Our services may involve processing information for minors (as ETA applications must be submitted individually for travellers of all ages, including infants). Such information is submitted by a parent or legal guardian on the minor&apos;s behalf, and we process it solely for the purpose of the travel authorization application.
               </p>
             </div>
 

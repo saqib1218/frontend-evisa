@@ -16,15 +16,14 @@ const generalLinks = [
   { label: "Contact Us", href: "/contact" },
 ];
 const applicationLinks = [
-  { label: "Evise Application", href: "/apply" },
+  { label: "UK ETA Application", href: "/apply" },
   { label: "Check Application Status", href: "/track-status" },
 ];
 const policyLinks = [
   { label: "Privacy Policy", href: "/privacy-policy" },
   { label: "Terms & Conditions", href: "/terms-conditions" },
   { label: "Cookie Policy", href: "/cookie-policy" },
-  { label: "Migration Rules", href: "/migration-rules" },
-  { label: "Disclaimer", href: "/disclaimer" },
+  { label: "Migration Rules & Disclaimer", href: "/migration-rules" },
   { label: "Refund Policy", href: "/refund-policy" },
 ];
 
@@ -137,7 +136,7 @@ export default function Footer() {
                 maxWidth: "280px",
               }}
             >
-              Your trusted partner for eTA and visa applications.
+              Your trusted partner for ETA and visa applications.
             </p>
             <Link
               href="/apply"
@@ -151,7 +150,7 @@ export default function Footer() {
                 paddingLeft: "20px",
               }}
             >
-              Get started
+              Get Started
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

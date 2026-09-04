@@ -839,14 +839,14 @@ export default function ApplyPage() {
       {/* Hero image section */}
       <div className="mx-auto px-4" style={{ maxWidth: "1408px" }}>
         <div className="relative w-full md:!h-[400px] hero-image-container" style={{ height: "245px" }}>
-          <Image src={about} alt="Apply for eTA" fill className="object-cover" style={{ borderRadius: "16px" }} priority sizes="(max-width: 768px) 100vw, 1408px" loading="eager" />
+          <Image src={about} alt="Apply for ETA" fill className="object-cover" style={{ borderRadius: "16px" }} priority sizes="(max-width: 768px) 100vw, 1408px" loading="eager" />
           <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
             <button className="flex items-center justify-center rounded-full" style={{ width: "127px", height: "40px", gap: "16px", background: "transparent", border: "1px solid var(--hero-text)", color: "var(--hero-text)" }}>
-              Apply for eTA
+              Apply for ETA
             </button>
             <div style={{ maxWidth: "697px", marginTop: "16px" }}>
               <h1 className="text-white text-center md:!text-[56px] md:!leading-[110%] md:!tracking-[-0.03em]" style={{ fontSize: "32px", fontWeight: 500, lineHeight: "135%", letterSpacing: "-0.02em", textAlign: "center" }}>
-                UK eTA Application
+                UK ETA Application
               </h1>
             </div>
           </div>
@@ -927,16 +927,16 @@ export default function ApplyPage() {
                       {/* Form section - bg #FAFAF9 */}
                       {applicant.expanded && (
                         <div className="apply-form" style={{ background: "var(--form-bg)", padding: "24px", borderBottomLeftRadius: "16px", borderBottomRightRadius: "16px" }}>
-                          {/* Check if you need an eTA */}
+                          {/* Check if you need an ETA */}
                           <div>
-                            <label style={{ ...labelStyle }}>Check if you need an eTA <span style={{ color: "#EF4444" }}>*</span></label>
+                            <label style={{ ...labelStyle }}>Check if you need an ETA <span style={{ color: "#EF4444" }}>*</span></label>
                             <div style={{ marginTop: "8px" }}>
                               <CountryDropdown placeholder="Select passport nationality" value={applicantEtaCheckCountry[applicant.id] ?? null} onChange={(v) => updateApplicantEtaCheckCountry(applicant.id, v)} />
                             </div>
                             {showErrors && !applicantEtaCheckCountry[applicant.id] && (
                               <p style={{ ...helperStyle, marginTop: "4px", color: "var(--error-text)" }}>Please select your passport nationality.</p>
                             )}
-                            <p style={{ ...helperStyle, marginTop: "8px" }}>Used to check whether you need an eTA.</p>
+                            <p style={{ ...helperStyle, marginTop: "8px" }}>Used to check whether you need an ETA.</p>
                           </div>
 
                           {/* Email Address */}
@@ -1166,9 +1166,9 @@ export default function ApplyPage() {
                             )}
                           </div>
 
-                          {/* Have you previously applied for or been issued a UK visa, eTA, or permit? */}
+                          {/* Have you previously applied for or been issued a UK visa, ETA, or permit? */}
                           <div style={{ marginTop: "24px" }}>
-                            <label style={{ ...labelStyle }}>Have you previously applied for or been issued a UK visa, eTA, or permit? <span style={{ color: "#EF4444" }}>*</span></label>
+                            <label style={{ ...labelStyle }}>Have you previously applied for or been issued a UK visa, ETA, or permit? <span style={{ color: "#EF4444" }}>*</span></label>
                             <YesNoToggle value={applicant.prevApplied} onChange={(v) => updatePassportField(applicant.id, "prevApplied", v)} />
                           </div>
 
@@ -2192,7 +2192,7 @@ export default function ApplyPage() {
               <>
                 <div>
                   <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
-                    UK eTA Application
+                    UK ETA Application
                   </h3>
                   <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "8px" }}>
                     Electronic Travel Authorization
@@ -2239,7 +2239,7 @@ export default function ApplyPage() {
               <>
                 <div style={{ background: "var(--form-bg)", margin: "-24px -24px 0 -24px", padding: "24px", borderTopLeftRadius: "24px", borderTopRightRadius: "24px", borderBottom: "1px solid var(--form-border)" }}>
                   <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
-                    UK eTA · Summary
+                    UK ETA · Summary
                   </h3>
                 </div>
 
@@ -2449,7 +2449,7 @@ export default function ApplyPage() {
               <>
                 <div>
                   <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
-                    UK eTA Application
+                    UK ETA Application
                   </h3>
                   <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "8px" }}>
                     Electronic Travel Authorization
@@ -2505,7 +2505,7 @@ export default function ApplyPage() {
                 <div style={{ background: "var(--accent-bg)", margin: "-24px -24px 0 -24px", padding: "24px", borderTopLeftRadius: "24px", borderTopRightRadius: "24px", borderBottom: "1px solid var(--form-border)" }}>
                   <div className="flex items-center justify-between">
                     <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--primary)" }}>
-                      UK eTA Fees
+                      UK ETA Fees
                     </h3>
                     <span style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
                       ${grandTotal.toFixed(2)}
@@ -2542,7 +2542,7 @@ export default function ApplyPage() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>UK eTA Fees:</p>
+                      <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>UK ETA Fees:</p>
                       <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "4px" }}>
                         ${selectedPackage ? parseFloat(String(selectedPackage.fee)).toFixed(2) : "0.00"} × {applicantCount} {applicantCount === 1 ? "applicant" : "applicants"}
                       </p>
@@ -2620,11 +2620,11 @@ export default function ApplyPage() {
                 </div>
               </div>
 
-              {/* UK eTA Application summary div */}
+              {/* UK ETA Application summary div */}
               <div style={{ borderRadius: "24px", border: "1px solid var(--form-border)", background: "var(--card)", padding: "24px", display: "flex", flexDirection: "column", gap: "24px" }}>
                 <div>
                   <h3 style={{ fontSize: "24px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)" }}>
-                    UK eTA Application
+                    UK ETA Application
                   </h3>
                   <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "8px" }}>
                     Electronic Travel Authorization

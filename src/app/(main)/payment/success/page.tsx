@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { X, Loader2 } from "lucide-react";
 import { api } from "@/utils/api";
-import SuccessModal from "@/app/apply/Models/SuccessModal/SuccessModal";
+import SuccessModal from "@/app/(main)/apply/Models/SuccessModal/SuccessModal";
 
 type PaymentState = "checking" | "paid" | "pending" | "failed" | "error";
 

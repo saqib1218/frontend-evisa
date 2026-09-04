@@ -8,10 +8,9 @@ import { ArrowRight, Menu, X } from "lucide-react";
 import logo from "@/images/logo.svg";
 
 const navLinks = [
-  { href: "/home", label: "Home" },
+  { href: "/", label: "Home" },
   { href: "/about", label: "About Us" },
   { href: "/contact", label: "Contact Us" },
-   
 ];
 
 export default function Header() {
@@ -21,7 +20,7 @@ export default function Header() {
   return (
     <header className="w-full bg-background">
       <nav className="mx-auto flex max-w-[1408px] items-center justify-between px-4 py-4 md:px-6">
-        <Link href="/home" className="flex-shrink-0">
+        <Link href="/" className="flex-shrink-0">
           <Image
             src={logo}
             alt="Evisa logo"
@@ -34,7 +33,7 @@ export default function Header() {
         {/* Desktop nav links */}
         <ul className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => {
-            const isActive = pathname === link.href || (link.href === "/home" && pathname === "/");
+            const isActive = pathname === link.href;
             return (
               <li key={link.href}>
                 <Link
@@ -57,7 +56,7 @@ export default function Header() {
             href="/apply"
             className="flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
           >
-            Apply for eTA
+            Apply for ETA
             <ArrowRight className="h-4 w-4" />
           </Link>
 
@@ -104,7 +103,7 @@ export default function Header() {
             </div>
             <ul className="flex flex-col gap-0">
               {navLinks.map((link) => {
-                const isActive = pathname === link.href || (link.href === "/home" && pathname === "/");
+                const isActive = pathname === link.href;
                 return (
                   <li key={link.href}>
                     <Link

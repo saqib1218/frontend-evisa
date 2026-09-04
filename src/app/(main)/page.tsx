@@ -13,17 +13,22 @@ import Applycard from "@/components/Applycard/Applycard";
 import Advantages from "@/components/Advantages/Advantages";
 import FAQ from "@/components/FAQ/faq";
 import Ready from "@/components/Ready/Ready";
+import { faqSchema } from "@/data/faqData";
 
 const rightItems = [
-  { num: "01", img: im1, title: "Why you need a UK eTA", desc: "Applying for your UK eTA takes just a few minutes. Answer a short guided questionnaire, let us review your details, and get your travel authorization approved, often within 15 minutes." },
+  { num: "01", img: im1, title: "Why you need a UK ETA", desc: "Applying for your UK ETA takes just a few minutes. Answer a short guided questionnaire, let us review your details, and get your travel authorization approved, often within 15 minutes." },
   { num: "02", img: img2, title: "Complete the online form", desc: "A quick, step-by-step questionnaire that guides you through each requirement. Takes about five minutes." },
   { num: "03", img: img3, title: "Get approved fast", desc: "Perfect for holidays, business trips, or visiting family and for stays up to 6 months." },
-  { num: "04", img: img4, title: "Valid for 2 years", desc: "Your UK eTA is valid for 2 years or until your passport expires." },
+  { num: "04", img: img4, title: "Valid for 2 years", desc: "Your UK ETA is valid for 2 years or until your passport expires." },
 ];
 
 export default function Home() {
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       {/* Hero section */}
       <div className="mx-auto max-w-[1408px] px-4 md:px-0 md:py-0">
         <div className="relative w-full hero-image-container" style={{ height: "844px" }}>
@@ -43,7 +48,7 @@ export default function Home() {
                 className="text-background"
                 style={{ fontSize: "64px", fontWeight: 500, lineHeight: "110%", letterSpacing: "-0.03em", color: "var(--hero-text)" }}
               >
-                Get Your UK eTA In Few <br />
+                Get Your UK ETA in a Few <br />
                 Easy Steps
               </h1>
               <p
@@ -64,12 +69,12 @@ export default function Home() {
 
           {/* Mobile: centered text + apply card below */}
           <div className="absolute inset-0 flex flex-col items-center justify-center px-4 md:hidden">
-            <h1
+            <h2
               className="text-background text-center"
               style={{ fontSize: "40px", fontWeight: 500, lineHeight: "130%", letterSpacing: "-0.03em", textAlign: "center", color: "var(--hero-text)" }}
             >
-              Get Your UK eTA In Few Easy Steps
-            </h1>
+              Get Your UK ETA in a Few Easy Steps
+            </h2>
             <p
               className="mt-4 text-center"
               style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--hero-text)", maxWidth: "320px", textAlign: "center" }}
@@ -83,7 +88,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* How UK eTA works section */}
+      {/* How UK ETA works section */}
       <div className="mx-auto px-4 md:px-10" style={{ maxWidth: "1440px" }}>
         <div className="flex flex-col md:flex-row" style={{ gap: "32px" }}>
           {/* Left side */}
@@ -99,7 +104,7 @@ export default function Home() {
                   color: "var(--text-heading)",
                 }}
               >
-                <span className="md:!text-[48px] md:!leading-[120%] md:!tracking-[-0.03em]">How the UK eTA works</span>
+                <span className="md:!text-[48px] md:!leading-[120%] md:!tracking-[-0.03em]">How the UK ETA Works</span>
               </h2>
               <p
                 className="text-center md:text-left"
@@ -111,7 +116,7 @@ export default function Home() {
                   color: "var(--muted)",
                 }}
               >
-                Applying for your UK eTA takes just a few minutes. Answer a short guided questionnaire, let our specialists review your details, and get your travel authorization approved, often within 15 minutes.
+                Applying for your UK ETA takes just a few minutes. Answer a short guided questionnaire, let our specialists review your details, and get your travel authorization approved, often within 15 minutes.
               </p>
             </div>
             <Link
@@ -223,7 +228,7 @@ export default function Home() {
                 color: "var(--foreground)",
               }}
             >
-              Who needs to apply for a UK eTA?
+              Who Needs to Apply for a UK ETA?
             </h2>
             <p
               className="md:!text-[18px] md:!leading-[140%] md:!tracking-[-0.02em]"
@@ -236,7 +241,7 @@ export default function Home() {
                 color: "var(--muted)",
               }}
             >
-              Visa-exempt travellers need a valid UK eTA before boarding their flight, regardless of the purpose of their trip.
+              Visa-exempt travellers need a valid UK ETA before boarding their flight, regardless of the purpose of their trip.
             </p>
           </div>
 
@@ -245,7 +250,7 @@ export default function Home() {
             {/* Left: image */}
             <Image
               src={image18}
-              alt="Who needs UK eTA"
+              alt="Who needs UK ETA"
               width={624}
               height={540}
               style={{ width: "100%", maxWidth: "624px", height: "auto", borderRadius: "16px", objectFit: "cover" }}
@@ -298,7 +303,7 @@ export default function Home() {
                 </div>
               ))}
 
-              {/* You may not need an eTA if: */}
+              {/* You may not need an ETA if: */}
               <h3
                 style={{
                   fontSize: "24px",
@@ -310,7 +315,7 @@ export default function Home() {
                   marginBottom: "24px",
                 }}
               >
-                You may not need an eTA if:
+                You may not need an ETA if:
               </h3>
 
               {/* Cancel items */}
@@ -344,7 +349,7 @@ export default function Home() {
                 </div>
               ))}
 
-              {/* Apply for eTA button */}
+              {/* Apply for ETA button */}
               <Link
                 href="/apply"
                 className="flex items-center justify-center gap-2 rounded-full bg-primary text-white transition-colors hover:bg-primary-hover w-full md:w-auto md:!max-w-[192px] mx-auto md:mx-0"
@@ -357,7 +362,7 @@ export default function Home() {
                   paddingLeft: "20px",
                 }}
               >
-                Apply for eTA
+                Apply for ETA
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
