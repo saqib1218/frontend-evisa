@@ -800,10 +800,12 @@ export default function ApplyPage() {
     setIsSubmitting(true);
     try {
       const payload = buildPayload();
-      const { url } = await api.createCheckoutSession(payload);
-      // Redirect to Stripe Checkout — the application is only saved to the
-      // database after Stripe confirms payment via webhook.
-      window.location.href = url;
+      const result = await api.createCheckoutSession(payload);
+      if (result.url) {
+        window.location.href = result.url;
+      } else {
+        throw new Error("No checkout URL returned");
+      }
     } catch (err: any) {
       showToast(err.message || "Failed to start payment. Please try again.", "error");
       setIsSubmitting(false);
