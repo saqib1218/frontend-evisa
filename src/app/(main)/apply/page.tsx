@@ -303,7 +303,7 @@ export default function ApplyPage() {
     { id: 1, expanded: true, saved: false },
   ]);
   const [nextId, setNextId] = useState(2);
-  const [passportApplicants, setPassportApplicants] = useState<{ id: number; expanded: boolean; saved: boolean; otherCitizen: "yes" | "no"; prevApplied: "yes" | "no" }[]>([]);
+  const [passportApplicants, setPassportApplicants] = useState<{ id: number; expanded: boolean; saved: boolean; otherCitizen: "yes" | "no"; prevApplied: "yes" | "no"; hasJob: "yes" | "no" }[]>([]);
   const [imageApplicants, setImageApplicants] = useState<{ id: number; expanded: boolean; saved: boolean }[]>([]);
   const [imageConsent, setImageConsent] = useState<Record<number, boolean>>({});
   const [photoApplicants, setPhotoApplicants] = useState<{ id: number; expanded: boolean; saved: boolean }[]>([]);
@@ -400,6 +400,7 @@ export default function ApplyPage() {
     dateIssue: { day: string | null; month: string | null; year: string | null };
     dateExpiry: { day: string | null; month: string | null; year: string | null };
     otherNationality: Country | null;
+    job: string;
   }>>({});
 
   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -453,6 +454,8 @@ export default function ApplyPage() {
         passportNumber: prev[id]?.passportNumber ?? "",
         dateIssue: prev[id]?.dateIssue ?? { day: null, month: null, year: null },
         dateExpiry: prev[id]?.dateExpiry ?? { day: null, month: null, year: null },
+        otherNationality: prev[id]?.otherNationality ?? null,
+        job: prev[id]?.job ?? "",
         [field]: value,
       },
     }));
@@ -467,6 +470,8 @@ export default function ApplyPage() {
         passportNumber: prev[id]?.passportNumber ?? "",
         dateIssue: prev[id]?.dateIssue ?? { day: null, month: null, year: null },
         dateExpiry: prev[id]?.dateExpiry ?? { day: null, month: null, year: null },
+        otherNationality: prev[id]?.otherNationality ?? null,
+        job: prev[id]?.job ?? "",
         [dateType]: { ...prev[id]?.[dateType], [part]: value },
       },
     }));
@@ -617,7 +622,7 @@ export default function ApplyPage() {
   const canGoToPassport = multipleApplicants ? allApplicantsSaved : allApplicantsValid;
 
   const goToPassportStep = () => {
-    setPassportApplicants(applicants.map((a) => ({ id: a.id, expanded: true, saved: false, otherCitizen: "no" as const, prevApplied: "no" as const })));
+    setPassportApplicants(applicants.map((a) => ({ id: a.id, expanded: true, saved: false, otherCitizen: "no" as const, prevApplied: "no" as const, hasJob: "no" as const })));
     setCurrentStep(1);
   };
 
@@ -638,7 +643,7 @@ export default function ApplyPage() {
     setPassportApplicants(passportApplicants.map((a) => (a.id === id ? { ...a, saved: true, expanded: false } : a)));
   };
 
-  const updatePassportField = (id: number, field: "otherCitizen" | "prevApplied", value: "yes" | "no") => {
+  const updatePassportField = (id: number, field: "otherCitizen" | "prevApplied" | "hasJob", value: "yes" | "no") => {
     setPassportApplicants(passportApplicants.map((a) => (a.id === id ? { ...a, [field]: value } : a)));
   };
 
@@ -780,6 +785,7 @@ export default function ApplyPage() {
         passportExpiryDate: formatDateForApi(passport.dateExpiry),
         dualCitizenship: passportApp?.otherCitizen === "yes",
         previouslyAppliedUk: passportApp?.prevApplied === "yes",
+        job: passportApp?.hasJob === "yes" ? (passportData[id]?.job || "") : null,
         passportImageUrl: passportImages[id] || "",
         personalPhotoUrl: photoImages[id] || "",
         imageConsent: imageConsent[id] || false,
@@ -1149,6 +1155,26 @@ export default function ApplyPage() {
                                 <p style={{ ...helperStyle, marginTop: "4px", color: "var(--error-text)" }}>Date of expiry is required.</p>
                               )}
                             </div>
+                          </div>
+
+                          {/* Do you have a job? */}
+                          <div style={{ marginTop: "24px" }}>
+                            <label style={{ ...labelStyle }}>Do you have a job?</label>
+                            <YesNoToggle value={applicant.hasJob} onChange={(v) => updatePassportField(applicant.id, "hasJob", v)} />
+                            {applicant.hasJob === "yes" && (
+                              <div style={{ marginTop: "16px" }}>
+                                <label style={{ ...labelStyle }}>Job or Profession</label>
+                                <div style={{ marginTop: "8px" }}>
+                                  <input
+                                    type="text"
+                                    placeholder="Enter your job or profession"
+                                    style={{ ...fieldStyle }}
+                                    value={passportData[applicant.id]?.job || ""}
+                                    onChange={(e) => updatePassportData(applicant.id, "job", e.target.value)}
+                                  />
+                                </div>
+                              </div>
+                            )}
                           </div>
 
                           {/* Are you a citizen of any other country? */}

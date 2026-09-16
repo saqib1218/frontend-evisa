@@ -50,6 +50,7 @@ export interface ApplicantPayload {
   passportExpiryDate: string;
   dualCitizenship: boolean;
   previouslyAppliedUk: boolean;
+  job: string | null;
   passportImageUrl: string;
   personalPhotoUrl: string;
   imageConsent: boolean;
