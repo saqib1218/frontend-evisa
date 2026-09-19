@@ -252,6 +252,25 @@ export default function Footer() {
           style={{ maxWidth: "1360px", height: "1px", marginTop: "32px" }}
         />
 
+        {/* Disclaimer text */}
+        <p
+          className="text-center"
+          style={{
+            fontSize: "14px",
+            fontWeight: 400,
+            lineHeight: "150%",
+            letterSpacing: "-0.01em",
+            color: "var(--muted-foreground)",
+            marginTop: "24px",
+            marginBottom: "12px",
+            maxWidth: "1360px",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
+          This website is operated by Followers B.V., trading as UK ETA Service. We are an independent application assistance service and are NOT affiliated with, endorsed by, or connected to the UK Government or Home Office. The official UK ETA can be obtained directly at gov.uk for £20.
+        </p>
+
         {/* Copyright text */}
         <p
           className="text-center"
@@ -261,7 +280,6 @@ export default function Footer() {
             lineHeight: "150%",
             letterSpacing: "-0.01em",
             color: "var(--muted-foreground)",
-            marginTop: "16px",
             marginBottom: "16px",
           }}
         >
