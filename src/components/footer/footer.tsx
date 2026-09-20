@@ -268,7 +268,7 @@ export default function Footer() {
             marginRight: "auto",
           }}
         >
-          This website is operated by Followers B.V., trading as UK ETA Service. We are an independent application assistance service and are NOT affiliated with, endorsed by, or connected to the UK Government or Home Office. The official UK ETA can be obtained directly at gov.uk for £20.
+          This website is operated by Followers B.V., trading as UK ETA Service. We are an independent application assistance service and are NOT affiliated with, endorsed by, or connected to the UK Government or Home Office. The official UK ETA can be obtained directly at gov.uk.
         </p>
 
         {/* Copyright text */}
