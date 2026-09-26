@@ -26,7 +26,7 @@ export default function Ready() {
               textAlign: "center",
             }}
           >
-            Ready to Apply for Your ETA?
+            Your Journey to the UK Starts Here
           </h2>
           <p
             className="text-white text-center md:!text-[18px] md:!leading-[140%] md:!tracking-[-0.02em]"

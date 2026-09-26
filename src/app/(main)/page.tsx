@@ -48,15 +48,14 @@ export default function Home() {
                 className="text-background"
                 style={{ fontSize: "64px", fontWeight: 500, lineHeight: "110%", letterSpacing: "-0.03em", color: "var(--hero-text)" }}
               >
-                Get Your UK ETA in a Few <br />
-                Easy Steps
+                Less Visa Stress. <br />
+                More Travel.
               </h1>
               <p
                 className="mt-4"
                 style={{ fontSize: "18px", fontWeight: 400, color: "var(--hero-text)" }}
               >
-                Fast, guided applications for the UK, reviewed by our
-                specialists before submission.
+                Wherever you're planning to come from, we're here to make the paperwork easier. Get support with visas, eVisas, ETAs, and arrival cards from 100+ destinations.
               </p>
             </div>
           </div>
@@ -73,13 +72,13 @@ export default function Home() {
               className="text-background text-center"
               style={{ fontSize: "40px", fontWeight: 500, lineHeight: "130%", letterSpacing: "-0.03em", textAlign: "center", color: "var(--hero-text)" }}
             >
-              Get Your UK ETA in a Few Easy Steps
+              Less Visa Stress. More Travel.
             </h2>
             <p
               className="mt-4 text-center"
               style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--hero-text)", maxWidth: "320px", textAlign: "center" }}
             >
-              Fast, guided applications for the UK, reviewed by our specialists before submission.
+              Wherever you're planning to come from, we're here to make the paperwork easier. Get support with visas, eVisas, ETAs, and arrival cards from 100+ destinations.
             </p>
             <div className="mt-6 w-full flex justify-center">
               <Applycard />
@@ -349,7 +348,7 @@ export default function Home() {
                 </div>
               ))}
 
-              {/* Apply for ETA button */}
+              {/* Get Started button */}
               <Link
                 href="/apply"
                 className="flex items-center justify-center gap-2 rounded-full bg-primary text-white transition-colors hover:bg-primary-hover w-full md:w-auto md:!max-w-[192px] mx-auto md:mx-0"
@@ -362,7 +361,7 @@ export default function Home() {
                   paddingLeft: "20px",
                 }}
               >
-                Apply for ETA
+                Get Started
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>

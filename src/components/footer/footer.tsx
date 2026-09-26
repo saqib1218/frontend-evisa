@@ -16,8 +16,8 @@ const generalLinks = [
   { label: "Contact Us", href: "/contact" },
 ];
 const applicationLinks = [
-  { label: "UK ETA Application", href: "/apply" },
-  { label: "Check Application Status", href: "/track-status" },
+  { label: "UK ETA Application Support", href: "/apply" },
+  { label: "Check Status with Us", href: "/track-status" },
 ];
 const policyLinks = [
   { label: "Privacy Policy", href: "/privacy-policy" },
@@ -136,7 +136,7 @@ export default function Footer() {
                 maxWidth: "280px",
               }}
             >
-              Your trusted partner for ETA and visa applications.
+              Your personalized roadmap for entering, visiting, studying, working, joining family, investing or relocating.
             </p>
             <Link
               href="/apply"
@@ -252,24 +252,31 @@ export default function Footer() {
           style={{ maxWidth: "1360px", height: "1px", marginTop: "32px" }}
         />
 
-        {/* Disclaimer text */}
-        <p
-          className="text-center"
+        {/* Disclaimer text - high contrast */}
+        <div
+          className="mx-auto"
           style={{
-            fontSize: "14px",
-            fontWeight: 400,
-            lineHeight: "150%",
-            letterSpacing: "-0.01em",
-            color: "var(--muted-foreground)",
             marginTop: "24px",
             marginBottom: "12px",
             maxWidth: "1360px",
-            marginLeft: "auto",
-            marginRight: "auto",
+            borderRadius: "12px",
+            background: "#1E293B",
+            padding: "16px 20px",
           }}
         >
-          This website is operated by Followers B.V., trading as UK ETA Service. We are an independent application assistance service and are NOT affiliated with, endorsed by, or connected to the UK Government or Home Office. The official UK ETA can be obtained directly at gov.uk.
-        </p>
+          <p
+            className="text-center"
+            style={{
+              fontSize: "13px",
+              fontWeight: 500,
+              lineHeight: "150%",
+              letterSpacing: "-0.01em",
+              color: "#FFFFFF",
+            }}
+          >
+            Evisaeta is operated by Followers B.V., trading as UK ETA Service. We are an independent application assistance service and are NOT affiliated with, endorsed by, or connected to the UK Government or Home Office. The official UK ETA can be obtained directly from gov.uk. Our service fee covers application reviewing, error checking, 24/7 customer support, and submission assistance.
+          </p>
+        </div>
 
         {/* Copyright text */}
         <p

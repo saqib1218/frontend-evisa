@@ -854,7 +854,7 @@ export default function ApplyPage() {
             </button>
             <div style={{ maxWidth: "697px", marginTop: "16px" }}>
               <h1 className="text-white text-center md:!text-[56px] md:!leading-[110%] md:!tracking-[-0.03em]" style={{ fontSize: "32px", fontWeight: 500, lineHeight: "135%", letterSpacing: "-0.02em", textAlign: "center" }}>
-                UK ETA Application
+                Your UK Visa Journey Starts Here
               </h1>
             </div>
           </div>
@@ -1962,7 +1962,7 @@ export default function ApplyPage() {
                       cursor: "pointer",
                     }}
                   >
-                    Continue to passport details
+                    Save & Proceed
                     <ArrowRight style={{ width: "20px", height: "20px" }} />
                   </button>
                 </>

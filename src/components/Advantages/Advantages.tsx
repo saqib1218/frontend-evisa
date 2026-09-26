@@ -182,6 +182,65 @@ export default function Advantages() {
         ))}
       </div>
 
+      {/* Fee breakdown table */}
+      <div
+        className="mt-8 overflow-hidden"
+        style={{
+          width: "100%",
+          maxWidth: "1360px",
+          borderRadius: "12px",
+          border: "1px solid var(--form-border)",
+        }}
+      >
+        <div
+          className="flex bg-primary"
+          style={{ padding: "16px 24px", alignItems: "center" }}
+        >
+          <div style={{ flex: 2 }}>
+            <span className="text-white" style={{ fontSize: "16px", fontWeight: 500 }}>Fee Component</span>
+          </div>
+          <div style={{ flex: 1, textAlign: "center" }}>
+            <span className="text-white" style={{ fontSize: "16px", fontWeight: 500 }}>Fee Type</span>
+          </div>
+          <div style={{ flex: 1, textAlign: "center" }}>
+            <span className="text-white" style={{ fontSize: "16px", fontWeight: 500 }}>Fee Amount</span>
+          </div>
+        </div>
+
+        {[
+          { component: "Official Government Fee", type: "UK Home Office", amount: "£20 (Official Direct Fee)" },
+          { component: "Agency Assistance Fee", type: "Evisaeta Consultancy", amount: "Service Fee (shown before payment)" },
+          { component: "Total Cost", type: "Combined Service", amount: "Shown before payment" },
+        ].map((row, index) => (
+          <div
+            key={row.component}
+            className="flex flex-col md:flex-row"
+            style={{
+              gap: "8px",
+              padding: "16px 24px",
+              borderBottom: index < 2 ? "1px solid var(--form-border)" : "none",
+              alignItems: "center",
+            }}
+          >
+            <div style={{ flex: 2, width: "100%" }}>
+              <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--general)" }}>
+                {row.component}
+              </span>
+            </div>
+            <div style={{ flex: 1, width: "100%", textAlign: "center" }}>
+              <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--muted)" }}>
+                {row.type}
+              </span>
+            </div>
+            <div style={{ flex: 1, width: "100%", textAlign: "center" }}>
+              <span style={{ fontSize: "16px", fontWeight: 500, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--general)" }}>
+                {row.amount}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
       {/* Mobile Table */}
       <div
         className="mt-6 md:hidden overflow-hidden"

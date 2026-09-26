@@ -149,6 +149,20 @@ export default function ContactPage() {
         >
           Send Us A Message
         </h2>
+        <p
+          className="mx-auto text-center"
+          style={{
+            maxWidth: "700px",
+            marginTop: "16px",
+            fontSize: "16px",
+            fontWeight: 400,
+            lineHeight: "150%",
+            letterSpacing: "-0.01em",
+            color: "var(--muted)",
+          }}
+        >
+          Need help with your application guidance request? Our private support team is available 24/7 to answer questions regarding our form review and submission assistance services.
+        </p>
 
         {/* Form card */}
         <div

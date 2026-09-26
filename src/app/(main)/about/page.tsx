@@ -184,7 +184,7 @@ export default function AboutPage() {
                 letterSpacing: "-0.01em",
               }}
             >
-              Apply for ETA
+              Get Started
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

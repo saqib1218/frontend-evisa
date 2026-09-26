@@ -146,7 +146,7 @@ export default function Applycard() {
             letterSpacing: "-0.02em",
           }}
         >
-          Apply for your UK ETA
+          Your UK Travel, Made Simple
         </h2>
       </div>
 
