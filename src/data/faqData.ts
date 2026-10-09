@@ -1,38 +1,33 @@
 const faqs = [
   {
-    question: "Do I need a visa or an ETA to travel to the UK?",
+    question: "Do I need to arrange anything before travelling to the UK?",
     answer:
-      "It depends on your nationality. If you are from a visa-exempt country, you will need an ETA. If your country requires a visa, you must apply for a standard UK visa instead. Check the UK government's official list to confirm which document applies to you.",
+      "It depends on your nationality and the reason for your trip. Many short-stay visitors need to sort out entry paperwork before they fly, and some travellers need a different type of permission altogether. Contact us to see what applies to you, or start with us and we'll check it with you.",
   },
   {
-    question: "When does the ETA become mandatory for my nationality?",
+    question: "When do the entry rules apply to my nationality?",
     answer:
-      "The UK is rolling out the ETA requirement in phases. Some nationalities already need an ETA, while others will be added over time. We recommend checking the latest government updates or contacting us to confirm your requirements before booking travel.",
+      "The UK has been introducing its entry requirements in stages, and the rules differ by nationality. Check with us before you book travel, or start with us and we'll confirm what applies to you.",
   },
   {
-    question: "How long is my UK ETA valid for?",
+    question: "Can I use it for more than one trip?",
     answer:
-      "A UK ETA is typically valid for up to 2 years or until your passport expires, whichever comes first. You can use it for multiple trips during its validity period, with each stay usually lasting up to 6 months.",
+      "If your application is approved, it is usually valid for up to 2 years, or until the travel document it's linked to expires, whichever comes first. You can normally use it for more than one trip during that time, and each stay is usually limited to a short period.",
   },
   {
-    question: "I'm only transiting through the UK. Do I need an ETA?",
+    question: "Do I need to arrange anything for a stopover in the UK?",
     answer:
-      "Yes, in most cases travellers transiting through the UK by air will need an ETA, even if they do not leave the airport. Make sure to apply before your journey to avoid any boarding issues.",
+      "It depends on your nationality and on how your journey is routed, including whether you pass through UK border control. Check the current transit rules before you travel, or start with us and we'll check what applies to your trip.",
   },
   {
-    question: "Do babies and children need their own ETA?",
+    question: "Do children and babies need their own application?",
     answer:
-      "Yes, every traveller including babies and children must have their own individual ETA linked to their own passport. Parents or guardians can apply on their behalf.",
+      "Yes, each traveller, including babies and children, needs their own individual application linked to their own travel document. A parent or guardian can complete it on their behalf. If you'd like help, you can start with us and add each traveller as you go.",
   },
   {
-    question: "Can I apply with a criminal record or previous visa refusal?",
+    question: "Can I apply if I've had an application refused before?",
     answer:
-      "You can still apply, but a criminal record or previous visa refusal may affect your eligibility. We recommend providing full and accurate information in your application. Our specialists can review your case and guide you on the best approach.",
-  },
-  {
-    question: "Why use your service instead of the government site?",
-    answer:
-      "Our service offers expert review of your application before submission, clear status tracking, around-the-clock support from real people, and the ability to save and resume your application anytime. We help reduce errors and improve your chances of a smooth approval.",
+      "You can still apply, but your history may affect the outcome. You must answer every question honestly and completely, because the UK Home Office makes the decision and we can't guarantee any result. Our team can help you complete the application accurately.",
   },
 ];
 

@@ -16,7 +16,7 @@ const generalLinks = [
   { label: "Contact Us", href: "/contact" },
 ];
 const applicationLinks = [
-  { label: "UK ETA Application Support", href: "/apply" },
+  { label: "Application Support", href: "/apply" },
   { label: "Check Status with Us", href: "/track-status" },
 ];
 const policyLinks = [

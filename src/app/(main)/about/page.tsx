@@ -130,7 +130,7 @@ export default function AboutPage() {
                 marginTop: "12px",
               }}
             >
-              We Make Your ETA Application Easier
+              We Make Your UK Application Easier
             </h2>
             <p
               className="md:!text-[16px]"
@@ -143,26 +143,26 @@ export default function AboutPage() {
                 marginTop: "12px",
               }}
             >
-              We built <span style={{ color: "var(--primary)", fontWeight: 700 }}>Evisaeta</span> because too many travellers were getting stuck, confused, or rejected over small mistakes they didn&apos;t even know they made. So now, a real person checks your application before it goes anywhere near a government portal.
+              We built <span style={{ color: "var(--primary)", fontWeight: 700 }}>Evisaeta</span> because many travellers were getting stuck or confused by small mistakes they didn&apos;t know they&apos;d made. So now a member of our team checks your details before we submit your application for you.
             </p>
 
             {/* Tick items */}
             <div className="flex items-center" style={{ marginTop: "12px", gap: "8px" }}>
               <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
               <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
-                Independent service, not affiliated with any government
+                Independent service. We are not affiliated with any government.
               </span>
             </div>
             <div className="flex items-center" style={{ marginTop: "12px", gap: "8px" }}>
               <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
               <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
-                Real specialists reviewing every application, not just a bot
+                Checked by our team. Every application is reviewed by a person before it's submitted.
               </span>
             </div>
             <div className="flex items-center" style={{ marginTop: "12px", gap: "8px" }}>
               <Image src={btick} alt="Tick" width={20} height={20} style={{ width: "20px", height: "20px", flexShrink: 0 }} />
               <span style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-heading)" }}>
-                Honest guidance, so you know exactly where you stand
+                Clear guidance. You know what we've checked, what we haven't, and what happens next
               </span>
             </div>
 

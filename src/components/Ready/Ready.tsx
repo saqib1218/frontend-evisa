@@ -40,7 +40,7 @@ export default function Ready() {
               marginTop: "20px",
             }}
           >
-            Answer a few quick questions, let our specialists review your details, and get your travel authorization approved, often within minutes.
+            Answer a few quick questions and our team will check your details before submitting your application. We keep you updated by email along the way.
           </p>
           <Link
             href="/apply"

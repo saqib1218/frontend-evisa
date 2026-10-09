@@ -16,10 +16,10 @@ import Ready from "@/components/Ready/Ready";
 import { faqSchema } from "@/data/faqData";
 
 const rightItems = [
-  { num: "01", img: im1, title: "Why you need a UK ETA", desc: "Applying for your UK ETA takes just a few minutes. Answer a short guided questionnaire, let us review your details, and get your travel authorization approved, often within 15 minutes." },
+  { num: "01", img: im1, title: "How can we help you!", desc: "Answer a few simple questions and we'll check your details before submitting your application. You get clear steps, a careful review and updates by email, so there are fewer mistakes and less guesswork." },
   { num: "02", img: img2, title: "Complete the online form", desc: "A quick, step-by-step questionnaire that guides you through each requirement. Takes about five minutes." },
-  { num: "03", img: img3, title: "Get approved fast", desc: "Perfect for holidays, business trips, or visiting family and for stays up to 6 months." },
-  { num: "04", img: img4, title: "Valid for 2 years", desc: "Your UK ETA is valid for 2 years or until your passport expires." },
+  { num: "03", img: img3, title: "Get Ready to Travel", desc: "Perfect for holidays, business trips, or visiting family and for stays up to 6 months." },
+  { num: "04", img: img4, title: "Travel With Confidence", desc: "If your application is approved, it stays valid for up to 2 years, or until the travel document it's linked to expires. You can use it for more than one trip within that time." },
 ];
 
 export default function Home() {
@@ -48,14 +48,14 @@ export default function Home() {
                 className="text-background"
                 style={{ fontSize: "64px", fontWeight: 500, lineHeight: "110%", letterSpacing: "-0.03em", color: "var(--hero-text)" }}
               >
-                Less Visa Stress. <br />
-                More Travel.
+                Going to the UK? <br />
+                Let Do your Process Together
               </h1>
               <p
                 className="mt-4"
                 style={{ fontSize: "18px", fontWeight: 400, color: "var(--hero-text)" }}
               >
-                Wherever you're planning to come from, we're here to make the paperwork easier. Get support with visas, eVisas, ETAs, and arrival cards from 100+ destinations.
+                Wherever you're planning to come from, we're here to make the paperwork easier. Get our support and make the process easier.
               </p>
             </div>
           </div>
@@ -72,13 +72,13 @@ export default function Home() {
               className="text-background text-center"
               style={{ fontSize: "40px", fontWeight: 500, lineHeight: "130%", letterSpacing: "-0.03em", textAlign: "center", color: "var(--hero-text)" }}
             >
-              Less Visa Stress. More Travel.
+              Going to the UK? Let Do your Process Together
             </h2>
             <p
               className="mt-4 text-center"
               style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--hero-text)", maxWidth: "320px", textAlign: "center" }}
             >
-              Wherever you're planning to come from, we're here to make the paperwork easier. Get support with visas, eVisas, ETAs, and arrival cards from 100+ destinations.
+              Wherever you're planning to come from, we're here to make the paperwork easier. Get our support and make the process easier.
             </p>
             <div className="mt-6 w-full flex justify-center">
               <Applycard />
@@ -103,7 +103,7 @@ export default function Home() {
                   color: "var(--text-heading)",
                 }}
               >
-                <span className="md:!text-[48px] md:!leading-[120%] md:!tracking-[-0.03em]">How the UK ETA Works</span>
+                <span className="md:!text-[48px] md:!leading-[120%] md:!tracking-[-0.03em]">Getting Ready for Your UK Trip, Step by Step</span>
               </h2>
               <p
                 className="text-center md:text-left"
@@ -115,7 +115,7 @@ export default function Home() {
                   color: "var(--muted)",
                 }}
               >
-                Applying for your UK ETA takes just a few minutes. Answer a short guided questionnaire, let our specialists review your details, and get your travel authorization approved, often within 15 minutes.
+                Applying for your UK Travel takes just a few minutes. Answer a short guided questionnaire, let our specialists review your details, and get your travel authorization approved, often within 15 minutes.
               </p>
             </div>
             <Link
@@ -240,7 +240,7 @@ export default function Home() {
                 color: "var(--muted)",
               }}
             >
-              Visa-exempt travellers need a valid UK ETA before boarding their flight, regardless of the purpose of their trip.
+              Many visitors need to arrange entry paperwork before they fly. What you need depends on your nationality and your trip, so we start by checking it for you.
             </p>
           </div>
 
@@ -273,7 +273,7 @@ export default function Home() {
 
               {/* Tick items */}
               {[
-                "Your passport is from an eligible country.",
+                "Your Legal Papers are from an eligible country.",
                 "You're visiting for tourism, business, family visits, or transit.",
                 "You will arrive by air and plan a short stay (typically up to 6 months).",
               ].map((text, i, arr) => (
@@ -314,14 +314,14 @@ export default function Home() {
                   marginBottom: "24px",
                 }}
               >
-                You may not need an ETA if:
+                You may not be Eligible if:
               </h3>
 
               {/* Cancel items */}
               {[
                 "You're a UK citizen or permanent resident.",
                 "You already hold a valid UK visa covering your trip.",
-                "You're entering by land or sea and your nationality is visa-exempt for those modes.",
+                "You're entering by land or sea and your nationality is exempt for those modes.",
               ].map((text, i, arr) => (
                 <div
                   key={i}

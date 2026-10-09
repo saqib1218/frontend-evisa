@@ -159,8 +159,8 @@ export default function Applycard() {
           letterSpacing: "0em",
         }}
       >
-        Mandatory entry document required for tourism, transit, or business
-        travel to the United Kingdom.
+        Tell us where you're travelling from and we'll check what you need
+        for your UK trip.
       </p>
 
       <div className="flex flex-col gap-2">
@@ -201,7 +201,7 @@ export default function Applycard() {
             letterSpacing: "-0.01em",
           }}
         >
-          Applicant&apos;s passport
+          Travelling from
         </label>
         <Dropdown
           placeholder="Select your country"
