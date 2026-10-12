@@ -25,7 +25,16 @@ import { countries, type Country } from "@/data/countries";
 import { api } from "@/utils/api";
 import { useToast, ToastContainer } from "@/utils/toast";
 
-const steps = ["Applicant", "Passport", "Passport image", "Your photo", "Review", "Payment"];
+// NOTE: Passport, Passport image, and Your photo steps are temporarily disabled per request.
+// The UI, validation, and data-collection code for these steps below is kept intact (commented
+// out via this flag) so it can be re-enabled later by flipping ENABLE_PASSPORT_PHOTO_STEPS to true.
+const ENABLE_PASSPORT_PHOTO_STEPS = false;
+
+// Full step list (kept for when the steps are re-enabled):
+// const steps = ["Applicant", "Passport", "Passport image", "Your photo", "Review", "Payment"];
+const steps = ENABLE_PASSPORT_PHOTO_STEPS
+  ? ["Applicant", "Passport", "Passport image", "Your photo", "Review", "Payment"]
+  : ["Applicant", "Review", "Payment"];
 
 const labelStyle = {
   fontSize: "18px",
@@ -287,6 +296,12 @@ function YesNoToggle({ value, onChange }: { value: "yes" | "no"; onChange: (v: "
 
 export default function ApplyPage() {
   const [currentStep, setCurrentStep] = useState(0);
+  // Maps the real currentStep value (which still uses 0=Applicant,1=Passport,2=Passport image,
+  // 3=Your photo,4=Review,5=Payment internally) to the index within the visible `steps` array,
+  // since steps 1-3 are currently skipped/disabled.
+  const stepDisplayIndex = ENABLE_PASSPORT_PHOTO_STEPS
+    ? currentStep
+    : currentStep === 0 ? 0 : currentStep === 4 ? 1 : 2;
   const [showErrors, setShowErrors] = useState(false);
   const topRef = useRef<HTMLDivElement>(null);
 
@@ -874,16 +889,16 @@ export default function ApplyPage() {
             {/* Top section - bg #FAFAF9 */}
             <div style={{ background: "var(--form-bg)", padding: "24px", borderBottom: "1px solid var(--form-border)", borderTopLeftRadius: "24px", borderTopRightRadius: "24px" }}>
               <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginBottom: "12px" }}>
-                Application · Step {currentStep + 1} of 6
+                Application · Step {stepDisplayIndex + 1} of {steps.length}
               </p>
               <div className="flex items-center flex-wrap" style={{ gap: "4px" }}>
                 {steps.map((step, index) => (
                   <div key={step} className="flex items-center" style={{ gap: "4px" }}>
-                    <span style={{ fontSize: "16px", fontWeight: 600, lineHeight: "150%", letterSpacing: "-0.01em", color: index === currentStep ? "var(--primary)" : "var(--icon-muted)" }}>
+                    <span style={{ fontSize: "16px", fontWeight: 600, lineHeight: "150%", letterSpacing: "-0.01em", color: index === stepDisplayIndex ? "var(--primary)" : "var(--icon-muted)" }}>
                       {step}
                     </span>
                     {index < steps.length - 1 && (
-                      <ChevronRight style={{ width: "24px", height: "24px", color: index < currentStep ? "var(--primary)" : "var(--icon-muted)" }} />
+                      <ChevronRight style={{ width: "24px", height: "24px", color: index < stepDisplayIndex ? "var(--primary)" : "var(--icon-muted)" }} />
                     )}
                   </div>
                 ))}
@@ -1065,6 +1080,7 @@ export default function ApplyPage() {
                 </>
               )}
 
+              {/* Passport step — disabled/commented out per request (see ENABLE_PASSPORT_PHOTO_STEPS). currentStep never equals 1 while disabled, so this block is dead/inert. */}
               {currentStep === 1 && (
                 <>
                   <div>
@@ -1231,6 +1247,7 @@ export default function ApplyPage() {
                 </>
               )}
 
+              {/* Passport image step — disabled/commented out per request (see ENABLE_PASSPORT_PHOTO_STEPS). */}
               {currentStep === 2 && (
                 <>
                   <div>
@@ -1458,6 +1475,7 @@ export default function ApplyPage() {
                 </>
               )}
 
+              {/* Your photo step — disabled/commented out per request (see ENABLE_PASSPORT_PHOTO_STEPS). */}
               {currentStep === 3 && (
                 <>
                   <div>
@@ -1754,57 +1772,64 @@ export default function ApplyPage() {
                         </div>
                       </div>
 
-                      {/* Divider */}
-                      <div style={{ borderTop: "1px solid var(--form-border)", margin: "0 24px" }} />
+                      {/* Passport & Personal Photo / Passport Information — commented out/disabled along with the
+                          Passport, Passport image, and Your photo steps. Re-enable by setting
+                          ENABLE_PASSPORT_PHOTO_STEPS to true above. */}
+                      {ENABLE_PASSPORT_PHOTO_STEPS && (
+                        <>
+                          {/* Divider */}
+                          <div style={{ borderTop: "1px solid var(--form-border)", margin: "0 24px" }} />
 
-                      {/* Passport & Personal Photo */}
-                      <div style={{ padding: "24px" }}>
-                        <p style={{ fontSize: "18px", fontWeight: 600, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginBottom: "16px" }}>Passport &amp; Personal Photo</p>
-                        <div className="flex" style={{ gap: "24px" }}>
-                          <div style={{ width: "139px", height: "100px", borderRadius: "8px", border: "1px dashed var(--form-border)", background: "var(--form-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, overflow: "hidden" }}>
-                            {passportImages[applicant.id] ? (
-                              <img src={passportImages[applicant.id]} alt="Passport" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                            ) : (
-                              <Upload style={{ width: "24px", height: "24px", color: "var(--icon-muted)" }} />
-                            )}
+                          {/* Passport & Personal Photo */}
+                          <div style={{ padding: "24px" }}>
+                            <p style={{ fontSize: "18px", fontWeight: 600, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginBottom: "16px" }}>Passport &amp; Personal Photo</p>
+                            <div className="flex" style={{ gap: "24px" }}>
+                              <div style={{ width: "139px", height: "100px", borderRadius: "8px", border: "1px dashed var(--form-border)", background: "var(--form-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, overflow: "hidden" }}>
+                                {passportImages[applicant.id] ? (
+                                  <img src={passportImages[applicant.id]} alt="Passport" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                ) : (
+                                  <Upload style={{ width: "24px", height: "24px", color: "var(--icon-muted)" }} />
+                                )}
+                              </div>
+                              <div style={{ width: "100px", height: "100px", borderRadius: "8px", border: "1px dashed var(--form-border)", background: "var(--form-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, overflow: "hidden" }}>
+                                {photoImages[applicant.id] ? (
+                                  <img src={photoImages[applicant.id]} alt="Personal photo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                ) : (
+                                  <Upload style={{ width: "24px", height: "24px", color: "var(--icon-muted)" }} />
+                                )}
+                              </div>
+                            </div>
                           </div>
-                          <div style={{ width: "100px", height: "100px", borderRadius: "8px", border: "1px dashed var(--form-border)", background: "var(--form-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, overflow: "hidden" }}>
-                            {photoImages[applicant.id] ? (
-                              <img src={photoImages[applicant.id]} alt="Personal photo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                            ) : (
-                              <Upload style={{ width: "24px", height: "24px", color: "var(--icon-muted)" }} />
-                            )}
-                          </div>
-                        </div>
-                      </div>
 
-                      {/* Divider */}
-                      <div style={{ borderTop: "1px solid var(--form-border)", margin: "0 24px" }} />
+                          {/* Divider */}
+                          <div style={{ borderTop: "1px solid var(--form-border)", margin: "0 24px" }} />
 
-                      {/* Passport Information */}
-                      <div style={{ padding: "24px" }}>
-                        <p style={{ fontSize: "18px", fontWeight: 600, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginBottom: "16px" }}>Personal Information</p>
+                          {/* Passport Information */}
+                          <div style={{ padding: "24px" }}>
+                            <p style={{ fontSize: "18px", fontWeight: 600, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginBottom: "16px" }}>Personal Information</p>
 
-                        {/* Nationality / Document number / Issued */}
-                        <div className="flex flex-col md:flex-row" style={{ gap: "24px" }}>
-                          <div style={{ flex: 1 }}>
-                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Nationality:</p>
-                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{passportData[applicant.id]?.nationality?.name || "-"}</p>
-                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "16px" }}>Expires:</p>
-                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{formatDate(passportData[applicant.id]?.dateExpiry)}</p>
+                            {/* Nationality / Document number / Issued */}
+                            <div className="flex flex-col md:flex-row" style={{ gap: "24px" }}>
+                              <div style={{ flex: 1 }}>
+                                <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Nationality:</p>
+                                <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{passportData[applicant.id]?.nationality?.name || "-"}</p>
+                                <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "16px" }}>Expires:</p>
+                                <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{formatDate(passportData[applicant.id]?.dateExpiry)}</p>
+                              </div>
+                              <div style={{ flex: 1 }}>
+                                <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Document number:</p>
+                                <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{passportData[applicant.id]?.passportNumber || "-"}</p>
+                                <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "16px" }}>Dual citizenship:</p>
+                                <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{passportApplicants.find((a) => a.id === applicant.id)?.otherCitizen === "yes" ? "Yes" : "No"}</p>
+                              </div>
+                              <div style={{ flex: 1 }}>
+                                <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Issued:</p>
+                                <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{formatDate(passportData[applicant.id]?.dateIssue)}</p>
+                              </div>
+                            </div>
                           </div>
-                          <div style={{ flex: 1 }}>
-                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Document number:</p>
-                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{passportData[applicant.id]?.passportNumber || "-"}</p>
-                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)", marginTop: "16px" }}>Dual citizenship:</p>
-                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{passportApplicants.find((a) => a.id === applicant.id)?.otherCitizen === "yes" ? "Yes" : "No"}</p>
-                          </div>
-                          <div style={{ flex: 1 }}>
-                            <p style={{ fontSize: "16px", fontWeight: 400, lineHeight: "150%", letterSpacing: "-0.01em", color: "var(--text-body)" }}>Issued:</p>
-                            <p style={{ fontSize: "18px", fontWeight: 500, lineHeight: "140%", letterSpacing: "-0.02em", color: "var(--text-heading)", marginTop: "4px" }}>{formatDate(passportData[applicant.id]?.dateIssue)}</p>
-                          </div>
-                        </div>
-                      </div>
+                        </>
+                      )}
                     </div>
                   ))}
 
@@ -1942,7 +1967,12 @@ export default function ApplyPage() {
                   <button
                     onClick={() => {
                       if (!canGoToPassport) { setShowErrors(true); return; }
-                      goToPassportStep();
+                      if (ENABLE_PASSPORT_PHOTO_STEPS) {
+                        goToPassportStep();
+                      } else {
+                        // Passport, Passport image, and Your photo steps are disabled — skip straight to Review.
+                        goToReviewStep();
+                      }
                     }}
                     className="flex items-center justify-center order-1 md:order-2 w-full md:w-auto md:max-w-[283px]"
                     style={{
@@ -2116,7 +2146,7 @@ export default function ApplyPage() {
               ) : currentStep === 4 ? (
                 <>
                   <button
-                    onClick={() => { setShowErrors(false); setCurrentStep(3); }}
+                    onClick={() => { setShowErrors(false); setCurrentStep(ENABLE_PASSPORT_PHOTO_STEPS ? 3 : 0); }}
                     className="flex items-center justify-center order-2 md:order-1 w-full md:w-auto"
                     style={{
                       height: "48px",
