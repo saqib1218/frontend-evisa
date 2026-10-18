@@ -252,32 +252,6 @@ export default function Footer() {
           style={{ maxWidth: "1360px", height: "1px", marginTop: "32px" }}
         />
 
-        {/* Disclaimer text - high contrast */}
-        <div
-          className="mx-auto"
-          style={{
-            marginTop: "24px",
-            marginBottom: "12px",
-            maxWidth: "1360px",
-            borderRadius: "12px",
-            background: "#1E293B",
-            padding: "16px 20px",
-          }}
-        >
-          <p
-            className="text-center"
-            style={{
-              fontSize: "13px",
-              fontWeight: 500,
-              lineHeight: "150%",
-              letterSpacing: "-0.01em",
-              color: "#FFFFFF",
-            }}
-          >
-            Evisaeta is operated by Followers B.V., trading as UK ETA Service. We are an independent application assistance service and are NOT affiliated with, endorsed by, or connected to the UK Government or Home Office. The official UK ETA can be obtained directly from gov.uk. Our service fee covers application reviewing, error checking, 24/7 customer support, and submission assistance.
-          </p>
-        </div>
-
         {/* Copyright text */}
         <p
           className="text-center"

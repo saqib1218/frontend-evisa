@@ -25,10 +25,8 @@ import { countries, type Country } from "@/data/countries";
 import { api } from "@/utils/api";
 import { useToast, ToastContainer } from "@/utils/toast";
 
-// NOTE: Passport, Passport image, and Your photo steps are temporarily disabled per request.
-// The UI, validation, and data-collection code for these steps below is kept intact (commented
-// out via this flag) so it can be re-enabled later by flipping ENABLE_PASSPORT_PHOTO_STEPS to true.
-const ENABLE_PASSPORT_PHOTO_STEPS = false;
+// NOTE: Passport, Passport image, and Your photo steps are re-enabled per request.
+const ENABLE_PASSPORT_PHOTO_STEPS = true;
 
 // Full step list (kept for when the steps are re-enabled):
 // const steps = ["Applicant", "Passport", "Passport image", "Your photo", "Review", "Payment"];
